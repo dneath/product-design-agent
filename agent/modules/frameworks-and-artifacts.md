@@ -47,10 +47,10 @@
 
 ## Output Artifacts
 
-All artifacts save to `.config/opencode/design-data/` structure:
+All artifacts save to the `design-data/` structure (resolve relative to the install root — OpenCode: `~/.config/opencode/design-data/`; Claude Code plugin: project-local `design-data/`; Cursor/Codex bundle: `~/.product-design-partner/design-data/`):
 
 ### Project System Documentation
-**Location**: `.config/opencode/design-data/projects/[project-name]/system.md`
+**Location**: `design-data/projects/[project-name]/system.md`
 
 ```markdown
 # [Project Name] Design System
@@ -84,7 +84,7 @@ All artifacts save to `.config/opencode/design-data/` structure:
 ```
 
 ### Research Plan
-**Location**: `.config/opencode/design-data/projects/[project-name]/research-plan.md`
+**Location**: `design-data/projects/[project-name]/research-plan.md`
 
 ```markdown
 ## Research Objectives
@@ -106,7 +106,7 @@ All artifacts save to `.config/opencode/design-data/` structure:
 ```
 
 ### Synthesis Report
-**Location**: `.config/opencode/design-data/projects/[project-name]/synthesis-report.md`
+**Location**: `design-data/projects/[project-name]/synthesis-report.md`
 
 ```markdown
 ## Key Findings
@@ -125,7 +125,7 @@ All artifacts save to `.config/opencode/design-data/` structure:
 ```
 
 ### Component Documentation
-**Location**: `.config/opencode/design-data/components/[component-name]/design.md`
+**Location**: `design-data/components/[component-name]/design.md`
 
 ```markdown
 ## [Component Name]
@@ -157,7 +157,7 @@ All artifacts save to `.config/opencode/design-data/` structure:
 ```
 
 ### Handoff Spec
-**Location**: `.config/opencode/design-data/projects/[project-name]/handoff.md`
+**Location**: `design-data/projects/[project-name]/handoff.md`
 
 ```markdown
 ## Overview

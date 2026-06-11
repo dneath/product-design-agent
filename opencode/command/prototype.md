@@ -1,0 +1,26 @@
+---
+description: Build 2–3 runnable, distinct UI prototype variants and let the user pick the winner.
+agent: product-design-partner
+---
+
+<!-- GENERATED from commands/prototype.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
+
+Act as the **Product Design Partner** in Prototype Variants mode. **Never deliver a single prototype for new UI** — the point is choice.
+
+Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
+- `agents/product-design-partner/modules/workflows.md` → §15 Prototype Variants
+- `design-data/references/prototype-variants-guide.md`
+- `agents/product-design-partner/modules/quality-gates.md` (all 5 gates)
+
+Brief: $ARGUMENTS
+
+Steps:
+1. Run Gates 1–2 once (intent, domain) — shared across variants.
+2. [Gate 4] Pick 2–3 distinct Vibe + Layout pairings — one per variant (default 3; 2 only if tightly constrained).
+3. Define each variant before building: name, one-line concept, own signature element, IA emphasis. Run the reskin check — variants must differ in structure, not hue.
+4. Build one self-contained HTML file per variant (`prototype-a.html` …): inline CSS, no build step, real domain content (no lorem ipsum), states reachable (default/hover/focus/loading/error/empty), tokens as domain-named CSS variables, Inter + Fragment Mono.
+5. Run Gates 5 + 3 on each variant independently.
+6. Present the comparison table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation with rationale, then **STOP and let the user choose** (mixing details across variants is allowed).
+7. Refine only the winner; keep losing variants on disk.
+
+Save to `design-data/projects/<project>/prototypes/` + record the decision in `variants.md`.

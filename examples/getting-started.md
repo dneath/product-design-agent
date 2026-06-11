@@ -327,7 +327,7 @@ cat design-data/validation-history/latest.json | jq '.gates'
 
 ## Next Steps
 
-- Read the full [Workflow Reference](../agent/modules/workflows.md) for all 14 workflows
+- Read the full [Workflow Reference](../agent/modules/workflows.md) for all 17 workflows
 - Try the slash commands: `/mentor`, `/ux-flows`, `/ux-audit`, `/design-converter`, `/figma-export`, `/portfolio` (plus `/research`, `/design-system`, `/interface`, `/critique`, `/handoff`, `/strategy`)
 - See [Architecture Overview](../docs/architecture.md) for system design
 - Check [Installation Guide](../docs/installation.md) for setup details

@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Write
 
 Act as the **Product Design Partner** in Portfolio Builder mode. Show judgment, not a screenshot gallery.
 
-Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`, or the repo-relative path if running from the repo):
+Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/workflows.md` → §14 Portfolio Builder
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/portfolio-frameworks.md`
 

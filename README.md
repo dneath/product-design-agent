@@ -1,19 +1,20 @@
 # Product Design Partner Agent
 
-A systematic, evidence-based product design agent for AI assistants (Claude, OpenCode, and other LLMs) with strict quality enforcement gates.
+A systematic, evidence-based product design agent for AI coding assistants — **Claude Code, Cursor, Codex, and OpenCode** — with strict quality enforcement gates.
 
 ## Features
 
-- **14 Specialized Workflows**: User research, design systems, interface design, product strategy, design critique, handoff specs, accessibility audits, Figma integration — plus AI mentor, UX flows, UX audit, design converter, Figma export, and portfolio builder
+- **17 Specialized Workflows**: User research, design systems, interface design, product strategy, design critique, handoff specs, accessibility audits, Figma integration, AI mentor, UX flows, UX audit, design converter, Figma export, portfolio builder — plus prototype variants, diagrams, and UX annotations & write-ups
+- **Variant Protocol**: every new UI is delivered as **2–3 genuinely distinct directions** (own vibe+layout pairing and signature element each) with a comparison table and recommendation — you pick the winner, the agent refines it
 - **5 Quality Gates**: Mandatory validation for intent declaration, domain exploration, validation tests, variance tracking, and ban list enforcement
-- **Evidence-Based**: Every recommendation traces to sources with confidence levels
+- **Evidence-Based**: Every recommendation traces to sources with confidence levels; UX decisions documented as decision records
 - **Craft-Focused**: Intent-first design with self-critique mandate to avoid generic AI defaults
 - **WCAG 2.1 AA**: Accessibility built in as core requirement, not afterthought
 - **Variance Tracking**: Prevents repetitive design patterns across outputs
 - **DesignPrompts.dev Integration**: 350KB reference library of styles, colors, and typography
-- **12 Slash Commands**: `/mentor`, `/ux-flows`, `/ux-audit`, `/design-converter`, `/figma-export`, `/portfolio`, plus `/research`, `/design-system`, `/interface`, `/critique`, `/handoff`, `/strategy` (Claude Code + OpenCode)
+- **16 Slash Commands on 4 Platforms**: `/brainstorm`, `/prototype`, `/diagram`, `/annotate`, `/mentor`, `/ux-flows`, `/ux-audit`, `/design-converter`, `/figma-export`, `/portfolio`, `/research`, `/design-system`, `/interface`, `/critique`, `/handoff`, `/strategy` — Claude Code, Cursor, Codex, and OpenCode (generated from one canonical set)
 - **Portable Goal-Mode Prompt**: a self-contained ≤4000-char prompt for any single instruction field
-- **Claude Code Plugin**: `.claude-plugin/plugin.json` packaging with commands and a subagent
+- **Claude Code Plugin**: `.claude-plugin/plugin.json` packaging with commands, a subagent, and a prompt hook
 
 ## What This Agent Does
 
@@ -33,23 +34,27 @@ The Product Design Partner helps with:
 - **Design Converter**: Turning sketches or screenshots into UI
 - **Figma Export**: Pushing designs and design systems into Figma
 - **Portfolio Builder**: Generating case studies from project artifacts
+- **Prototype Variants**: 2–3 runnable, distinct single-file prototypes per new UI — you choose the best one
+- **Diagrams**: Flowcharts, sequence/state/journey/ER/architecture diagrams (Mermaid, optional FigJam export)
+- **UX Annotations & Write-ups**: Numbered typed callouts (interaction/state/motion/content/a11y/logic), redlines, and design-rationale decision records
 
 ## Architecture
 
 ```
-product-design--agent/
+product-design-agent/
 ├── agent/
 │   ├── product-design-partner.md      [Core agent definition]
 │   └── modules/                       [5 modular subagents]
 │       ├── INDEX.md                   [System map]
 │       ├── quality-gates.md           [5 gates + brand identity]
-│       ├── workflows.md               [14 complete workflows]
+│       ├── workflows.md               [17 complete workflows]
 │       ├── standards-and-anti-patterns.md
 │       └── frameworks-and-artifacts.md
 │
 ├── plugins/
 │   ├── product-design.js              [Core validation plugin for OpenCode]
 │   ├── design-validator.mjs           [Standalone validator (any LLM)]
+│   ├── sync-commands.mjs              [Generates OpenCode/Cursor/Codex commands]
 │   ├── design-migrator.js             [Legacy data migration]
 │   └── csv-converter.mjs              [DesignPrompts.dev converter]
 │
@@ -63,10 +68,17 @@ product-design--agent/
 │       ├── ux-heuristics.md           [UX audit: Nielsen + WCAG]
 │       ├── design-converter-guide.md  [sketch/screenshot → UI]
 │       ├── portfolio-frameworks.md    [portfolio case studies]
+│       ├── prototype-variants-guide.md [2-3 distinct directions per new UI]
+│       ├── diagram-guide.md           [Mermaid patterns + ASCII wireframes]
+│       ├── annotation-guide.md        [callouts, redlines, decision records]
+│       ├── research-templates.md      [screener, discussion guide, JTBD]
+│       ├── brainstorming-playbook.md  [technique cards + convergence rubric]
 │       └── designprompts-*.json       [350KB - styles, colors, typography]
 │
-├── commands/                          [12 Claude Code slash commands]
-├── opencode/command/                  [12 OpenCode slash commands]
+├── commands/                          [16 canonical slash commands (Claude Code)]
+├── opencode/command/                  [16 OpenCode commands — generated]
+├── cursor/                            [16 Cursor commands + rule — generated]
+├── codex/                             [16 Codex prompts + AGENTS.md — generated]
 ├── prompts/                           [portable goal-mode prompt]
 ├── agents/                            [Claude Code subagent]
 ├── hooks/                             [UserPromptSubmit intent nudge]
@@ -75,56 +87,49 @@ product-design--agent/
 
 ## Installation
 
-### Option A: Manual Installation (All LLMs)
-
-**For OpenCode:**
-```bash
-# 1. Copy agent files
-cp -r agent ~/.config/opencode/agents/product-design-partner
-cp agent/product-design-partner.md ~/.config/opencode/agents/
-
-# 2. Copy plugins (optional but recommended)
-cp plugins/*.js plugins/*.mjs ~/.config/opencode/plugins/
-
-# 3. Copy reference data
-cp -r design-data ~/.config/opencode/
-```
-
-**For Claude Desktop:**
-```bash
-# 1. Copy agent files to Claude's custom instructions directory
-# (Exact path depends on your Claude Desktop configuration)
-cp -r agent ~/Library/Application\ Support/Claude/agents/product-design-partner
-
-# 2. Copy reference data
-cp -r design-data ~/Library/Application\ Support/Claude/design-data
-```
-
-**For Other LLMs:**
-```bash
-# 1. Copy agent markdown to your LLM's custom instructions/agent directory
-# 2. Reference the path in your LLM's configuration
-# 3. Ensure the LLM can read from design-data/references/ for validation
-```
-
-### Option B: Automated Installation
+### Option A: Automated (recommended)
 
 ```bash
-# Run install script (interactive)
+# Run install script (auto-detects environment)
 ./install.sh
 
 # Or specify installation target
-./install.sh --target opencode
-./install.sh --target claude
+./install.sh --target claude      # Claude Code  (~/.claude + ~/.product-design-partner bundle)
+./install.sh --target cursor      # Cursor       (~/.cursor/commands + rule + bundle)
+./install.sh --target codex       # Codex        (~/.codex/prompts + AGENTS.md + bundle)
+./install.sh --target opencode    # OpenCode     (~/.config/opencode — agent, plugins, commands)
 ./install.sh --target custom --path /your/custom/path
 ```
 
-The install script will:
-- Detect your environment (OpenCode, Claude Desktop, or custom)
-- Copy files to appropriate locations
-- Create necessary directories with proper permissions
-- Validate installation completeness
-- Provide usage instructions
+The install script detects your environment, copies files to the right locations, validates the install, and prints usage instructions.
+
+### Option B: Manual
+
+**Claude Code** (best experience — gates hook + subagent):
+install as a plugin via `/plugin` (this repo contains `.claude-plugin/plugin.json`), or copy `commands/*.md` → `~/.claude/commands/` and `agents/product-design-partner.md` → `~/.claude/agents/`, with the bundle at `~/.product-design-partner/`.
+
+**Cursor:**
+```bash
+cp cursor/commands/*.md ~/.cursor/commands/        # or a project's .cursor/commands/
+cp cursor/rules/product-design-partner.mdc <project>/.cursor/rules/
+./install.sh --target cursor                       # also installs the bundle
+```
+
+**Codex:**
+```bash
+cp codex/prompts/*.md ~/.codex/prompts/
+cat codex/AGENTS.md >> ~/.codex/AGENTS.md          # or copy, if you have none
+./install.sh --target codex                        # also installs the bundle
+```
+
+**OpenCode:**
+```bash
+cp agent/product-design-partner.md ~/.config/opencode/agents/
+cp -r agent/modules ~/.config/opencode/agents/product-design-partner/
+cp plugins/*.js plugins/*.mjs ~/.config/opencode/plugins/
+cp opencode/command/*.md ~/.config/opencode/command/
+cp -r design-data ~/.config/opencode/
+```
 
 ## Quick Start
 
@@ -146,40 +151,54 @@ The install script will:
    - Validation tests
    - Final output with all gates passed
 
-### Claude Desktop / Other LLMs
+### Claude Code
 
-1. Load the agent as a custom instruction or system prompt
-2. Reference the agent in your conversation:
-   ```
-   Using the product-design-partner agent, help me audit my design system for hardcoded values
-   ```
+```
+/interface a triage dashboard for support managers drowning in SLA deadlines
+/prototype the same brief        # 2-3 runnable variants to choose from
+```
+Or address the subagent: "Use the product-design-partner agent to audit my design system."
 
-3. For validation without plugins:
+### Cursor
+
+Type `/` and pick any of the 16 commands (installed in `~/.cursor/commands/`). Attach the `product-design-partner` rule (`.cursor/rules/`) for always-on gate enforcement.
+
+### Codex
+
+Type `/prototype`, `/brainstorm`, etc. (custom prompts in `~/.codex/prompts/`). `~/.codex/AGENTS.md` keeps the agent identity active in every session.
+
+### Other LLMs
+
+1. Paste `prompts/goal-mode.md` (≤4000 chars) as the system prompt, or load `agent/product-design-partner.md` + modules
+2. For validation without plugins:
    ```bash
-   # Use standalone validator
    node plugins/design-validator.mjs your-design-artifact.md
    ```
 
 ## Slash Commands
 
-Installed as a Claude Code plugin (`/command`) or an OpenCode command. Six new capabilities plus six wrapping the existing workflows:
+Available on all four platforms (Claude Code plugin / Cursor / Codex / OpenCode):
 
 | Command | Does |
 |---------|------|
+| `/brainstorm` | Quota-enforced ideation: ≥15 ideas, ≥3 techniques, scored shortlist |
+| `/prototype` | 2–3 runnable, distinct prototype variants — you pick the winner |
+| `/diagram` | Flow / sequence / state / journey / ER / architecture diagram (Mermaid → FigJam) |
+| `/annotate` | Numbered typed callouts + redlines + UX rationale decision records |
 | `/mentor` | Guide an idea → product concept |
 | `/ux-flows` | User journeys, task flows, information architecture |
 | `/ux-audit` | Usability (Nielsen) + accessibility (WCAG 2.1 AA) |
 | `/design-converter` | Sketch / screenshot → UI |
 | `/figma-export` | Push a design or system into Figma (Figma MCP) |
 | `/portfolio` | Generate a case study from project artifacts |
-| `/research` | Plan or synthesize user research |
+| `/research` | Plan or synthesize user research (screener, discussion guide, JTBD) |
 | `/design-system` | Audit / document a design system + tokens |
-| `/interface` | Design an interface (all 5 gates enforced) |
+| `/interface` | Design an interface (all 5 gates + Variant Protocol) |
 | `/critique` | Structured design critique |
 | `/handoff` | Developer handoff spec |
 | `/strategy` | Problem framing + ideation |
 
-Claude Code commands live in `commands/`; OpenCode equivalents in `opencode/command/`.
+`commands/` (Claude Code) is the canonical set; `opencode/command/`, `cursor/commands/`, and `codex/prompts/` are generated from it — edit the source and run `node plugins/sync-commands.mjs`.
 
 ## Goal-Mode Prompt
 
@@ -230,7 +249,7 @@ node plugins/design-validator.mjs design-output.md
 
 - [Installation Guide](docs/installation.md) - Detailed installation for all environments
 - [Architecture Overview](docs/architecture.md) - System design and module dependencies
-- [Workflow Reference](agent/modules/workflows.md) - All 14 workflows
+- [Workflow Reference](agent/modules/workflows.md) - All 17 workflows
 - [Contributing](docs/contributing.md) - How to extend and improve the agent
 
 ## Brand Identity
@@ -258,12 +277,12 @@ See `design-data/references/brand-identity.md` for complete guidelines.
 
 ## Requirements
 
-- **For OpenCode**: OpenCode v1.0+ with plugin support
-- **For Claude Desktop**: Claude Desktop app with custom instructions
-- **For Other LLMs**: Any LLM that supports:
-  - Custom system prompts (required)
-  - File reading for reference data (recommended)
-  - Tool/function calling for validation (optional)
+- **Claude Code**: any recent version (plugin or personal commands/agents)
+- **Cursor**: commands + project rules support
+- **Codex**: custom prompts (`~/.codex/prompts`) + AGENTS.md support
+- **OpenCode**: v1.0+ with plugin support (only platform with automatic gate *enforcement*; others enforce by instruction + the standalone validator)
+- **Figma features**: the Figma MCP (`https://mcp.figma.com/mcp`) connected on your platform
+- **Other LLMs**: custom system prompt (required), file reading (recommended), tool calling for validation (optional)
 
 ## License
 
@@ -280,6 +299,15 @@ Key areas for contribution:
 - Translations for international teams
 
 ## Changelog
+
+### v1.2.0 (2026-06-10)
+- **Variant Protocol**: new UI is always delivered as 2–3 genuinely distinct directions (own vibe+layout + signature each) with comparison table + recommendation; the user picks
+- 3 new workflows: Prototype Variants (§15, runnable single-file prototypes), Diagrams (§16, Mermaid + FigJam), UX Annotations & Write-ups (§17, typed callouts + redlines + decision records)
+- Deeper brainstorming (divergence quota, technique cards, convergence rubric) and research (assumption map, screener, discussion guide, JTBD profiles)
+- 4 new commands: `/prototype`, `/diagram`, `/annotate`, `/brainstorm` (16 total)
+- **Cursor + Codex support**: `cursor/` (commands + rule) and `codex/` (prompts + AGENTS.md), generated from the canonical `commands/` by `plugins/sync-commands.mjs`
+- `install.sh` targets for claude (Claude Code), cursor, codex, opencode, custom
+- Figma export fallback bundle + per-platform MCP connection steps; portable `design-data/` paths
 
 ### v1.1.0 (2026-05-31)
 - 6 new capabilities: AI mentor, UX flows, UX audit, design converter, Figma export, portfolio builder

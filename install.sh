@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Product Design Partner Agent - Installation Script
-# Supports OpenCode, Claude Desktop, and custom installations
+# Targets: opencode | claude (Claude Code) | cursor | codex | custom
 
 set -e
 
@@ -12,7 +12,6 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Print functions
 print_header() {
     echo -e "${BLUE}================================================${NC}"
     echo -e "${BLUE}  Product Design Partner Agent - Installer${NC}"
@@ -20,288 +19,241 @@ print_header() {
     echo ""
 }
 
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
+print_success() { echo -e "${GREEN}✓${NC} $1"; }
+print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
+print_error()   { echo -e "${RED}✗${NC} $1"; }
+print_info()    { echo -e "${BLUE}ℹ${NC} $1"; }
 
-print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
-
-print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
-}
+# Shared bundle location for cursor/codex/claude personal installs
+BUNDLE_DIR="$HOME/.product-design-partner"
 
 # Detect installation target
 detect_target() {
     if [ -d "$HOME/.config/opencode" ]; then
         echo "opencode"
-    elif [ -d "$HOME/Library/Application Support/Claude" ]; then
+    elif [ -d "$HOME/.claude" ]; then
         echo "claude"
+    elif [ -d "$HOME/.cursor" ]; then
+        echo "cursor"
+    elif [ -d "$HOME/.codex" ]; then
+        echo "codex"
     else
         echo "unknown"
     fi
 }
 
-# Get installation paths based on target
-get_paths() {
-    local target=$1
-    case $target in
-        opencode)
-            AGENT_DIR="$HOME/.config/opencode/agents"
-            PLUGINS_DIR="$HOME/.config/opencode/plugins"
-            DATA_DIR="$HOME/.config/opencode/design-data"
-            COMMAND_DIR="$HOME/.config/opencode/command"
-            PROMPTS_DIR="$HOME/.config/opencode/prompts"
-            ;;
-        claude)
-            AGENT_DIR="$HOME/Library/Application Support/Claude/agents"
-            PLUGINS_DIR="$HOME/Library/Application Support/Claude/plugins"
-            DATA_DIR="$HOME/Library/Application Support/Claude/design-data"
-            COMMAND_DIR="$HOME/Library/Application Support/Claude/commands"
-            PROMPTS_DIR="$HOME/Library/Application Support/Claude/prompts"
-            ;;
-        *)
-            if [ -n "$CUSTOM_PATH" ]; then
-                AGENT_DIR="$CUSTOM_PATH/agents"
-                PLUGINS_DIR="$CUSTOM_PATH/plugins"
-                DATA_DIR="$CUSTOM_PATH/design-data"
-                COMMAND_DIR="$CUSTOM_PATH/commands"
-                PROMPTS_DIR="$CUSTOM_PATH/prompts"
-            else
-                print_error "No installation path provided"
-                exit 1
-            fi
-            ;;
-    esac
+# Copy the full bundle (agent + modules + reference data + plugins + prompts)
+# to a root directory, mirroring the repo layout.
+copy_bundle() {
+    local root=$1
+    print_info "Copying bundle to $root ..."
+    mkdir -p "$root/agent/modules" "$root/design-data/references" \
+             "$root/design-data/projects" "$root/design-data/components" \
+             "$root/design-data/tokens" "$root/design-data/validation-history" \
+             "$root/plugins" "$root/prompts"
+    cp agent/product-design-partner.md "$root/agent/"
+    cp agent/modules/*.md "$root/agent/modules/"
+    cp design-data/references/*.md design-data/references/*.json "$root/design-data/references/"
+    cp plugins/*.js plugins/*.mjs "$root/plugins/" 2>/dev/null || true
+    cp prompts/*.md "$root/prompts/" 2>/dev/null || true
+    touch "$root/design-data/projects/.gitkeep" "$root/design-data/components/.gitkeep" \
+          "$root/design-data/tokens/.gitkeep" "$root/design-data/validation-history/.gitkeep"
+    print_success "Bundle copied"
 }
 
-# Create directories
-create_directories() {
-    print_info "Creating directories..."
-    mkdir -p "$AGENT_DIR/product-design-partner/modules"
-    mkdir -p "$PLUGINS_DIR"
-    mkdir -p "$COMMAND_DIR"
-    mkdir -p "$PROMPTS_DIR"
-    mkdir -p "$DATA_DIR/references"
-    mkdir -p "$DATA_DIR/projects"
-    mkdir -p "$DATA_DIR/components"
-    mkdir -p "$DATA_DIR/tokens"
-    mkdir -p "$DATA_DIR/validation-history"
-    print_success "Directories created"
+install_opencode() {
+    local cfg="$HOME/.config/opencode"
+    print_info "Installing for OpenCode at $cfg"
+    mkdir -p "$cfg/agents/product-design-partner/modules" "$cfg/plugins" \
+             "$cfg/command" "$cfg/prompts" "$cfg/design-data/references" \
+             "$cfg/design-data/projects" "$cfg/design-data/components" \
+             "$cfg/design-data/tokens" "$cfg/design-data/validation-history"
+    cp agent/product-design-partner.md "$cfg/agents/"
+    cp agent/modules/*.md "$cfg/agents/product-design-partner/modules/"
+    cp plugins/*.js plugins/*.mjs "$cfg/plugins/" 2>/dev/null || true
+    cp opencode/command/*.md "$cfg/command/"
+    cp prompts/*.md "$cfg/prompts/" 2>/dev/null || true
+    cp design-data/references/*.md design-data/references/*.json "$cfg/design-data/references/"
+    print_success "OpenCode install complete"
 }
 
-# Copy agent files
-copy_agent_files() {
-    print_info "Copying agent files..."
-    cp agent/product-design-partner.md "$AGENT_DIR/"
-    cp agent/modules/*.md "$AGENT_DIR/product-design-partner/modules/"
-    print_success "Agent files copied"
+install_claude() {
+    print_info "Installing for Claude Code"
+    copy_bundle "$BUNDLE_DIR"
+    mkdir -p "$HOME/.claude/commands" "$HOME/.claude/agents"
+    cp commands/*.md "$HOME/.claude/commands/"
+    cp agents/product-design-partner.md "$HOME/.claude/agents/"
+    print_success "Claude Code install complete (personal commands + subagent)"
+    print_info "Preferred alternative: install as a plugin — run /plugin in Claude Code and add this repo (uses .claude-plugin/plugin.json; enables the UserPromptSubmit hook)."
 }
 
-# Copy plugin files
-copy_plugin_files() {
-    print_info "Copying plugin files..."
-    cp plugins/*.js plugins/*.mjs "$PLUGINS_DIR/" 2>/dev/null || true
-    print_success "Plugin files copied"
+install_cursor() {
+    print_info "Installing for Cursor"
+    copy_bundle "$BUNDLE_DIR"
+    mkdir -p "$HOME/.cursor/commands" "$HOME/.cursor/rules"
+    cp cursor/commands/*.md "$HOME/.cursor/commands/"
+    cp cursor/rules/*.mdc "$HOME/.cursor/rules/" 2>/dev/null || true
+    print_success "Cursor install complete (global commands)"
+    print_info "For per-project use, also copy cursor/rules/product-design-partner.mdc into the project's .cursor/rules/ (rules attach per-project)."
 }
 
-# Copy slash commands (OpenCode format for opencode; Claude Code format otherwise)
-copy_commands() {
-    print_info "Copying slash commands..."
-    if [ "$TARGET" == "opencode" ] && [ -d "opencode/command" ]; then
-        cp opencode/command/*.md "$COMMAND_DIR/" 2>/dev/null || true
-    elif [ -d "commands" ]; then
-        cp commands/*.md "$COMMAND_DIR/" 2>/dev/null || true
+install_codex() {
+    print_info "Installing for Codex"
+    copy_bundle "$BUNDLE_DIR"
+    mkdir -p "$HOME/.codex/prompts"
+    cp codex/prompts/*.md "$HOME/.codex/prompts/"
+    if [ -f "$HOME/.codex/AGENTS.md" ]; then
+        print_warning "~/.codex/AGENTS.md already exists — NOT overwriting."
+        print_info "Append codex/AGENTS.md to it manually:  cat codex/AGENTS.md >> ~/.codex/AGENTS.md"
+    else
+        cp codex/AGENTS.md "$HOME/.codex/AGENTS.md"
+        print_success "Installed ~/.codex/AGENTS.md"
     fi
-    print_success "Slash commands copied"
+    print_success "Codex install complete (custom prompts)"
 }
 
-# Copy the portable goal-mode prompt
-copy_prompts() {
-    print_info "Copying goal-mode prompt..."
-    cp prompts/*.md "$PROMPTS_DIR/" 2>/dev/null || true
-    print_success "Goal-mode prompt copied"
+install_custom() {
+    if [ -z "$CUSTOM_PATH" ]; then
+        print_error "No installation path provided (use --path with --target custom)"
+        exit 1
+    fi
+    print_info "Installing bundle to custom path $CUSTOM_PATH"
+    copy_bundle "$CUSTOM_PATH"
+    mkdir -p "$CUSTOM_PATH/commands"
+    cp commands/*.md "$CUSTOM_PATH/commands/"
 }
 
-# Copy reference data
-copy_reference_data() {
-    print_info "Copying reference data (350KB)..."
-    cp design-data/references/*.md "$DATA_DIR/references/"
-    cp design-data/references/*.json "$DATA_DIR/references/"
-    print_success "Reference data copied"
-}
-
-# Create .gitkeep files
-create_gitkeep_files() {
-    print_info "Creating .gitkeep files for empty directories..."
-    touch "$DATA_DIR/projects/.gitkeep"
-    touch "$DATA_DIR/components/.gitkeep"
-    touch "$DATA_DIR/tokens/.gitkeep"
-    touch "$DATA_DIR/validation-history/.gitkeep"
-    print_success ".gitkeep files created"
-}
-
-# Validate installation
 validate_installation() {
     print_info "Validating installation..."
     local errors=0
-    
-    if [ ! -f "$AGENT_DIR/product-design-partner.md" ]; then
-        print_error "Main agent file not found"
-        ((errors++))
-    fi
-    
-    if [ ! -d "$AGENT_DIR/product-design-partner/modules" ]; then
-        print_error "Modules directory not found"
-        ((errors++))
-    fi
-    
-    if [ ! -d "$DATA_DIR/references" ]; then
-        print_error "Reference data directory not found"
-        ((errors++))
-    fi
-    
+    case $TARGET in
+        opencode)
+            [ -f "$HOME/.config/opencode/agents/product-design-partner.md" ] || { print_error "Agent file missing"; ((errors++)); }
+            [ -d "$HOME/.config/opencode/design-data/references" ] || { print_error "Reference data missing"; ((errors++)); }
+            ;;
+        claude)
+            [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
+            [ -f "$HOME/.claude/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
+            ;;
+        cursor)
+            [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
+            [ -f "$HOME/.cursor/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
+            ;;
+        codex)
+            [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
+            [ -f "$HOME/.codex/prompts/interface.md" ] || { print_error "Prompts missing"; ((errors++)); }
+            ;;
+        custom)
+            [ -f "$CUSTOM_PATH/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
+            ;;
+    esac
     if [ $errors -eq 0 ]; then
         print_success "Installation validated successfully"
         return 0
-    else
-        print_error "Installation validation failed with $errors errors"
-        return 1
     fi
+    print_error "Installation validation failed with $errors errors"
+    return 1
 }
 
-# Print usage instructions
 print_usage_instructions() {
-    local target=$1
     echo ""
     echo -e "${GREEN}================================================${NC}"
     echo -e "${GREEN}  Installation Complete!${NC}"
     echo -e "${GREEN}================================================${NC}"
     echo ""
-    
-    case $target in
+    case $TARGET in
         opencode)
-            echo "Usage in OpenCode:"
-            echo "  opencode"
-            echo "  @product-design-partner Help me design a dashboard"
-            echo ""
-            echo "The agent will automatically:"
-            echo "  - Route to appropriate workflows"
-            echo "  - Enforce quality gates via plugins"
-            echo "  - Track variance history"
+            echo "OpenCode:  @product-design-partner Help me design a dashboard"
+            echo "Commands:  /interface, /prototype, /brainstorm, /diagram, /annotate, …"
+            echo "Plugins enforce the 5 gates and track variance automatically."
             ;;
         claude)
-            echo "Usage in Claude Desktop:"
-            echo "  Reference the agent in your conversations:"
-            echo "  'Using the product-design-partner agent, help me...'"
-            echo ""
-            echo "For validation without plugins:"
-            echo "  node $PLUGINS_DIR/design-validator.mjs output.md"
+            echo "Claude Code:  /interface, /prototype, /brainstorm, /diagram, /annotate, …"
+            echo "Subagent:     'Use the product-design-partner agent to …'"
+            echo "Bundle:       $BUNDLE_DIR (modules + reference data)"
             ;;
-        *)
-            echo "Installation complete at: $CUSTOM_PATH"
-            echo ""
-            echo "To use with your LLM:"
-            echo "  1. Load agent/product-design-partner.md as system prompt"
-            echo "  2. Ensure LLM can read from $DATA_DIR/references/"
-            echo "  3. For validation: node plugins/design-validator.mjs output.md"
+        cursor)
+            echo "Cursor:   /interface, /prototype, /brainstorm, /diagram, /annotate, …"
+            echo "Rule:     ~/.cursor/rules/product-design-partner.mdc (copy into a project's .cursor/rules/ to attach it)"
+            echo "Bundle:   $BUNDLE_DIR (modules + reference data)"
+            ;;
+        codex)
+            echo "Codex:    /interface, /prototype, /brainstorm, /diagram, /annotate, …"
+            echo "Global:   ~/.codex/AGENTS.md defines the agent for every session"
+            echo "Bundle:   $BUNDLE_DIR (modules + reference data)"
+            ;;
+        custom)
+            echo "Bundle installed at: $CUSTOM_PATH"
+            echo "Load agent/product-design-partner.md as the system prompt; keep design-data/ readable."
+            echo "Validate outputs:  node $CUSTOM_PATH/plugins/design-validator.mjs output.md"
             ;;
     esac
-    
     echo ""
-    echo "Documentation: docs/"
-    echo "Examples: examples/"
+    echo "Docs: docs/installation.md · Examples: examples/"
     echo ""
 }
 
-# Main installation flow
 main() {
     print_header
-    
-    # Parse arguments
+
     TARGET=""
     CUSTOM_PATH=""
-    
+
     while [[ $# -gt 0 ]]; do
         case $1 in
-            --target)
-                TARGET="$2"
-                shift 2
-                ;;
-            --path)
-                CUSTOM_PATH="$2"
-                shift 2
-                ;;
+            --target) TARGET="$2"; shift 2 ;;
+            --path)   CUSTOM_PATH="$2"; shift 2 ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
-                echo "  --target <opencode|claude|custom>  Installation target"
-                echo "  --path <path>                       Custom installation path (with --target custom)"
-                echo "  --help, -h                          Show this help message"
+                echo "  --target <opencode|claude|cursor|codex|custom>  Installation target"
+                echo "  --path <path>                                   Custom installation path (with --target custom)"
+                echo "  --help, -h                                      Show this help message"
                 echo ""
                 exit 0
                 ;;
-            *)
-                print_error "Unknown option: $1"
-                exit 1
-                ;;
+            *) print_error "Unknown option: $1"; exit 1 ;;
         esac
     done
-    
-    # Detect or validate target
+
     if [ -z "$TARGET" ]; then
         print_info "No target specified, detecting environment..."
         TARGET=$(detect_target)
         if [ "$TARGET" == "unknown" ]; then
             print_warning "Could not detect environment"
-            echo "Please specify target with --target <opencode|claude|custom>"
+            echo "Please specify target with --target <opencode|claude|cursor|codex|custom>"
             exit 1
         fi
         print_info "Detected target: $TARGET"
     fi
-    
-    # Get installation paths
-    get_paths "$TARGET"
-    
-    print_info "Installation paths:"
-    print_info "  Agent: $AGENT_DIR"
-    print_info "  Plugins: $PLUGINS_DIR"
-    print_info "  Commands: $COMMAND_DIR"
-    print_info "  Prompts: $PROMPTS_DIR"
-    print_info "  Data: $DATA_DIR"
-    echo ""
-    
-    # Confirm installation
-    read -p "Continue with installation? (y/n) " -n 1 -r
+
+    case $TARGET in
+        opencode|claude|cursor|codex|custom) ;;
+        *) print_error "Unknown target: $TARGET"; exit 1 ;;
+    esac
+
+    read -p "Install for '$TARGET'? (y/n) " -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         print_warning "Installation cancelled"
         exit 0
     fi
-    
-    # Run installation steps
-    create_directories
-    copy_agent_files
-    copy_plugin_files
-    copy_commands
-    copy_prompts
-    copy_reference_data
-    create_gitkeep_files
-    
-    # Validate
+
+    case $TARGET in
+        opencode) install_opencode ;;
+        claude)   install_claude ;;
+        cursor)   install_cursor ;;
+        codex)    install_codex ;;
+        custom)   install_custom ;;
+    esac
+
     if validate_installation; then
-        print_usage_instructions "$TARGET"
+        print_usage_instructions
     else
         print_error "Installation completed with errors"
         exit 1
     fi
 }
 
-# Run main
 main "$@"

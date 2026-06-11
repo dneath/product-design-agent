@@ -27,15 +27,19 @@ process.stdin.on('end', () => {
     { rx: /(user flow|user journey|journey map|task flow|sitemap|information architecture|product structure)/, msg: 'UX Flows → /ux-flows (workflows.md §10 + ux-flow-patterns.md)' },
     { rx: /(ux audit|usability review|usability audit|heuristic|nielsen)/, msg: 'UX Audit → /ux-audit (workflows.md §11 + ux-heuristics.md)' },
     { rx: /(convert this|sketch to ui|screenshot to ui|wireframe to ui|image to ui|design converter)/, msg: 'Design Converter → /design-converter (workflows.md §12 — all 5 gates)' },
-    { rx: /(export to figma|push to figma|build in figma|figma export|design to figma)/, msg: 'Figma Export → /figma-export (load the figma-generate-design skill first)' },
+    { rx: /((export|push|send|sync|build|create)[^.]{0,40}(to|in|into) figma|figma export)/, msg: 'Figma Export → /figma-export (load the figma-generate-design skill first)' },
     { rx: /(case study|portfolio|project writeup)/, msg: 'Portfolio → /portfolio (workflows.md §14 + portfolio-frameworks.md)' },
+    { rx: /(annotat|redline|red-line|ux rationale|design rationale|design decision record|callout)/, msg: 'UX Annotations & Write-ups → /annotate (workflows.md §17 + annotation-guide.md)' },
+    { rx: /(diagram|flowchart|flow chart|sequence diagram|state machine|state diagram|erd\b|entity relationship|mermaid|figjam)/, msg: 'Diagrams → /diagram (workflows.md §16 + diagram-guide.md)' },
+    { rx: /(prototype|proof of concept|show me (some )?options|2-3 (versions|variants|options)|couple of (versions|directions)|variants)/, msg: 'Prototype Variants → /prototype (workflows.md §15 — 2-3 distinct variants, user picks)' },
     { rx: /(accessibility|wcag|a11y|contrast ratio|screen reader)/, msg: 'Accessibility / UX Audit → /ux-audit (workflows.md §7 & §11 + ux-heuristics.md)' },
-    { rx: /(dashboard|admin panel|interface|mockup|prototype|wireframe|ui design)/, msg: 'Interface Design → /interface (workflows.md §3 — all 5 gates)' },
+    { rx: /(dashboard|admin panel|interface|mockup|wireframe|ui design)/, msg: 'Interface Design → /interface (workflows.md §3 — all 5 gates + Variant Protocol)' },
     { rx: /(design system|design token|component library|style guide)/, msg: 'Design System → /design-system (workflows.md §2)' },
-    { rx: /(user research|interview guide|usability test|survey|synthesize research)/, msg: 'User Research → /research (workflows.md §1)' },
+    { rx: /(user research|interview guide|usability test|survey|synthesize research|screener|discussion guide)/, msg: 'User Research → /research (workflows.md §1 + research-templates.md)' },
     { rx: /(critique|design review|feedback on this design|review this design)/, msg: 'Design Critique → /critique (workflows.md §5)' },
     { rx: /(handoff|developer spec|implementation spec)/, msg: 'Design Handoff → /handoff (workflows.md §6)' },
-    { rx: /(brainstorm|ideation|how might we|product strategy|opportunity)/, msg: 'Product Strategy → /strategy (workflows.md §4)' }
+    { rx: /(brainstorm|ideation|ideate|divergent thinking)/, msg: 'Brainstorm → /brainstorm (workflows.md §4 + brainstorming-playbook.md — ≥15 ideas, ≥3 techniques)' },
+    { rx: /(how might we|product strategy|opportunity)/, msg: 'Product Strategy → /strategy (workflows.md §4)' }
   ];
 
   const hit = ROUTES.find((r) => r.rx.test(prompt));
@@ -45,7 +49,8 @@ process.stdin.on('end', () => {
     `Product Design Partner: ${hit.msg}\n` +
     'Before any UI output, pass all 5 gates — Intent (Who/What/Feel, no generic words), ' +
     'Domain (5+ concepts/colors + 1 signature ×5), Validation tests (swap/squint/signature/token), ' +
-    'Variance (new Vibe+Layout), Ban list. Brand: Inter + Fragment Mono; ' +
+    'Variance (new Vibe+Layout), Ban list. New UI = Variant Protocol: 2-3 distinct directions, ' +
+    'user picks. Brand: Inter + Fragment Mono; ' +
     '#501E60 plum (brand) / #7C3AED violet (accent). WCAG 2.1 AA; document decisions.\n'
   );
   process.exit(0);
