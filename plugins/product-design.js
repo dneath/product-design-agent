@@ -277,6 +277,25 @@ export default async function ProductDesignPlugin({ directory, client }) {
     portfolio: [
       'case study', 'case studies', 'portfolio', 'design portfolio',
       'write up this project', 'project writeup'
+    ],
+
+    // Prototype Variants (8 terms)
+    prototypeVariants: [
+      'prototype variants', 'design variants', 'design options', 'show me options',
+      'multiple versions', 'two or three versions', 'variant a', 'compare directions'
+    ],
+
+    // Diagrams (10 terms)
+    diagrams: [
+      'diagram', 'sequence diagram', 'state machine', 'state diagram',
+      'architecture diagram', 'entity relationship', 'erd', 'mermaid',
+      'figjam', 'visualize the flow'
+    ],
+
+    // Annotations & UX Write-ups (9 terms)
+    annotations: [
+      'annotate', 'annotation', 'annotations', 'redline', 'redlines',
+      'ux rationale', 'design rationale', 'decision record', 'design write-up'
     ]
   };
 
@@ -340,7 +359,10 @@ export default async function ProductDesignPlugin({ directory, client }) {
       workflows: ['design-critique', 'design-handoff'],
       interfaceTypes: ['interface-design', 'ui-ux-pro-max'],
       uxAudit: ['accessibility-audit', 'design-critique'],
-      figmaExport: ['figma-generate-design']
+      figmaExport: ['figma-generate-design'],
+      prototypeVariants: ['interface-design', 'ui-ux-pro-max'],
+      diagrams: ['figma-generate-diagram'],
+      annotations: ['design-handoff', 'design-critique']
     };
     
     // Add skills for all matched domains
@@ -464,7 +486,28 @@ export default async function ProductDesignPlugin({ directory, client }) {
 - Lead with the problem and the decisions, not screenshots
 - Use CRP-PDSI: Context, Role, Problem, Process, Decisions, Solution, Impact
 - Honest role attribution; never invent metrics
-- Pair every number with the mechanism behind it`
+- Pair every number with the mechanism behind it`,
+
+      prototypeVariants: `
+**Prototype Variants Mode**:
+- New UI is never a single take: build 2-3 genuinely distinct variants (A/B/C)
+- Distinct = own Vibe+Layout pairing + own signature element, not a palette swap
+- One self-contained HTML file per variant; real domain content; states reachable
+- Present a comparison table + recommendation, then STOP — the user picks the winner`,
+
+      diagrams: `
+**Diagram Mode**:
+- One diagram answers one question; pick the type from the question (flowchart/sequence/state/journey/ER/architecture)
+- Mermaid source is the artifact — save the .mmd; quote labels, label every decision branch
+- No dead ends without recovery; node labels pass the token test
+- FigJam export: load figma-generate-diagram skill FIRST, then generate_diagram`,
+
+      annotations: `
+**UX Annotations & Write-ups Mode**:
+- Annotate the non-obvious with numbered, typed callouts: INT/STA/MOT/CON/A11Y/LOG
+- Behavior under condition, never appearance; numbering is append-only
+- Interactive elements need INT + STA + A11Y before handoff; redlines use tokens
+- Rationale = decision records: decision → evidence → alternatives → trade-off → success signal`
     };
     
     return guidanceMap[intent.mode] || '';

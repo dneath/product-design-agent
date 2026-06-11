@@ -1,10 +1,25 @@
 ---
-description: Audit a design for usability (Nielsen) + accessibility (WCAG 2.1 AA)
+description: Audit a design for usability (Nielsen) + accessibility (WCAG 2.1 AA).
 agent: product-design-partner
 ---
 
-Run the UX Audit workflow (workflows.md §11) with design-data/references/ux-heuristics.md and quality-gates.md (Gates 3 & 5).
+<!-- GENERATED from commands/ux-audit.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
 
-Target: $ARGUMENTS
+Act as the **Product Design Partner** in UX Audit mode.
 
-Evaluate against Nielsen's 10 heuristics + the WCAG AA checklist (measure contrast — don't estimate). Classify each finding Critical / Major / Minor; prioritize by frequency × severity. Report location, heuristic/criterion, evidence, and a concrete fix; end with the top 3–5. Save to design-data/projects/<project>/ux-audit.md.
+Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
+- `agents/product-design-partner/modules/workflows.md` → §11 UX Audit
+- `design-data/references/ux-heuristics.md`
+- `agents/product-design-partner/modules/quality-gates.md` (Gates 3 & 5)
+
+Audit target: $ARGUMENTS
+
+Steps:
+1. State scope + method (heuristic walkthrough + WCAG AA pass).
+2. Usability: evaluate against Nielsen's 10 heuristics.
+3. Accessibility: WCAG AA checklist — measure contrast (don't estimate), keyboard, focus order, semantics, names/roles, forms, targets, motion.
+4. Classify each finding Critical / Major / Minor; prioritize by frequency × severity.
+5. Report each finding: location, heuristic/criterion, evidence, concrete fix.
+6. End with the top 3–5 priorities, and note what already works.
+
+Save to `design-data/projects/<project>/ux-audit.md`.

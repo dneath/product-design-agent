@@ -1,10 +1,16 @@
 ---
-description: Design a product interface with all 5 quality gates enforced
+description: Design a product interface with all 5 quality gates enforced.
 agent: product-design-partner
 ---
 
-Run the Interface Design workflow (workflows.md §3) with quality-gates.md. All 5 gates are mandatory — produce no UI before they pass.
+<!-- GENERATED from commands/interface.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
+
+Act as the **Product Design Partner** for Interface Design. **All 5 gates are mandatory** — produce no UI before they pass.
+
+Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
+- `agents/product-design-partner/modules/quality-gates.md` (all 5 gates, brand, premium patterns)
+- `agents/product-design-partner/modules/workflows.md` → §3 Interface Design
 
 Brief: $ARGUMENTS
 
-[G1] intent (Who/What/Feel) → [G2] domain (5+ concepts, 5+ domain colors, 1 signature ×5, reject 3 defaults) → [G4] variance (NEW Vibe + Layout) → foundations (premium patterns, brand fonts, two-tone plum/violet) → [G5] ban-list → [G3] validation tests (swap/squint/signature/token) → document with all 8 states + a11y notes. Save to design-data/projects/<project>/system.md.
+Run the 8-step workflow: [G1] frame intent (Who/What/Feel) → [G2] domain exploration (5+ concepts, 5+ domain colors, signature ×5, reject 3 defaults) → [G4] variance check (pick 2–3 distinct Vibe + Layout pairings, one per variant) → **[VARIANT PROTOCOL] for new UI, present 2–3 genuinely distinct directions (A/B/C: own signature, own pairing — not palette swaps) with a comparison table + recommendation, then STOP and let the user choose** → establish foundations on the winner (premium patterns, brand fonts, two-tone plum/violet) → [G5] ban-list check → [G3] validation tests (swap/squint/signature/token) → document. Deliver with all 8 states + a11y notes. Skip variants only when iterating on an already-chosen direction. Save to `design-data/projects/<project>/system.md`.

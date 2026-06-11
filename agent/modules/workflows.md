@@ -1,6 +1,6 @@
 # Design Workflows
 
-Complete workflow specifications for all 14 design capabilities.
+Complete workflow specifications for all 17 design capabilities.
 
 ---
 
@@ -10,21 +10,22 @@ Complete workflow specifications for all 14 design capabilities.
 
 **Steps**:
 1. **Frame Research Questions**: 3-5 specific questions this research will answer
-2. **Select Method**: Match method to question type (interviews for "why", surveys for "how many")
-3. **Plan Execution**: Participant criteria, sample size, timeline, materials
-4. **Conduct Research**: Follow interview guide, observe behavior, capture quotes
-5. **Analyze & Synthesize**: Thematic analysis (6 steps), affinity mapping, triangulation
-6. **Deliver Insights**: Themes with evidence, confidence levels, priority recommendations
+2. **Map Assumptions First**: List what the team believes; rank by impact × uncertainty — the riskiest assumption picks the method (see assumption map template)
+3. **Select Method**: Match method to question type (interviews for "why", surveys for "how many")
+4. **Plan Execution**: Participant criteria + screener, sample size, timeline, materials — build the discussion guide from the templates (funnel structure: context → behavior → pain → magic wand)
+5. **Conduct Research**: Follow discussion guide, observe behavior, capture verbatim quotes; ask about the last time, not the average time
+6. **Analyze & Synthesize**: Thematic analysis (6 steps), affinity mapping, triangulation
+7. **Deliver Insights**: Themes with evidence, confidence levels, JTBD statements, priority recommendations
 
 **Key Standards**:
-- Behavioral observation > stated preferences
+- Behavioral observation > stated preferences; "tell me about the last time…" > "would you…"
 - Quote attribution: participant type, not name
 - Confidence levels: High (5+ sources), Medium (3-4), Low (1-2)
 - Frequency × severity = priority
 
-**Tools**: user-research skill, synthesize-research skill
+**Reference**: `design-data/references/research-templates.md` (discussion guide, screener, assumption map, JTBD profile, synthesis wall)
 
-**Output**: Save research plan to `.config/opencode/design-data/projects/[project-name]/research-plan.md`
+**Output**: Save research plan to `design-data/projects/[project-name]/research-plan.md`
 
 ---
 
@@ -48,7 +49,7 @@ Complete workflow specifications for all 14 design capabilities.
 
 **Tools**: design-system skill
 
-**Output**: Save to `.config/opencode/design-data/projects/[project-name]/system.md`
+**Output**: Save to `design-data/projects/[project-name]/system.md`
 
 ---
 
@@ -75,38 +76,49 @@ Complete workflow specifications for all 14 design capabilities.
 
 3. **[GATE 4] Variance Check** (MANDATORY - consult plugin):
    - Query plugin: "Check variance history for [interface type]"
-   - If pattern match found, pick NEW vibe + layout archetype
-   - Document choice: "Vibe: [X], Layout: [Y]"
+   - Pick **2–3 distinct Vibe + Layout pairings** — one per variant (see step 4); none may repeat the last 2 outputs
+   - Document choices: "Variant A — Vibe: [X], Layout: [Y]; Variant B — …"
 
-4. **Establish Foundations**:
+4. **[VARIANT PROTOCOL] Generate 2–3 Variants** (MANDATORY for new UI):
+   - Produce **2–3 genuinely distinct directions** (default 3; 2 if the brief is tightly constrained), labeled **A / B / C**
+   - Distinct means different Vibe + Layout pairing, different signature element, and (where it matters) different IA emphasis — NOT a palette swap of one design
+   - Each variant gets a name, a one-line concept ("Variant B 'Control Tower' — Dark Technical × Terminal Grid; signature: live SLA tick-rail"), and a structure sketch
+   - Present a **comparison table**: intent fit · hierarchy approach · signature · strongest screen · main trade-off — then give YOUR recommendation with rationale
+   - **STOP and let the user choose.** Refine only the chosen variant from here on
+   - Skip ONLY when the user explicitly asks for one direction or is iterating on an already-chosen variant
+   - Full protocol: `design-data/references/prototype-variants-guide.md`
+
+5. **Establish Foundations** (chosen variant):
    - Apply Premium Architecture Patterns (Double-Bezel, Button-in-Button, Whisper-Quiet Elevation)
    - Use Custom Motion (cubic-bezier only, transform/opacity only)
-   - Apply [Vibe Archetype] + [Layout Archetype] from variance engine
+   - Apply the chosen variant's [Vibe Archetype] + [Layout Archetype]
    - Use brand fonts: Inter (headings/body), Fragment Mono (code/labels/data)
 
-5. **[GATE 5] Ban List Check** (MANDATORY - BLOCK if violated):
+6. **[GATE 5] Ban List Check** (MANDATORY - BLOCK if violated):
    - Scan output for banned patterns
    - If found, REJECT and redesign (or allow user override)
 
-6. **[GATE 3] Validation Tests** (MANDATORY - ALL must pass):
+7. **[GATE 3] Validation Tests** (MANDATORY - ALL must pass):
    - Swap test: [Pass/Fail + evidence]
    - Squint test: [Pass/Fail + evidence]
    - Signature test: [Pass/Fail + evidence]
    - Token test: [Pass/Fail + evidence]
    - **If ANY test fails, REJECT and iterate**
 
-7. **Document System**:
-   - Save to `.config/opencode/design-data/projects/[project-name]/system.md`
-   - Include: Intent, Domain exploration, Vibe+Layout choice, Validation results
+8. **Document System**:
+   - Save to `design-data/projects/[project-name]/system.md`
+   - Include: Intent, Domain exploration, all variants considered + the chosen one, Validation results
    - Add to variance history via plugin
 
 **Key Standards**:
 - Intent-first: no code before answering who/what/feel
+- New UI = variants first: never present a single take as the only option
 - Avoid generic defaults: "clean and modern" is meaningless
 - Subtle layering: whisper-quiet elevation changes
 - Every choice must be a choice: explain why
 
 **Required Modules**: Load `quality-gates.md` for complete gate specifications
+**Reference**: `design-data/references/prototype-variants-guide.md`
 
 **Tools**: interface-design skill, ui-ux-pro-max skill
 
@@ -119,17 +131,19 @@ Complete workflow specifications for all 14 design capabilities.
 **Steps**:
 1. **Identify Mode**: Problem exploration, solution ideation, assumption testing, strategy exploration
 2. **Frame Problem**: HMW questions (5-10 reframings)
-3. **Diverge**: Generate 5-7+ distinct approaches (constraint removal, analogies, inversion)
-4. **Provoke**: Challenge assumptions, test extremes, invert problem
-5. **Converge**: Evaluate options, prioritize by impact × feasibility
+3. **Diverge — quota enforced**: Generate **≥15 raw ideas using ≥3 different techniques** (rotate: constraint removal → analogies → inversion → SCAMPER → extreme users). Quantity before quality; no evaluating mid-divergence
+4. **Provoke**: Challenge assumptions, test extremes, invert problem, force a "bad idea" round (worst ideas often hide a reversible insight)
+5. **Converge**: Cluster into themes, then score top candidates on **impact × feasibility × novelty** (1-5 each); show the scoring table, not just the winner
 6. **Capture**: Key ideas, assumptions to test, questions to research, next steps
 
 **Key Standards**:
 - Frame problem before exploring solutions
+- Divergence quota: <15 ideas or <3 techniques = not a brainstorm, it's a first guess
 - Brainstorm ≠ decision-making (generates options, not final choice)
 - Avoid feature parity trap: copying competitors without understanding needs
 - Test assumptions explicitly: user, problem, solution, business, feasibility
 
+**Reference**: `design-data/references/brainstorming-playbook.md` (technique cards, provocations, convergence rubric)
 **Tools**: product-brainstorming skill
 
 ---
@@ -178,7 +192,7 @@ Complete workflow specifications for all 14 design capabilities.
 - Describe the why: rationale helps developers make judgment calls
 - Edge case coverage: empty, long text, overflow, errors
 
-**Output**: Save to `.config/opencode/design-data/projects/[project-name]/handoff.md`
+**Output**: Save to `design-data/projects/[project-name]/handoff.md`
 
 **Tools**: design-handoff skill
 
@@ -242,7 +256,7 @@ https://www.figma.com/file/[fileKey]/[fileName]
    - Priority recommendations (top 3-5)
 
 5. **Generate Handoff Spec** (if requested):
-   - Save to `.config/opencode/design-data/projects/[project-name]/handoff.md`
+   - Save to `design-data/projects/[project-name]/handoff.md`
    - Include layout, tokens, component states, responsive behavior, edge cases, animations, a11y notes
 
 **Reference**: Load `quality-gates.md` for validation tests and ban list
@@ -253,14 +267,14 @@ https://www.figma.com/file/[fileKey]/[fileName]
 1. **Generate Specs/Wireframes**:
    - Follow Interface Design Workflow (Gates 1-5)
    - Create low-fidelity specs for user to implement in Figma
-   - Save to `.config/opencode/design-data/projects/[project-name]/wireframes.md`
+   - Save to `design-data/projects/[project-name]/wireframes.md`
 
 2. **Provide Figma-Ready Tokens**:
    - Export tokens in Figma-compatible format
    - Color styles: OKLCH → hex conversion
    - Text styles: hierarchy mapping (display/heading/body/caption)
    - Spacing styles: tight/medium/wide/vast scale
-   - Save to `.config/opencode/design-data/tokens/[project-name].json`
+   - Save to `design-data/tokens/[project-name].json`
 
 **Reference**: Load `quality-gates.md` for complete interface design workflow
 
@@ -380,6 +394,8 @@ https://www.figma.com/file/[fileKey]/[fileName]
 - Use variables/styles, not hardcoded values; preserve brand fonts + two-tone color
 - Re-run validation tests on the exported result
 
+**No Figma MCP connected?** Don't dead-end. Deliver the fallback bundle instead: (a) tokens as Figma-importable JSON (`design-data/tokens/[project-name].json`), (b) a frame-by-frame build spec (`figma-build-spec.md`: frames, auto-layout settings, styles per node), and (c) the platform-specific connection step — Claude Code: `claude mcp add --transport http figma https://mcp.figma.com/mcp`; Cursor: Settings → MCP → add `https://mcp.figma.com/mcp`; Codex: add an `mcp_servers.figma` entry in `~/.codex/config.toml`; OpenCode: add the server in `opencode.json`.
+
 **Tools**: Figma MCP (`generate_figma_design`, `use_figma`, `create_new_file`); skills `figma:figma-generate-design`, `figma:figma-generate-library`
 **Output**: Figma file URL + token mapping → `design-data/tokens/[project-name].json`
 
@@ -408,6 +424,83 @@ https://www.figma.com/file/[fileKey]/[fileName]
 
 ---
 
+## 15. Prototype Variants Workflow
+
+**When**: "prototype", "make it real", "show me options", "build 2-3 versions", or any request for a NEW interface where the user wants something they can open and click
+
+**STRICT ENFORCEMENT ACTIVE**: All 5 gates apply. The Variant Protocol is the point of this workflow — never deliver a single prototype for new UI.
+
+**Steps**:
+1. **Run Gates 1-2** (intent, domain) once — they're shared across variants
+2. **[Gate 4] Pick 2-3 distinct Vibe + Layout pairings** — one per variant, none repeating recent history
+3. **Define each variant**: name, one-line concept, signature element, IA emphasis — verify distinctness (different pairing + different signature, not a reskin)
+4. **Build one runnable file per variant**: single-file HTML/CSS (vanilla JS only if needed; zero build steps), named `prototype-a.html`, `prototype-b.html`, `prototype-c.html`
+   - Real content from the domain, never lorem ipsum
+   - Representative states visible or toggleable: default, hover, focus, loading, error, empty
+   - Brand fonts via Google Fonts link + system fallback; tokens as CSS variables with domain names
+5. **Run Gates 5 + 3 per variant** (ban list, validation tests) — each variant must pass independently
+6. **Present the comparison**: table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation + how to open the files. **STOP — the user picks**
+7. **Refine the winner**: fold in feedback, optionally borrow the best detail from a losing variant, then document
+
+**Key Standards**:
+- Variants differ in structure and character, not hue — see distinctness axes in the guide
+- A prototype that needs a build step is a prototype the user won't open
+- Losing variants are kept (they're cheap insurance and portfolio evidence)
+
+**Reference**: `design-data/references/prototype-variants-guide.md`
+**Required Modules**: `quality-gates.md` (all 5 gates)
+**Output**: `design-data/projects/[project-name]/prototypes/prototype-{a,b,c}.html` + `variants.md` (comparison + decision)
+
+---
+
+## 16. Diagram Workflow
+
+**When**: "diagram", "flowchart", "visualize the flow/architecture", "sequence diagram", "state machine", "ERD", "sitemap diagram" — or any §10 flow that should be rendered visually
+
+**Steps**:
+1. **Pick the type from the question, not habit**: flowchart (decision logic), sequence (who-talks-to-whom over time), state (lifecycle of one thing), journey (experience + emotion), ER (data shape), architecture/C4-style (system structure) — chooser table in the guide
+2. **Draft the structure in text first**: nodes/actors/states as a list; agree on scope before drawing (≤ ~20 nodes per diagram; split if bigger)
+3. **Write Mermaid source** following the syntax constraints in the guide (quote labels, no raw parentheses/HTML in node text, direction chosen for the reading flow)
+4. **Self-check**: every decision has all branches; no dead ends without recovery; labels in domain language (token test applies to node labels)
+5. **Render where the user lives**: Mermaid renders natively in GitHub/GitLab markdown previews; offer **FigJam export** via the Figma MCP `generate_diagram` (load `figma:figma-generate-diagram` skill FIRST) when visual collaboration is wanted
+6. **Save the source** so it stays editable and diffable
+
+**Key Standards**:
+- One diagram = one question answered; don't merge architecture + flow + data into one graph
+- Mermaid source is the artifact; rendered images are disposable
+- Wireframe-level layout sketches use the ASCII conventions in the guide, not Mermaid
+
+**Reference**: `design-data/references/diagram-guide.md`
+**Tools**: Figma MCP `generate_diagram` (FigJam); skill `figma:figma-generate-diagram` first
+**Output**: `design-data/projects/[project-name]/diagrams/[name].mmd` (+ FigJam URL if exported)
+
+---
+
+## 17. UX Annotations & Write-ups Workflow
+
+**When**: "annotate this design", "add annotations", "redlines", "explain the UX decisions", "write up the rationale", "spec the interactions"
+
+**Steps**:
+1. **Pick the artifact**: annotation layer (numbered callouts on a design), redline spec (measurements + tokens), or UX rationale write-up (decisions + evidence) — often the deliverable is annotations + write-up together
+2. **Inventory what needs explaining**: walk the design and tag every element whose behavior, state logic, motion, content rule, or accessibility treatment is not self-evident
+3. **Annotate with the 6-type taxonomy** (each callout numbered `A1, A2…` and typed):
+   - **INT** interaction (click/drag/keyboard behavior) · **STA** state (all 8 states + transitions) · **MOT** motion (trigger, duration, easing) · **CON** content (voice, truncation, localization, empty copy) · **A11Y** accessibility (roles, labels, focus order, contrast) · **LOG** logic (visibility rules, permissions, data dependencies)
+4. **Write each annotation as behavior, not appearance**: "A3 [STA]: table shows skeleton rows ≤1s, then empty-state with primary CTA if 0 results" — not "table looks empty"
+5. **For redlines**: reference tokens, never raw values (`spacing-md`, not `16px`); cover spacing, type roles, hit areas, breakpoints
+6. **For the write-up**: per decision — what was decided → evidence/reason → trade-off accepted → how we'll know it works (decision-record format in the guide)
+7. **Cross-link**: annotations reference the write-up's decision IDs; handoff spec (§6) references both
+
+**Key Standards**:
+- Annotate the non-obvious; numbering must survive design iterations (never renumber, append)
+- Every interactive element has INT + STA + A11Y coverage before handoff
+- Write-ups argue from evidence (research, heuristics, constraints), not taste
+
+**Reference**: `design-data/references/annotation-guide.md`
+**Also reference**: Design Handoff Workflow (§6) — annotations feed the handoff spec
+**Output**: `design-data/projects/[project-name]/annotations.md` + `ux-rationale.md`
+
+---
+
 ## Cross-References
 
 **All workflows reference:**
@@ -416,7 +509,9 @@ https://www.figma.com/file/[fileKey]/[fileName]
 - `frameworks-and-artifacts.md` - For decision frameworks and output templates
 
 **Workflow-specific modules:**
-- Interface Design → Requires `quality-gates.md` (all 5 gates mandatory)
-- Research → Uses `frameworks-and-artifacts.md` (research methods, analysis frameworks)
-- Strategy → Uses `frameworks-and-artifacts.md` (brainstorming techniques)
-- Handoff → Uses `frameworks-and-artifacts.md` (handoff template)
+- Interface Design / Prototype Variants → Require `quality-gates.md` (all 5 gates mandatory) + `prototype-variants-guide.md`
+- Research → Uses `frameworks-and-artifacts.md` (research methods, analysis frameworks) + `research-templates.md`
+- Strategy → Uses `frameworks-and-artifacts.md` (brainstorming techniques) + `brainstorming-playbook.md`
+- Handoff → Uses `frameworks-and-artifacts.md` (handoff template) + `annotation-guide.md`
+- Diagrams → Uses `diagram-guide.md`
+- Annotations & Write-ups → Uses `annotation-guide.md`

@@ -521,6 +521,6 @@ grep -r "pass.*false" design-data/validation-history/
 
 ## Next Steps
 
-- [Workflow Reference](../agent/modules/workflows.md) - All 14 workflows in detail
+- [Workflow Reference](../agent/modules/workflows.md) - All 17 workflows in detail
 - [Contributing Guide](contributing.md) - Extend the system
 - [Examples](../examples/) - Learn from real usage

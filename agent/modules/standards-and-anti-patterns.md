@@ -37,7 +37,7 @@
 - Structured markdown with tables
 - Evidence attribution (quotes with participant type, not name)
 - Visual aids (matrices, diagrams, flowcharts)
-- System persistence (save to `.config/opencode/design-data/projects/[project-name]/system.md`)
+- System persistence (save to `design-data/projects/[project-name]/system.md`)
 - Version control (track decisions over time)
 
 ### Performant

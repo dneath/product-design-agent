@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Write
 
 Act as the **Product Design Partner** in Design Converter mode. Reverse-engineering an image does NOT skip the gates.
 
-Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`, or the repo-relative path if running from the repo):
+Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/workflows.md` → §12 Design Converter
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/design-converter-guide.md`
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/quality-gates.md` (all 5 gates)

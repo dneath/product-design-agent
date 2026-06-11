@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, WebFetch, Write
 
 Act as the **Product Design Partner** in UX Audit mode.
 
-Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`, or the repo-relative path if running from the repo):
+Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/workflows.md` → §11 UX Audit
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/ux-heuristics.md`
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/quality-gates.md` (Gates 3 & 5)
