@@ -11,7 +11,7 @@ A systematic, evidence-based product design agent for AI coding assistants — *
 - **Craft-Focused**: Intent-first design with self-critique mandate to avoid generic AI defaults
 - **WCAG 2.1 AA**: Accessibility built in as core requirement, not afterthought
 - **Variance Tracking**: Prevents repetitive design patterns across outputs
-- **DesignPrompts.dev Integration**: 350KB reference library of styles, colors, and typography
+- **Reference Libary**: 350KB reference library of styles, colors, and typography
 - **16 Slash Commands on 4 Platforms**: `/brainstorm`, `/prototype`, `/diagram`, `/annotate`, `/mentor`, `/ux-flows`, `/ux-audit`, `/design-converter`, `/figma-export`, `/portfolio`, `/research`, `/design-system`, `/interface`, `/critique`, `/handoff`, `/strategy` — Claude Code, Cursor, Codex, and OpenCode (generated from one canonical set)
 - **Portable Goal-Mode Prompt**: a self-contained ≤4000-char prompt for any single instruction field
 - **Claude Code Plugin**: `.claude-plugin/plugin.json` packaging with commands, a subagent, and a prompt hook
@@ -202,7 +202,7 @@ Available on all four platforms (Claude Code plugin / Cursor / Codex / OpenCode)
 
 ## Goal-Mode Prompt
 
-`prompts/goal-mode.md` is a portable, self-contained **≤4000-character** system prompt that distills the whole agent into a single field — paste it into a Claude Project, an agent "goal" field, or any LLM's system prompt. See `prompts/README.md` for usage.
+`prompts/goal-mode.md` is a system prompt that distills the whole agent into a single field. 
 
 ## Usage Examples
 
@@ -250,7 +250,6 @@ node plugins/design-validator.mjs design-output.md
 - [Installation Guide](docs/installation.md) - Detailed installation for all environments
 - [Architecture Overview](docs/architecture.md) - System design and module dependencies
 - [Workflow Reference](agent/modules/workflows.md) - All 17 workflows
-- [Contributing](docs/contributing.md) - How to extend and improve the agent
 
 ## Brand Identity
 
@@ -270,7 +269,7 @@ See `design-data/references/brand-identity.md` for complete guidelines.
 
 **Standalone Validation** (Other LLMs): Use design-validator.mjs to validate design artifacts manually. Results are saved to validation-history/ for review.
 
-**DesignPrompts.dev Integration**: The agent includes 350KB of curated reference data from DesignPrompts.dev, covering:
+**Reference Data**: The agent includes 350KB of curated reference data covering:
 - 83 visual styles
 - 161 color palettes
 - 72 font pairings
@@ -287,56 +286,3 @@ See `design-data/references/brand-identity.md` for complete guidelines.
 ## License
 
 Licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](docs/contributing.md) for guidelines.
-
-Key areas for contribution:
-- Additional workflow templates
-- More banned pattern detection
-- Integration with other design tools
-- Translations for international teams
-
-## Changelog
-
-### v1.2.0 (2026-06-10)
-- **Variant Protocol**: new UI is always delivered as 2–3 genuinely distinct directions (own vibe+layout + signature each) with comparison table + recommendation; the user picks
-- 3 new workflows: Prototype Variants (§15, runnable single-file prototypes), Diagrams (§16, Mermaid + FigJam), UX Annotations & Write-ups (§17, typed callouts + redlines + decision records)
-- Deeper brainstorming (divergence quota, technique cards, convergence rubric) and research (assumption map, screener, discussion guide, JTBD profiles)
-- 4 new commands: `/prototype`, `/diagram`, `/annotate`, `/brainstorm` (16 total)
-- **Cursor + Codex support**: `cursor/` (commands + rule) and `codex/` (prompts + AGENTS.md), generated from the canonical `commands/` by `plugins/sync-commands.mjs`
-- `install.sh` targets for claude (Claude Code), cursor, codex, opencode, custom
-- Figma export fallback bundle + per-platform MCP connection steps; portable `design-data/` paths
-
-### v1.1.0 (2026-05-31)
-- 6 new capabilities: AI mentor, UX flows, UX audit, design converter, Figma export, portfolio builder
-- 12 slash commands for Claude Code (`commands/`) and OpenCode (`opencode/command/`)
-- Claude Code plugin packaging (`.claude-plugin/plugin.json`) + CC subagent
-- Portable goal-mode prompt (`prompts/goal-mode.md`, ≤4000 chars)
-- 5 new reference files (mentorship, UX flows, UX heuristics, design converter, portfolio)
-- Two-tone brand: deep plum #501E60 (brand) + violet #7C3AED (accent); corrected OKLCH values
-
-### v1.0.0 (2026-05-31)
-- Initial release
-- 8 complete workflows
-- 5 quality gates with automatic enforcement
-- OpenCode plugin with variance tracking
-- DesignPrompts.dev reference data (350KB)
-- Standalone validator for any LLM
-
-## Support
-
-- **Issues**: Report bugs or request features via GitHub Issues
-- **Discussions**: Share usage patterns and feedback via GitHub Discussions
-- **Documentation**: Full docs at [docs/](docs/)
-
-## Credits
-
-Built by Dan for evidence-based, craft-focused product design with AI assistance.
-
-Inspired by:
-- DesignPrompts.dev (style reference data)
-- WCAG 2.1 AA standards
-- Double Diamond design process
-- Jobs-to-be-Done framework
