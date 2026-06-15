@@ -194,7 +194,14 @@ print_usage_instructions() {
             ;;
     esac
     echo ""
-    echo "Docs: docs/installation.md · macOS: docs/installation-macos.md · Examples: examples/"
+    echo ""
+    case $TARGET in
+        claude)   echo "macOS guide: docs/installation-claude-code-macos.md" ;;
+        cursor)   echo "macOS guide: docs/installation-cursor-macos.md" ;;
+        codex)    echo "macOS guide: docs/installation-codex-macos.md" ;;
+        opencode) echo "macOS guide: docs/installation-opencode-macos.md" ;;
+    esac
+    echo "Docs hub: docs/installation.md · macOS hub: docs/installation-macos.md · Examples: examples/"
     echo ""
 }
 

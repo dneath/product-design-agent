@@ -1,28 +1,43 @@
 # macOS Installation Guide
 
-Complete install instructions for **macOS Sonoma and later** (Intel and Apple Silicon).
+Install **Product Design Partner** on **macOS Sonoma and later** (Intel and Apple Silicon) for **Claude Code, Cursor, Codex, or OpenCode**.
 
-**Not comfortable with Terminal?** Send this page to IT or a technical teammate. You only need the **One-command install** section run once; daily design work happens in Cursor chat. Start here for plain language: **[Quick start for designers](designer-quick-start.md)** · **[Handoff guide](handoff-guide.md)**
+Pick the guide that matches **your AI tool** — each platform has its own detailed walkthrough:
 
-## Prerequisites
+| Platform | Detailed guide | Best for |
+|----------|----------------|----------|
+| **Claude Code** | **[Claude Code on macOS](installation-claude-code-macos.md)** | Terminal workflow, plugin + subagents + hook |
+| **Cursor** | **[Cursor on macOS](installation-cursor-macos.md)** | IDE chat, project rules, design teams |
+| **Codex** | **[Codex on macOS](installation-codex-macos.md)** | OpenAI Codex CLI, global AGENTS.md |
+| **OpenCode** | **[OpenCode on macOS](installation-opencode-macos.md)** | Automatic gate enforcement via plugin |
 
-### 1. Xcode Command Line Tools (git, make)
+**Designers:** [Quick start for designers](designer-quick-start.md) · [Handoff guide](handoff-guide.md)  
+**All OS / manual paths:** [Installation (all platforms)](installation.md)
+
+---
+
+## Shared prerequisites (all platforms)
+
+Do these once before any platform-specific install.
+
+### 1. Xcode Command Line Tools
 
 ```bash
 xcode-select --install
 ```
 
-### 2. Node.js 18+ (for the standalone validator)
+Provides `git` and build tools.
 
-**Homebrew (recommended):**
+### 2. Node.js 18+ (validator + OpenCode plugins)
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install node
-node --version   # should be v18+
+node --version   # v18+
 ```
 
-**Alternative:** download the LTS installer from [nodejs.org](https://nodejs.org/).
+Or download LTS from [nodejs.org](https://nodejs.org/).
+
+**Note:** Claude Code’s native installer does not require Node for Claude itself — Node is still needed for `design-validator.mjs` and OpenCode.
 
 ### 3. Clone the repository
 
@@ -32,132 +47,89 @@ cd product-design-agent
 chmod +x install.sh scripts/test.sh
 ```
 
-## One-command install
+---
 
-The installer auto-detects your environment (`~/.cursor`, `~/.claude`, `~/.codex`, or `~/.config/opencode`):
+## One-command install (by platform)
+
+Run **one** of these from the cloned repo:
+
+```bash
+./install.sh --target claude --yes     # Claude Code
+./install.sh --target cursor --yes     # Cursor
+./install.sh --target codex --yes      # Codex
+./install.sh --target opencode --yes   # OpenCode
+```
+
+Auto-detect (if you already have `~/.claude`, `~/.cursor`, etc.):
 
 ```bash
 ./install.sh --yes
 ```
 
-Or pick a target explicitly:
+Then complete **platform-specific steps** in the linked guide above (e.g. Cursor project rule, Claude Code plugin via `/plugin`).
 
-```bash
-./install.sh --target cursor --yes    # Cursor IDE
-./install.sh --target claude --yes    # Claude Code CLI
-./install.sh --target codex --yes     # OpenAI Codex CLI
-./install.sh --target opencode --yes  # OpenCode
-```
+---
 
-`--yes` skips the confirmation prompt (useful for scripts and CI).
+## Where files land on Mac
 
-## macOS install paths
+| Platform | Commands / prompts | Identity | Bundle / data |
+|----------|-------------------|----------|---------------|
+| **Claude Code** | `~/.claude/commands/` | `~/.claude/agents/` + plugin hook | `~/.product-design-partner/` |
+| **Cursor** | `~/.cursor/commands/` | `.cursor/rules/*.mdc` per project | `~/.product-design-partner/` |
+| **Codex** | `~/.codex/prompts/` | `~/.codex/AGENTS.md` | `~/.product-design-partner/` |
+| **OpenCode** | `~/.config/opencode/command/` | `@product-design-partner` agent | `~/.config/opencode/design-data/` |
 
-| Platform | What gets installed | Path |
-|----------|---------------------|------|
-| **Cursor** | Slash commands | `~/.cursor/commands/` |
-| | Global rule (optional) | `~/.cursor/rules/product-design-partner.mdc` |
-| | Full bundle | `~/.product-design-partner/` |
-| **Claude Code** | Commands + subagent | `~/.claude/commands/`, `~/.claude/agents/` |
-| | Plugin (preferred) | Add repo via `/plugin` in Claude Code |
-| | Bundle | `~/.product-design-partner/` |
-| **Codex** | Custom prompts | `~/.codex/prompts/` |
-| | Global instructions | `~/.codex/AGENTS.md` |
-| | Bundle | `~/.product-design-partner/` |
-| **OpenCode** | Agent + plugins + commands | `~/.config/opencode/` |
-
-All platforms share the bundle layout:
+Shared bundle layout (Claude / Cursor / Codex):
 
 ```
 ~/.product-design-partner/
 ├── agent/product-design-partner.md
 ├── agent/modules/
+├── agents/                    # subagent stubs (Claude personal install)
 ├── design-data/references/
 └── plugins/design-validator.mjs
 ```
 
-## Per-app setup on Mac
+---
 
-### Cursor
-
-1. Run `./install.sh --target cursor --yes`
-2. **Attach the rule to your project** (recommended):
-
-   ```bash
-   mkdir -p /path/to/your/project/.cursor/rules
-   cp cursor/rules/product-design-partner.mdc /path/to/your/project/.cursor/rules/
-   ```
-
-3. In Cursor, type `/interface` (or any of the 16 commands) and describe your task.
-4. **Figma MCP** (optional): Cursor → Settings → MCP → add server URL `https://mcp.figma.com/mcp`
-
-### Claude Code
-
-**Plugin (recommended):**
-
-1. In Claude Code, run `/plugin` and add this repository.
-2. Enables 16 commands, the subagent, and the UserPromptSubmit hook.
-
-**Personal directories:**
-
-```bash
-./install.sh --target claude --yes
-```
-
-Then use `/prototype`, `/research`, etc.
-
-### Codex
-
-```bash
-./install.sh --target codex --yes
-```
-
-If you already have `~/.codex/AGENTS.md`:
-
-```bash
-cat codex/AGENTS.md >> ~/.codex/AGENTS.md
-```
-
-Configure Figma MCP in `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.figma]
-url = "https://mcp.figma.com/mcp"
-```
-
-### OpenCode
-
-```bash
-./install.sh --target opencode --yes
-opencode
-@product-design-partner Help me design a dashboard
-```
-
-OpenCode runs automatic gate validation via the plugin.
-
-## Verify installation
+## Verify any install
 
 ```bash
 ./scripts/test.sh
+node plugins/design-validator.mjs examples/dashboard-design.md
 ```
 
-Manual validator check:
+**In your AI app:** type `/interface` with a specific Who/What/Feel brief — expect 2–3 layout directions before polish.
 
-```bash
-node ~/.product-design-partner/plugins/design-validator.mjs examples/dashboard-design.md
-```
+---
 
-## Environment override
+## Gate enforcement by platform
 
-Point all plugins and validators at a custom data directory:
+| Platform | Enforcement |
+|----------|-------------|
+| **OpenCode** | Plugin blocks invalid UI automatically |
+| **Claude Code** | Hook nudge + subagents + manual validator |
+| **Cursor** | Project rule + manual validator |
+| **Codex** | AGENTS.md + manual validator |
 
-```bash
-export DESIGN_DATA_DIR="$HOME/my-design-data"
-```
+Details: [quality-gates-for-designers.md](quality-gates-for-designers.md)
 
-Add to `~/.zshrc` or `~/.bash_profile` to persist.
+---
 
-## macOS troubleshooting
+## Figma MCP (optional, all platforms)
+
+| Platform | Setup |
+|----------|--------|
+| **Claude Code** | `claude mcp add --transport http figma https://mcp.figma.com/mcp` |
+| **Cursor** | Settings → MCP → `https://mcp.figma.com/mcp` |
+| **Codex** | `[mcp_servers.figma]` in `~/.codex/config.toml` |
+| **OpenCode** | Figma server in OpenCode MCP config |
+
+Without MCP, `/figma-export` still returns token JSON + manual build specs.
+
+---
+
+## macOS troubleshooting (all platforms)
 
 ### `permission denied` on install.sh
 
@@ -165,47 +137,26 @@ Add to `~/.zshrc` or `~/.bash_profile` to persist.
 chmod +x install.sh scripts/test.sh
 ```
 
-### Node not found after Homebrew on Apple Silicon
-
-Ensure Homebrew is on your PATH (installer prints the lines to add to `~/.zprofile`):
+### Node not found after Homebrew (Apple Silicon)
 
 ```bash
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-### Cursor commands don't appear
-
-- Restart Cursor after install.
-- Check files exist: `ls ~/.cursor/commands/interface.md`
-- Project-level commands: copy into `<project>/.cursor/commands/`
+Add that line to `~/.zprofile` if needed.
 
 ### Claude Desktop vs Claude Code
 
-This agent targets **Claude Code** (`~/.claude/`). Claude Desktop custom instructions are separate; paste `prompts/goal-mode.md` or load `agent/product-design-partner.md` manually.
+This agent targets **Claude Code** (`claude` in Terminal). Claude Desktop uses separate custom instructions — paste `prompts/goal-mode.md` manually if needed.
 
-### Gate validation on Cursor/Codex
+### Still stuck?
 
-Plugins do not run automatically. The rule/AGENTS.md enforces gates by instruction. Validate artifacts with:
+[troubleshooting-for-designers.md](troubleshooting-for-designers.md)
 
-```bash
-node plugins/design-validator.mjs your-output.md
-```
-
-## Uninstall (macOS)
-
-```bash
-rm -rf ~/.product-design-partner
-rm -f ~/.cursor/commands/{interface,prototype,brainstorm,diagram,annotate,mentor,research,strategy,ux-flows,ux-audit,design-converter,figma-export,portfolio,critique,handoff,design-system}.md
-rm -f ~/.cursor/rules/product-design-partner.mdc
-rm -f ~/.claude/commands/*.md   # review before deleting — may include other commands
-rm -f ~/.codex/prompts/{interface,prototype,brainstorm,diagram,annotate,mentor,research,strategy,ux-flows,ux-audit,design-converter,figma-export,portfolio,critique,handoff,design-system}.md
-rm -rf ~/.config/opencode/agents/product-design-partner*
-```
+---
 
 ## Next steps
 
-- [Designer handoff guide](handoff-guide.md)
 - [Documentation index](README.md)
-- [Installation Guide](installation.md) — all platforms
-- [Architecture](architecture.md) — how modules and plugins connect
-- [Workflow Reference](workflows.md) — all 17 workflows
+- [Workflows by task](workflows-by-task.md)
+- [Architecture](architecture.md) (maintainers)

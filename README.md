@@ -3,7 +3,8 @@
 A systematic, evidence-based product design agent for AI coding assistants — **Claude Code, Cursor, Codex, and OpenCode** — with strict quality enforcement gates.
 
 **Designers:** → [Quick start](docs/designer-quick-start.md) · [Handoff guide](docs/handoff-guide.md) · [Which command?](docs/workflows-by-task.md)  
-**Install / maintainers:** → [Documentation index](docs/README.md) · [Install](docs/installation.md)
+**Install (macOS):** → [Claude Code](docs/installation-claude-code-macos.md) · [Cursor](docs/installation-cursor-macos.md) · [Codex](docs/installation-codex-macos.md) · [OpenCode](docs/installation-opencode-macos.md)  
+**All platforms:** → [Documentation index](docs/README.md) · [Install](docs/installation.md)
 
 ## Features
 
@@ -268,8 +269,12 @@ node plugins/design-validator.mjs design-output.md
 | **[Quality gates (plain English)](docs/quality-gates-for-designers.md)** | Why the agent asks Who/What/Feel |
 | **[Troubleshooting](docs/troubleshooting-for-designers.md)** | Common fixes |
 | **[Documentation index](docs/README.md)** | Full doc map |
-| [Installation](docs/installation.md) | All platforms |
-| [macOS installation](docs/installation-macos.md) | Mac setup |
+| [Claude Code on macOS](docs/installation-claude-code-macos.md) | Claude Code install |
+| [Cursor on macOS](docs/installation-cursor-macos.md) | Cursor install |
+| [Codex on macOS](docs/installation-codex-macos.md) | Codex install |
+| [OpenCode on macOS](docs/installation-opencode-macos.md) | OpenCode install |
+| [Installation](docs/installation.md) | All platforms + comparison |
+| [macOS hub](docs/installation-macos.md) | Shared Mac prerequisites |
 | [Workflow reference](docs/workflows.md) | Technical § index |
 | [Architecture](docs/architecture.md) | Maintainers |
 | [Contributing](docs/contributing.md) | Extending the agent |

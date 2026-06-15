@@ -1,85 +1,161 @@
 # Troubleshooting for designers
 
-Plain-language fixes for common setup and usage issues. For install commands, see [handoff-guide.md](handoff-guide.md) or ask IT to run them.
+Fixes by **platform**. Install details: see your platform guide below.
 
-## Setup
+| Platform | Install guide |
+|----------|---------------|
+| Claude Code (Mac) | [installation-claude-code-macos.md](installation-claude-code-macos.md) |
+| Cursor (Mac) | [installation-cursor-macos.md](installation-cursor-macos.md) |
+| Codex (Mac) | [installation-codex-macos.md](installation-codex-macos.md) |
+| OpenCode (Mac) | [installation-opencode-macos.md](installation-opencode-macos.md) |
 
-### I don't see `/interface` or other commands when I type `/`
+---
 
-**Cause:** Slash commands weren't installed into Cursor.
+## Setup — all platforms
 
-**Fix:**
-
-1. Open Terminal in the folder where you downloaded the agent.
-2. Run: `./install.sh --target cursor --yes`
-3. Quit and reopen Cursor.
-4. Type `/` in chat again.
-
-Commands live in `~/.cursor/commands/` on your Mac. IT can verify that folder exists and contains `.md` files.
-
-### The agent doesn't follow the design process
-
-**Cause:** The project rule file isn't attached to **your** project folder.
+### I don't see `/interface` when I type `/`
 
 **Fix:**
 
-1. In your project (not necessarily the agent repo), create `.cursor/rules/` if missing.
-2. Copy `cursor/rules/product-design-partner.mdc` from the agent repo into that folder.
-3. Start a **new** chat in that project.
+1. Clone repo and run install for **your** platform:
+
+   ```bash
+   ./install.sh --target claude --yes    # or cursor | codex | opencode
+   ```
+
+2. **Claude Code:** prefer `/plugin` → add repository — [guide](installation-claude-code-macos.md)
+
+3. Quit and reopen your AI app.
+
+4. IT can verify command files exist:
+
+   | Platform | Check |
+   |----------|-------|
+   | Claude Code | `ls ~/.claude/commands/interface.md` |
+   | Cursor | `ls ~/.cursor/commands/interface.md` |
+   | Codex | `ls ~/.codex/prompts/interface.md` |
+   | OpenCode | `ls ~/.config/opencode/command/interface.md` |
 
 ### Install script says "permission denied"
+
+```bash
+chmod +x install.sh scripts/test.sh
+./install.sh --target <claude|cursor|codex|opencode> --yes
+```
+
+---
+
+## Setup — Cursor only
+
+### Agent doesn't follow the design process
+
+**Cause:** Rule file not in **your project**.
+
+**Fix:**
+
+1. Create `your-project/.cursor/rules/`
+2. Copy `cursor/rules/product-design-partner.mdc` there
+3. New chat in that project
+
+---
+
+## Setup — Claude Code only
+
+### Hook doesn't suggest slash commands
+
+**Cause:** Script-only install (Method B) does not install the hook.
+
+**Fix:** Use plugin install: `/plugin` → add repository — [guide](installation-claude-code-macos.md)
+
+### Subagents missing
+
+```bash
+./install.sh --target claude --yes
+ls ~/.claude/agents/interface-design.md
+```
+
+---
+
+## Setup — Codex only
+
+### Gates ignored
+
+**Cause:** `~/.codex/AGENTS.md` missing Product Design Partner section.
 
 **Fix:**
 
 ```bash
-chmod +x install.sh scripts/test.sh
-./install.sh --target cursor --yes
+cat codex/AGENTS.md >> ~/.codex/AGENTS.md
 ```
 
-## Using the agent
+Start a new Codex session.
 
-### Output is generic ("clean, modern dashboard for users")
+---
 
-**Fix in your prompt:**
+## Setup — OpenCode only
 
-- Name a **specific role** and **moment** (on-call at 2am, standup on a laptop, etc.).
-- Say what they should **feel** (in control, not overwhelmed—not "good UX").
-- Ask for **three distinct directions** before picking one.
+### `@product-design-partner` not found
 
-See [quality-gates-for-designers.md](quality-gates-for-designers.md).
+```bash
+./install.sh --target opencode --yes
+ls ~/.config/opencode/agents/product-design-partner.md
+```
 
-### Agent gave one design instead of 2–3 options
+Restart OpenCode.
 
-Say explicitly:
+### Generic UI not blocked
 
-> Follow the Variant Protocol: show three distinct directions with a comparison table, then stop for my choice.
+Confirm plugin loaded: `ls ~/.config/opencode/plugins/product-design.js`
 
-Use `/interface` or `/prototype`—those commands require variants.
+---
 
-### I don't know where files were saved
+## Using the agent (all platforms)
 
-Ask in chat:
+### Output is generic
 
-> Save everything under design-data/projects/[project-name]/ and list the file paths.
+Add Who/What/Feel. See [quality-gates-for-designers.md](quality-gates-for-designers.md).
 
-Default layout: [design-data/projects/README.md](../design-data/projects/README.md)
+### One design instead of 2–3 options
 
-## Figma export
+> Follow the Variant Protocol: three distinct directions with a comparison table, then stop for my choice.
 
-### `/figma-export` doesn't connect to Figma
+Use `/interface` or `/prototype`.
 
-Figma export needs **Figma MCP** configured in Cursor (Settings → MCP). If your org hasn't enabled it:
+### Don't know where files saved
 
-- The agent should still give you a **token file** and **frame-by-frame build spec** you can paste into Figma manually.
-- Ask your design ops lead about MCP setup: [installation.md](installation.md#figma-mcp-optional)
+> Save everything under design-data/projects/[name]/ and list paths.
+
+[Project folder guide](../design-data/projects/README.md)
+
+---
+
+## Figma export (all platforms)
+
+| Platform | MCP setup |
+|----------|-----------|
+| Claude Code | `claude mcp add --transport http figma https://mcp.figma.com/mcp` |
+| Cursor | Settings → MCP → `https://mcp.figma.com/mcp` |
+| Codex | `~/.codex/config.toml` |
+| OpenCode | OpenCode MCP config |
+
+Without MCP, agent still gives token JSON + manual build specs.
+
+---
 
 ## After an update
 
-If behavior changed after pulling a new version of the agent:
+```bash
+cd product-design-agent && git pull
+./install.sh --target <your-platform> --yes
+```
 
-1. Re-run: `./install.sh --target cursor --yes`
-2. Re-copy `product-design-partner.mdc` into your project's `.cursor/rules/` if it changed.
-3. Check [CHANGELOG.md](../CHANGELOG.md) for breaking notes.
+- **Claude plugin:** `/plugin` → update
+- **Cursor:** re-copy rule if changed
+- **Codex:** merge `codex/AGENTS.md` if changed
+
+[CHANGELOG.md](../CHANGELOG.md)
+
+---
 
 ## Still stuck?
 
@@ -87,6 +163,4 @@ If behavior changed after pulling a new version of the agent:
 |-------|-----|
 | Full onboarding | [handoff-guide.md](handoff-guide.md) |
 | First prompts | [designer-quick-start.md](designer-quick-start.md) |
-| Which command | [workflows-by-task.md](workflows-by-task.md) |
-| Technical install | [installation-macos.md](installation-macos.md) |
-| Extending the agent | [contributing.md](contributing.md) (for maintainers) |
+| All platforms | [installation.md](installation.md) |

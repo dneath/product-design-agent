@@ -1,56 +1,59 @@
 # Quick start for designers
 
-You do **not** need to be an engineer to use this tool. You need an AI app (usually **Cursor**), a one-time setup, and the habit of describing **who** you're designing for—not "users who want a clean UI."
+You do **not** need to be an engineer to use this tool. You need an AI app, a one-time setup, and the habit of describing **who** you're designing for—not "users who want a clean UI."
 
 ## What this is (in one sentence)
 
-An AI design partner that runs inside your editor and walks you through research, flows, screens, prototypes, critiques, and dev handoff—while pushing back on generic AI-looking design.
+An AI design partner that runs inside your editor or terminal and walks you through research, flows, screens, prototypes, critiques, and dev handoff—while pushing back on generic AI-looking design.
 
-## Pick your tool
+## Pick your tool — install guide
 
-| If your team uses… | Start here |
-|--------------------|------------|
-| **Cursor** (most common) | Sections below — recommended |
-| **Claude Code** | [handoff-guide.md](handoff-guide.md) → Claude Code |
-| **Something else** | Ask your design lead; see [installation.md](installation.md) |
+Use the guide for **your** platform (Mac). Each guide has the same depth: prerequisites, install, verify, first prompt, troubleshooting.
 
-## One-time setup (about 15 minutes)
+| If your team uses… | Install guide (macOS) |
+|--------------------|------------------------|
+| **Cursor** | [Cursor on macOS](installation-cursor-macos.md) |
+| **Claude Code** | [Claude Code on macOS](installation-claude-code-macos.md) |
+| **Codex** | [Codex on macOS](installation-codex-macos.md) |
+| **OpenCode** | [OpenCode on macOS](installation-opencode-macos.md) |
+| **Not sure / all platforms** | [macOS hub](installation-macos.md) · [All platforms](installation.md) |
 
-Do this once per laptop. If terminal commands feel uncomfortable, send this page to IT or a technical teammate—they can run the install block from [handoff-guide.md](handoff-guide.md#1-install-10-min).
+**Not on Mac?** See [Installation (all platforms)](installation.md).
 
-### Step A — Get the agent on your Mac
+---
 
-1. Install **Node.js** (needed for a small quality checker): [nodejs.org](https://nodejs.org/) → LTS download, or `brew install node` if you use Homebrew.
-2. Download the project (your team may already have a zip or internal fork):
+## Shared setup (all platforms)
+
+If terminal commands feel uncomfortable, send the **install guide for your tool** to IT—they run the clone + `./install.sh` block once.
+
+### 1. Clone the agent (once)
 
 ```bash
 git clone https://github.com/Syclipse/product-design-agent.git
 cd product-design-agent
-./install.sh --target cursor --yes
+chmod +x install.sh
 ```
 
-When it finishes, you should see a success message. That copies slash commands like `/interface` into Cursor.
+### 2. Install for your platform (once)
 
-### Step B — Turn on the design partner in your project
+```bash
+./install.sh --target claude --yes    # Claude Code
+./install.sh --target cursor --yes    # Cursor
+./install.sh --target codex --yes     # Codex
+./install.sh --target opencode --yes  # OpenCode
+```
 
-1. Open **your design project** in Cursor (the folder where you keep Figma exports, notes, or specs—not necessarily this repo).
-2. Copy one file into your project so Cursor knows you're using the design partner:
+**Claude Code teams:** plugin install via `/plugin` is often easier — see [Claude Code guide](installation-claude-code-macos.md).
 
-   - From the downloaded repo, copy `cursor/rules/product-design-partner.mdc`
-   - Into your project: `.cursor/rules/product-design-partner.mdc`  
-     (Create the `.cursor/rules` folders if they don't exist.)
+**Cursor teams:** also copy the rule into each project — see [Cursor guide](installation-cursor-macos.md).
 
-3. Restart Cursor or open a new chat in that project.
+### 3. Check that it worked
 
-### Step C — Check that it worked
+In your AI app, type `/` — you should see `/interface`, `/research`, `/prototype`.
 
-In Cursor chat, type `/` — you should see commands like `/interface`, `/research`, `/prototype`.
-
-If you don't see them, run the install step again or ask IT to confirm `~/.cursor/commands/` contains `.md` files.
+---
 
 ## Your first real task (5 minutes)
-
-Open chat in Cursor and type:
 
 ```
 /interface A settings page where finance admins reconcile Stripe payouts before month-end close. They need confidence nothing is missed.
@@ -58,12 +61,14 @@ Open chat in Cursor and type:
 
 **What should happen:**
 
-1. The agent asks about **Who**, **What**, and **Feel** in plain language—not "modern users."
-2. It pulls ideas from your product's world (finance, reconciliation)—not generic purple SaaS.
-3. It shows **2–3 different layout directions** and asks you to pick one.
-4. It refines the winner with accessibility and handoff detail.
+1. **Who / What / Feel** — specific person, task, emotion (not "modern users")
+2. **Domain** — ideas from finance/reconciliation, not template SaaS
+3. **2–3 different layout directions** — you pick one
+4. **Refinement** — states, accessibility, handoff detail
 
-If it jumps straight to one generic screen, say: *"Follow the Variant Protocol—show me three distinct directions first."*
+If it jumps to one generic screen: *"Follow the Variant Protocol—show me three distinct directions first."*
+
+---
 
 ## Daily cheat sheet
 
@@ -76,33 +81,31 @@ If it jumps straight to one generic screen, say: *"Follow the Variant Protocol�
 | See clickable options | `/prototype` |
 | Review a mockup | `/critique` or `/ux-audit` |
 | Write specs for dev | `/handoff` |
-| Push to Figma | `/figma-export` (needs Figma connected—optional) |
+| Push to Figma | `/figma-export` (optional MCP) |
 
-More detail: [workflows-by-task.md](workflows-by-task.md) · [handoff-guide.md](handoff-guide.md)
+More: [workflows-by-task.md](workflows-by-task.md)
+
+---
 
 ## Where your work is saved
 
-Ask the agent: *"Save this under design-data/projects/billing-dashboard/"*
+> Save this under design-data/projects/billing-dashboard/
 
-That folder stays on **your machine** and is not uploaded to git by default—good for client work.
+Stays on **your machine** by default (not uploaded to git). See [Saving your work](handoff-guide.md#4-save-your-work-5-min).
 
-See [Saving your work](handoff-guide.md#4-save-your-work-5-min).
-
-## When output feels "too AI"
-
-The agent is built to reject vague briefs and overused patterns. Read [Quality gates in plain English](quality-gates-for-designers.md) if you want to understand *why* it asks for specificity.
+---
 
 ## Get unstuck
 
-| Problem | Try |
+| Problem | Doc |
 |---------|-----|
-| No `/` commands | Re-run `./install.sh --target cursor --yes` |
-| Agent ignores process | Confirm `.cursor/rules/product-design-partner.mdc` is in **your project** |
-| Output is generic | Add Who/What/Feel; say "use domain from [industry], not generic SaaS" |
-| Something broke after update | Re-run install; see [troubleshooting-for-designers.md](troubleshooting-for-designers.md) |
+| Install | Your platform guide above or [troubleshooting](troubleshooting-for-designers.md) |
+| Generic output | [Quality gates](quality-gates-for-designers.md) |
+| Which command? | [Workflows by task](workflows-by-task.md) |
+
+---
 
 ## Read next
 
-- [Handoff guide](handoff-guide.md) — full onboarding for teams  
-- [Workflows by task](workflows-by-task.md) — which command when  
-- [Quality gates for designers](quality-gates-for-designers.md) — the 5 checks explained simply
+- [Handoff guide](handoff-guide.md) — team rollout  
+- [Quality gates for designers](quality-gates-for-designers.md)

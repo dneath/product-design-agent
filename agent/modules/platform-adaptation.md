@@ -111,4 +111,4 @@ chmod +x install.sh scripts/test.sh
 ./scripts/test.sh
 ```
 
-See `docs/installation-macos.md` for full macOS paths and troubleshooting.
+See `docs/installation-macos.md` (hub) and `docs/installation-<platform>-macos.md` for full per-platform macOS guides.

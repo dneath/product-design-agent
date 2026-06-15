@@ -2,6 +2,14 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Per-platform macOS install guides: `installation-claude-code-macos.md`, `installation-cursor-macos.md`, `installation-codex-macos.md`, `installation-opencode-macos.md`
+
+### Changed
+- `installation.md`, `installation-macos.md`, handoff guide, quick start, doc index, and troubleshooting — equal depth for Claude Code, Cursor, Codex, and OpenCode (not Cursor-only)
+
 ## [1.3.1] - 2026-06-15
 
 ### Added

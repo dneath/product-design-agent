@@ -1,324 +1,339 @@
 # Installation Guide
 
-Install the Product Design Partner for Claude Code, Cursor, Codex, OpenCode, or a custom path.
+Install the Product Design Partner for **Claude Code**, **Cursor**, **Codex**, **OpenCode**, or a custom path.
 
-**Designers:** start with **[Quick start for designers](designer-quick-start.md)** or the **[Handoff guide](handoff-guide.md)** — onboarding, slash commands, and what stays off git.  
-**Documentation index:** [docs/README.md](README.md)
+**macOS (detailed per platform):**
+
+| Platform | Guide |
+|----------|--------|
+| Claude Code | [installation-claude-code-macos.md](installation-claude-code-macos.md) |
+| Cursor | [installation-cursor-macos.md](installation-cursor-macos.md) |
+| Codex | [installation-codex-macos.md](installation-codex-macos.md) |
+| OpenCode | [installation-opencode-macos.md](installation-opencode-macos.md) |
+| Hub | [installation-macos.md](installation-macos.md) |
+
+**Designers:** [Quick start](designer-quick-start.md) · [Handoff guide](handoff-guide.md) · [Doc index](README.md)
+
+---
+
+## Platform comparison
+
+| Platform | Install command | Identity | Commands | Gate enforcement |
+|----------|-----------------|----------|----------|------------------|
+| **Claude Code** | `./install.sh --target claude --yes` or `/plugin` | Subagents + hook | `~/.claude/commands/` | Hook nudge + validator |
+| **Cursor** | `./install.sh --target cursor --yes` | Project `.mdc` rule | `~/.cursor/commands/` | Rule + validator |
+| **Codex** | `./install.sh --target codex --yes` | `~/.codex/AGENTS.md` | `~/.codex/prompts/` | AGENTS.md + validator |
+| **OpenCode** | `./install.sh --target opencode --yes` | `@product-design-partner` | `~/.config/opencode/command/` | **Plugin auto-block** |
+
+Only **OpenCode** runs automatic gate validation on every response. All platforms can run `node plugins/design-validator.mjs <file>` manually.
+
+Full comparison: [platform-adaptation.md](../agent/modules/platform-adaptation.md)
+
+---
 
 ## Prerequisites
 
-| Platform | Needs |
-|---|---|
-| **macOS** | Node 18+ (`brew install node`), Xcode CLT — see **[macOS Installation Guide](installation-macos.md)** |
-| **Claude Code** | any recent version (plugin support preferred) |
-| **Cursor** | commands (`.cursor/commands`) + rules support |
-| **Codex** | custom prompts (`~/.codex/prompts`) + AGENTS.md support |
-| **OpenCode** | v1.0+ with plugin support |
-| **Other LLMs** | custom system prompt (required), file reading (recommended) |
+| Requirement | Claude Code | Cursor | Codex | OpenCode |
+|-------------|-------------|--------|-------|----------|
+| AI app installed | ✓ | ✓ | ✓ | ✓ |
+| git | ✓ | ✓ | ✓ | ✓ |
+| Node 18+ | Optional (validator) | Optional | Optional | **Required** (plugins) |
 
-> **Enforcement note**: only OpenCode runs the gate-validation plugin automatically. On Claude Code the UserPromptSubmit hook (plugin install) nudges the gates; on Cursor/Codex the gates are enforced by instruction (rule / AGENTS.md). Any platform can validate artifacts manually with `node plugins/design-validator.mjs <file>`.
+**macOS:** [installation-macos.md](installation-macos.md) — Xcode CLT, Homebrew Node, clone repo.
 
-## Quick Start
+---
 
-### Automated Installation (Recommended)
+## Quick install (all platforms)
 
 ```bash
-# Clone or download the repository
+git clone https://github.com/Syclipse/product-design-agent.git
 cd product-design-agent
+chmod +x install.sh scripts/test.sh
 
-# Run installer (auto-detects environment)
-./install.sh
-
-# Or specify target explicitly
-./install.sh --target claude --yes
-./install.sh --target cursor --yes
-./install.sh --target codex --yes
-./install.sh --target opencode --yes
+./install.sh --target claude --yes    # Claude Code
+./install.sh --target cursor --yes    # Cursor
+./install.sh --target codex --yes     # Codex
+./install.sh --target opencode --yes  # OpenCode
 ./install.sh --target custom --path /your/path --yes
 ```
 
-The script will:
-1. Detect your environment
-2. Create necessary directories
-3. Copy all files (agent, plugins, slash commands, rules/AGENTS.md, goal-mode prompt, reference data)
-4. Validate the installation
-5. Display usage instructions
+The script copies files, validates paths, and prints next steps.
 
-Cursor, Codex, and Claude Code installs also place the full bundle (agent + modules + reference data) at `~/.product-design-partner/`, which the commands reference.
+---
 
-### Manual Installation
+## Claude Code
 
-#### Claude Code
+**macOS detail:** [installation-claude-code-macos.md](installation-claude-code-macos.md)
 
-Preferred: install as a plugin — run `/plugin` in Claude Code and add this repo (it ships `.claude-plugin/plugin.json`, the 16 commands, the subagent, and the UserPromptSubmit hook).
-
-Personal-directory alternative:
+### Install Claude Code (if needed)
 
 ```bash
-cp commands/*.md ~/.claude/commands/
-cp agents/product-design-partner.md ~/.claude/agents/
-./install.sh --target claude     # installs the ~/.product-design-partner bundle
+curl -fsSL https://claude.ai/install.sh | bash
+# or: brew install --cask claude-code
 ```
 
-#### Cursor
+### Install the design agent
+
+**Plugin (recommended):**
+
+1. Run `claude`
+2. `/plugin` → add `https://github.com/Syclipse/product-design-agent`
+
+Enables 16 commands, 4 subagents, UserPromptSubmit hook. See [.claude-plugin/README.md](../.claude-plugin/README.md).
+
+**Script alternative:**
 
 ```bash
-# Global commands (all projects)
-mkdir -p ~/.cursor/commands && cp cursor/commands/*.md ~/.cursor/commands/
-
-# Per-project rule (gate enforcement + identity)
-mkdir -p <project>/.cursor/rules
-cp cursor/rules/product-design-partner.mdc <project>/.cursor/rules/
-
-# Bundle (modules + reference data the commands point at)
-./install.sh --target cursor
+./install.sh --target claude --yes
 ```
 
-#### Codex
+Installs `~/.claude/commands/`, `~/.claude/agents/`, `~/.product-design-partner/`.
+
+### Verify
+
+- `/interface` autocompletes in Claude Code
+- `ls ~/.claude/agents/interface-design.md`
+- Smoke: `/interface` with finance-admin reconciliation brief → 2–3 directions
+
+### Figma MCP
 
 ```bash
-mkdir -p ~/.codex/prompts && cp codex/prompts/*.md ~/.codex/prompts/
-
-# Global agent identity — append if you already have an AGENTS.md
-cat codex/AGENTS.md >> ~/.codex/AGENTS.md   # or: cp codex/AGENTS.md ~/.codex/AGENTS.md
-
-./install.sh --target codex                  # installs the bundle
+claude mcp add --transport http figma https://mcp.figma.com/mcp
 ```
 
-#### OpenCode
+---
+
+## Cursor
+
+**macOS detail:** [installation-cursor-macos.md](installation-cursor-macos.md)
+
+### Install Cursor
+
+Download from [cursor.com](https://cursor.com).
+
+### Install the design agent
 
 ```bash
-# 1. Copy agent files
+./install.sh --target cursor --yes
+```
+
+### Attach rule per project (required for gates)
+
+```bash
+mkdir -p /path/to/project/.cursor/rules
+cp cursor/rules/product-design-partner.mdc /path/to/project/.cursor/rules/
+```
+
+Open that project in Cursor → new chat → type `/interface`.
+
+### Verify
+
+- `ls ~/.cursor/commands/interface.md`
+- `ls ~/.cursor/agents/interface-design.md`
+- Rule file exists in **your project**, not only globally
+
+### Figma MCP
+
+Cursor → Settings → MCP → add `https://mcp.figma.com/mcp`
+
+---
+
+## Codex
+
+**macOS detail:** [installation-codex-macos.md](installation-codex-macos.md)
+
+### Install Codex CLI
+
+Per OpenAI Codex documentation for your OS.
+
+### Install the design agent
+
+```bash
+./install.sh --target codex --yes
+```
+
+If `~/.codex/AGENTS.md` already exists:
+
+```bash
+cat codex/AGENTS.md >> ~/.codex/AGENTS.md
+```
+
+### Verify
+
+- `ls ~/.codex/prompts/interface.md`
+- `/brainstorm` or `/interface` in a Codex session
+- For heavy UI: new task + `/interface` + manual validator before handoff
+
+### Figma MCP
+
+In `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.figma]
+url = "https://mcp.figma.com/mcp"
+```
+
+---
+
+## OpenCode
+
+**macOS detail:** [installation-opencode-macos.md](installation-opencode-macos.md)
+
+### Install OpenCode v1.0+
+
+Per your OpenCode documentation.
+
+### Install the design agent
+
+```bash
+./install.sh --target opencode --yes
+```
+
+Installs agent, modules, plugins, commands, and reference data under `~/.config/opencode/`.
+
+### Verify
+
+```bash
+opencode
+@product-design-partner Help me design a dashboard
+```
+
+Plugin should block generic “clean modern dashboard for users” output.
+
+### Manual install (reference)
+
+```bash
 cp agent/product-design-partner.md ~/.config/opencode/agents/
 cp -r agent/modules ~/.config/opencode/agents/product-design-partner/
-
-# 2. Copy plugins (enables automatic validation)
 cp plugins/*.js plugins/*.mjs ~/.config/opencode/plugins/
-
-# 3. Copy slash commands
 cp opencode/command/*.md ~/.config/opencode/command/
-
-# 4. Copy reference data
-mkdir -p ~/.config/opencode/design-data/references
-cp design-data/references/*.md ~/.config/opencode/design-data/references/
-cp design-data/references/*.json ~/.config/opencode/design-data/references/
-
-# 5. Create runtime directories
-mkdir -p ~/.config/opencode/design-data/{projects,components,tokens,validation-history}
-touch ~/.config/opencode/design-data/{projects,components,tokens,validation-history}/.gitkeep
+cp design-data/references/* ~/.config/opencode/design-data/references/
 ```
 
-#### Custom Path (Any LLM)
+---
+
+## Custom path (any LLM)
 
 ```bash
-# Set your installation path
-INSTALL_PATH="/your/custom/path"
-
-# 1. Copy agent files
-mkdir -p $INSTALL_PATH/agents/product-design-partner
-cp agent/product-design-partner.md $INSTALL_PATH/agents/
-cp -r agent/modules $INSTALL_PATH/agents/product-design-partner/
-
-# 2. Copy plugins
-mkdir -p $INSTALL_PATH/plugins
-cp plugins/*.js plugins/*.mjs $INSTALL_PATH/plugins/
-
-# 3. Copy reference data
-mkdir -p $INSTALL_PATH/design-data/references
-cp design-data/references/* $INSTALL_PATH/design-data/references/
-
-# 4. Create runtime directories
-mkdir -p $INSTALL_PATH/design-data/{projects,components,tokens,validation-history}
+./install.sh --target custom --path /your/custom/path --yes
 ```
+
+Load `agent/product-design-partner.md` as system prompt; keep `design-data/` readable; validate with:
+
+```bash
+node /your/custom/path/plugins/design-validator.mjs output.md
+```
+
+Or paste `prompts/goal-mode.md` (≤4000 chars) into ChatGPT/Gemini custom instructions.
+
+---
 
 ## Verification
 
-Run the full smoke suite from the repo root:
+### Full smoke suite
 
 ```bash
 ./scripts/test.sh
 ```
 
-This checks plugin syntax, command sync (16 commands), goal-mode size, hook routing, and a passing validator fixture.
+Checks plugin syntax, 16-command sync, goal-mode size, hooks, validator fixture.
 
-### Per-platform smoke tests
+### Per-platform smoke test
 
-### Test OpenCode Installation
+| Platform | Test |
+|----------|------|
+| **Claude Code** | `/interface` → gates + 2–3 variants |
+| **Cursor** | `/` lists commands; rule attached → intent first |
+| **Codex** | `/brainstorm` → ≥15 ideas |
+| **OpenCode** | `@product-design-partner` responds; plugin loads |
 
-```bash
-# Start OpenCode
-opencode
-
-# In OpenCode, type:
-@product-design-partner Hello
-```
-
-If installed correctly, the agent will respond and be ready to work.
-
-### Test Claude Code Installation
-
-1. Open Claude Code and type `/prototype a pricing page for a developer tool`
-2. The agent should run Gates 1-2, then present 2-3 distinct variant concepts
-
-### Test Cursor Installation
-
-1. Open Cursor chat and type `/interface` — it should autocomplete from `~/.cursor/commands/`
-2. With the rule attached, any design request should start with intent (Who/What/Feel)
-
-### Test Codex Installation
-
-1. Run `codex` and type `/brainstorm onboarding ideas`
-2. The session should follow the divergence quota (≥15 ideas, ≥3 techniques)
-
-### Test Standalone Validator
+### Standalone validator
 
 ```bash
 node plugins/design-validator.mjs examples/dashboard-design.md
-# Exit code 0 = all gates passed
+# exit 0 = pass
 ```
+
+---
 
 ## Configuration
 
 ### Path resolution
 
-Plugins and the validator resolve `design-data/` automatically via `plugins/path-resolver.mjs`:
+Order (via `plugins/path-resolver.mjs`):
 
-1. `DESIGN_DATA_DIR` environment variable (override)
-2. `<workspace>/design-data/` (repo checkout)
-3. `~/.product-design-partner/design-data/` (Cursor / Codex / Claude bundle)
-4. `~/.config/opencode/design-data/` (OpenCode)
+1. `DESIGN_DATA_DIR` env var
+2. Workspace `design-data/`
+3. `~/.product-design-partner/design-data/`
+4. `~/.config/opencode/design-data/`
 
-No manual path edits are required for normal installs.
-
-### Environment variables (optional)
-
-Copy `.env.example` to `.env` locally (never commit `.env`):
+### Environment variables
 
 ```bash
-# Override default data directory
 export DESIGN_DATA_DIR="$HOME/my-design-data"
 ```
 
-Optional (OpenCode plugin only, if supported in your build):
+Copy `.env.example` to `.env` locally — never commit secrets.
 
-```bash
-export DISABLE_VARIANCE_TRACKING=true   # not recommended
-```
+---
 
 ## Figma MCP (optional)
 
-Required for `/figma-export` and FigJam export in `/diagram`.
+Required for live `/figma-export`. Without it, agent delivers token JSON + build specs.
 
 | Platform | Setup |
 |----------|--------|
-| **Cursor** | Settings → MCP → add `https://mcp.figma.com/mcp` |
-| **Claude Code** | `claude mcp add --transport http figma https://mcp.figma.com/mcp` |
-| **Codex** | `~/.codex/config.toml` → `[mcp_servers.figma]` url = `https://mcp.figma.com/mcp` |
-| **OpenCode** | Add the server in `opencode.json` |
+| Claude Code | `claude mcp add --transport http figma https://mcp.figma.com/mcp` |
+| Cursor | Settings → MCP → `https://mcp.figma.com/mcp` |
+| Codex | `mcp_servers.figma` in `~/.codex/config.toml` |
+| OpenCode | Add server in OpenCode MCP config |
 
-Without MCP, the agent delivers fallbacks: Mermaid source, token JSON, and frame-by-frame build specs.
+---
 
 ## Troubleshooting
 
-### Agent Not Found (OpenCode)
+| Problem | Platform | Fix |
+|---------|----------|-----|
+| Commands missing | All | Re-run `./install.sh --target <platform> --yes`; restart app |
+| Gates ignored | Cursor | Copy rule to project `.cursor/rules/` |
+| Gates ignored | Codex | Merge `codex/AGENTS.md` into `~/.codex/AGENTS.md` |
+| Hook missing | Claude Code | Use plugin install, not script-only |
+| Plugin not blocking | OpenCode | Check `~/.config/opencode/plugins/product-design.js` |
+| References missing | OpenCode | `ls ~/.config/opencode/design-data/references/` |
 
-**Problem**: `@product-design-partner` doesn't autocomplete
+Designer-friendly fixes: [troubleshooting-for-designers.md](troubleshooting-for-designers.md)
 
-**Solutions**:
-1. Verify file location: `~/.config/opencode/agents/product-design-partner.md`
-2. Restart OpenCode
-3. Check OpenCode logs for errors
-
-### Reference Data Not Loading
-
-**Problem**: Agent can't access ban-list.md or other references
-
-**Solutions**:
-1. Verify files exist: `ls ~/.config/opencode/design-data/references/`
-2. Check file permissions: `chmod 644 ~/.config/opencode/design-data/references/*`
-3. Ensure path matches what plugins expect
-
-### Plugin Validation Errors
-
-**Problem**: Validator fails with "Cannot find module"
-
-**Solutions**:
-1. Ensure Node.js is installed: `node --version`
-2. Check plugin paths are correct
-3. Run from the plugins directory: `cd ~/.config/opencode/plugins && node design-validator.mjs`
-
-### Variance History Not Saving
-
-**Problem**: Repeated designs with same patterns
-
-**Solutions**:
-1. Check write permissions: `ls -la ~/.config/opencode/design-data/`
-2. Manually create variance-history.json: `echo '[]' > ~/.config/opencode/design-data/variance-history.json`
-3. Verify plugin is loaded by OpenCode
+---
 
 ## Updating
 
-To update to a new version:
-
 ```bash
-# Backup your runtime data first
-cp -r ~/.config/opencode/design-data/projects ~/backup-projects
-cp -r ~/.config/opencode/design-data/components ~/backup-components
-
-# Run install script again
-./install.sh --target opencode
-
-# Restore your data
-cp -r ~/backup-projects/* ~/.config/opencode/design-data/projects/
-cp -r ~/backup-components/* ~/.config/opencode/design-data/components/
+cd product-design-agent && git pull
+./install.sh --target <platform> --yes
 ```
+
+**OpenCode:** backup `~/.config/opencode/design-data/projects/` first.
+
+**Claude plugin:** `/plugin` → update repository.
+
+**Cursor:** re-copy `product-design-partner.mdc` if the rule changed.
+
+---
 
 ## Uninstalling
 
-### OpenCode
+See platform-specific guides for exact file lists, or:
 
 ```bash
-rm ~/.config/opencode/agents/product-design-partner.md
-rm -r ~/.config/opencode/agents/product-design-partner/
-rm ~/.config/opencode/plugins/product-design.js
-rm ~/.config/opencode/plugins/design-validator.mjs
-rm ~/.config/opencode/plugins/design-migrator.js
-rm ~/.config/opencode/plugins/csv-converter.mjs
-
-# Optional: Remove reference data (keeps your generated content)
-rm -r ~/.config/opencode/design-data/references/
-
-# Optional: Remove ALL design data (deletes your projects/components)
-rm -r ~/.config/opencode/design-data/
-```
-
-### Claude Code / Cursor / Codex
-
-```bash
-# Shared bundle
 rm -rf ~/.product-design-partner
-
-# Claude Code
-cd ~/.claude/commands && rm -f interface.md prototype.md brainstorm.md diagram.md annotate.md \
-  mentor.md ux-flows.md ux-audit.md design-converter.md figma-export.md portfolio.md \
-  research.md design-system.md critique.md handoff.md strategy.md
-rm -f ~/.claude/agents/product-design-partner.md
-
-# Cursor
-cd ~/.cursor/commands && rm -f <same 16 files>
-rm -f ~/.cursor/rules/product-design-partner.mdc   # and any project .cursor/rules copies
-
-# Codex
-cd ~/.codex/prompts && rm -f <same 16 files>
-# Remove the Product Design Partner section from ~/.codex/AGENTS.md
+# Plus platform dirs — see installation-*-macos.md
 ```
 
-## Next Steps
+---
 
-After installation:
+## Next steps
 
-1. **[Designer handoff guide](handoff-guide.md)** — onboarding for design teams
-2. **[Workflow reference](workflows.md)** — all 17 workflows and slash commands
-3. **[Examples](../examples/getting-started.md)** — sample prompts
-4. **[Architecture](architecture.md)** — how the system fits together (maintainers)
-5. **[Contributing](contributing.md)** — extend workflows and references
+1. [Designer handoff guide](handoff-guide.md)
+2. [Workflows by task](workflows-by-task.md)
+3. [Examples](../examples/getting-started.md)
+4. [Architecture](architecture.md) (maintainers)
