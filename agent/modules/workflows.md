@@ -4,6 +4,24 @@ Complete workflow specifications for all 17 design capabilities.
 
 ---
 
+## 0. Process Router (start here when scope is unclear)
+
+Before picking a workflow, identify the **phase** (see `design-data/references/product-design-process.md`):
+
+| Phase | Workflows |
+|-------|-----------|
+| **Discover** | §1 Research, §4 Strategy, §9 Mentor |
+| **Define** | §9 Mentor, §10 UX Flows, §16 Diagrams |
+| **Develop** | §4 Brainstorm, §3 Interface, §15 Prototype, §12 Design Converter |
+| **Deliver** | §2 Design System, §17 Annotations, §6 Handoff, §13 Figma Export |
+| **Validate** | §5 Critique, §7 Accessibility, §11 UX Audit |
+
+**Greenfield feature chain**: concept/research → flows/diagrams → variants (§15) or gated interface (§3) → annotations → handoff.
+
+**Platform note**: Load `./modules/platform-adaptation.md` when paths or gate enforcement differ by LLM (OpenCode plugin vs Cursor/Codex instruction-only).
+
+---
+
 ## 1. User Research Workflow
 
 **When**: User asks about research planning, interview guides, usability tests, surveys

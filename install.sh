@@ -189,7 +189,7 @@ print_usage_instructions() {
             ;;
     esac
     echo ""
-    echo "Docs: docs/installation.md · Examples: examples/"
+    echo "Docs: docs/installation.md · macOS: docs/installation-macos.md · Examples: examples/"
     echo ""
 }
 
@@ -198,19 +198,23 @@ main() {
 
     TARGET=""
     CUSTOM_PATH=""
+    ASSUME_YES=false
 
     while [[ $# -gt 0 ]]; do
         case $1 in
             --target) TARGET="$2"; shift 2 ;;
             --path)   CUSTOM_PATH="$2"; shift 2 ;;
+            --yes|-y) ASSUME_YES=true; shift ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
                 echo "  --target <opencode|claude|cursor|codex|custom>  Installation target"
                 echo "  --path <path>                                   Custom installation path (with --target custom)"
+                echo "  --yes, -y                                       Skip confirmation prompt"
                 echo "  --help, -h                                      Show this help message"
                 echo ""
+                echo "macOS: see docs/installation-macos.md (Homebrew Node, Cursor/Claude/Codex paths)"
                 exit 0
                 ;;
             *) print_error "Unknown option: $1"; exit 1 ;;
@@ -233,11 +237,15 @@ main() {
         *) print_error "Unknown target: $TARGET"; exit 1 ;;
     esac
 
-    read -p "Install for '$TARGET'? (y/n) " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        print_warning "Installation cancelled"
-        exit 0
+    if [[ "$ASSUME_YES" != true ]]; then
+        read -p "Install for '$TARGET'? (y/n) " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            print_warning "Installation cancelled"
+            exit 0
+        fi
+    else
+        print_info "Installing for '$TARGET' (--yes)"
     fi
 
     case $TARGET in

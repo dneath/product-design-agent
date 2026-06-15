@@ -12,6 +12,24 @@
 
 import fs from 'fs';
 import path from 'path';
+import {
+  varianceHistoryPath,
+  validationHistoryDir,
+} from './path-resolver.mjs';
+
+/** Match markdown field labels: who:, **Who**:, - **Who**: */
+function hasField(artifact, fieldName) {
+  const escaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?:^|[\\n\\-*]\\s*)\\**${escaped}\\**\\s*:`, 'im').test(artifact);
+}
+
+function fieldValue(artifact, fieldName) {
+  const escaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const m = artifact.match(
+    new RegExp(`(?:^|[\\n\\-*]\\s*)\\**${escaped}\\**\\s*:\\s*([^\\n]+)`, 'im')
+  );
+  return m ? m[1].trim() : '';
+}
 
 /**
  * Main validation orchestrator
@@ -19,7 +37,7 @@ import path from 'path';
  * @param {string} workspaceDir - Workspace directory (for loading variance history)
  * @returns {Promise<Object>} Validation results with passed flag and gate details
  */
-export async function validateDesign(designArtifact, workspaceDir = process.cwd()) {
+export async function validateDesign(designArtifact, workspaceDir = process.cwd(), options = {}) {
   const results = {
     passed: true,
     gates: [],
@@ -47,7 +65,7 @@ export async function validateDesign(designArtifact, workspaceDir = process.cwd(
   if (!varianceResult.passed) results.passed = false;
   
   // Gate 5: Ban List
-  const banResult = validateBanList(designArtifact);
+  const banResult = validateBanList(designArtifact, options.userPrompt || '');
   results.gates.push(banResult);
   if (!banResult.passed) results.passed = false;
   
@@ -58,27 +76,27 @@ export async function validateDesign(designArtifact, workspaceDir = process.cwd(
  * Gate 1: Validate Intent Declaration
  */
 function validateIntent(artifact) {
-  const required = ['who:', 'what:', 'feel:'];
+  const required = ['who', 'what', 'feel'];
   const forbidden = ['clean', 'modern', 'intuitive', 'professional', 'sleek', 'users', 'people', 'customers'];
-  
-  // Check for required fields
-  const missing = required.filter(r => !new RegExp(r, 'i').test(artifact));
-  
-  // Check for forbidden generic terms in intent section
+
+  const missing = required.filter((f) => !hasField(artifact, f));
+
   const violations = [];
   for (const term of forbidden) {
-    const intentPattern = new RegExp(`(who|what|feel):[^\\n]*${term}`, 'i');
-    if (intentPattern.test(artifact)) {
-      violations.push(term);
+    for (const f of required) {
+      const val = fieldValue(artifact, f);
+      if (val && new RegExp(`\\b${term}\\b`, 'i').test(val)) {
+        violations.push(`${term} in ${f}`);
+      }
     }
   }
-  
+
   return {
     gate: 'Intent Declaration',
     passed: missing.length === 0 && violations.length === 0,
     details: {
       missing: missing.length > 0 ? `Missing: ${missing.join(', ')}` : null,
-      violations: violations.length > 0 ? `Generic terms used: ${violations.join(', ')}` : null
+      violations: violations.length > 0 ? `Generic terms used: ${[...new Set(violations)].join(', ')}` : null
     }
   };
 }
@@ -87,38 +105,28 @@ function validateIntent(artifact) {
  * Gate 2: Validate Domain Exploration
  */
 function validateDomainExploration(artifact) {
-  const required = ['domain:', 'color world:', 'signature:'];
-  
-  // Check for required fields
-  const missing = required.filter(r => !new RegExp(r, 'i').test(artifact));
-  
-  // Check for signature count (should appear 5+ times)
+  const required = ['domain', 'color world', 'signature'];
+  const missing = required.filter((f) => !hasField(artifact, f));
+
   let signatureCount = 0;
-  const signatureMatch = artifact.match(/signature:\s*"?([^"\n]+)"?/i);
-  if (signatureMatch) {
-    const signature = signatureMatch[1].trim();
-    const escapedSignature = signature.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const pattern = new RegExp(escapedSignature, 'gi');
-    const matches = artifact.match(pattern);
-    signatureCount = matches ? matches.length : 0;
+  const signatureText = fieldValue(artifact, 'signature');
+  if (signatureText) {
+    const signature = signatureText.replace(/^["']|["']$/g, '').split(/[—–-]/)[0].trim();
+    if (signature.length > 2) {
+      const escapedSignature = signature.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      signatureCount = (artifact.match(new RegExp(escapedSignature, 'gi')) || []).length;
+    }
   }
-  
-  // Check for domain concept count (should have 5+)
-  const domainMatch = artifact.match(/domain:\s*([^\n]+)/i);
-  let domainConceptCount = 0;
-  if (domainMatch) {
-    const domainText = domainMatch[1];
-    // Count concepts separated by commas or newlines
-    domainConceptCount = domainText.split(/[,\n]/).filter(s => s.trim().length > 0).length;
-  }
-  
-  // Check for color count (should have 5+)
-  const colorMatch = artifact.match(/color world:\s*([^\n]+)/i);
-  let colorCount = 0;
-  if (colorMatch) {
-    const colorText = colorMatch[1];
-    colorCount = colorText.split(/[,\n]/).filter(s => s.trim().length > 0).length;
-  }
+
+  const domainText = fieldValue(artifact, 'domain');
+  const domainConceptCount = domainText
+    ? domainText.split(/[,;]/).filter((s) => s.trim().length > 0).length
+    : 0;
+
+  const colorText = fieldValue(artifact, 'color world');
+  const colorCount = colorText
+    ? colorText.split(/[,;]/).filter((s) => s.trim().length > 0).length
+    : 0;
   
   return {
     gate: 'Domain Exploration',
@@ -136,17 +144,13 @@ function validateDomainExploration(artifact) {
  * Gate 3: Validate Validation Tests
  */
 function validateTests(artifact) {
-  const required = ['swap test:', 'squint test:', 'signature test:', 'token test:'];
-  
-  // Check for missing tests
-  const missing = required.filter(r => !new RegExp(r, 'i').test(artifact));
-  
-  // Check if any test explicitly failed
+  const required = ['swap test', 'squint test', 'signature test', 'token test'];
+  const missing = required.filter((f) => !hasField(artifact, f));
+
   const failedTests = [];
-  for (const test of required) {
-    const testName = test.replace(':', '');
-    const pattern = new RegExp(`${testName}:\\s*(?:fail|❌|✗)`, 'i');
-    if (pattern.test(artifact)) {
+  for (const testName of required) {
+    const val = fieldValue(artifact, testName);
+    if (val && /\b(fail|❌|✗)\b/i.test(val)) {
       failedTests.push(testName);
     }
   }
@@ -195,8 +199,12 @@ async function validateVariance(artifact, workspaceDir) {
   }
   
   // Extract vibe+layout from current artifact
-  const vibeMatch = artifact.match(/vibe(?:\s+archetype)?:\s*([^\n]+)/i);
-  const layoutMatch = artifact.match(/layout(?:\s+archetype)?:\s*([^\n]+)/i);
+  const vibeMatch =
+    fieldValue(artifact, 'vibe archetype') ||
+    fieldValue(artifact, 'vibe');
+  const layoutMatch =
+    fieldValue(artifact, 'layout archetype') ||
+    fieldValue(artifact, 'layout');
   
   if (!vibeMatch || !layoutMatch) {
     return {
@@ -207,14 +215,14 @@ async function validateVariance(artifact, workspaceDir) {
       }
     };
   }
-  
+
   return {
     gate: 'Variance Check',
     passed: true,
     details: {
       type: type,
-      vibe: vibeMatch[1].trim(),
-      layout: layoutMatch[1].trim()
+      vibe: vibeMatch.trim(),
+      layout: layoutMatch.trim()
     }
   };
 }
@@ -222,7 +230,7 @@ async function validateVariance(artifact, workspaceDir) {
 /**
  * Gate 5: Validate Ban List
  */
-function validateBanList(artifact) {
+function validateBanList(artifact, userPrompt = '') {
   const bans = [
     {
       pattern: /border-(left|right):\s*\d+px\s+solid/i,
@@ -264,6 +272,11 @@ function validateBanList(artifact) {
   const violations = [];
   for (const ban of bans) {
     if (ban.pattern.test(artifact)) {
+      const escapedName = ban.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const overridePattern = new RegExp(`use.*${escapedName}.*anyway`, 'i');
+      if (overridePattern.test(userPrompt)) {
+        continue;
+      }
       violations.push({
         name: ban.name,
         alternative: ban.alternative
@@ -297,7 +310,7 @@ function detectInterfaceType(text) {
  */
 async function loadVarianceHistory(workspaceDir) {
   try {
-    const historyPath = path.join(workspaceDir, '.config', 'opencode', 'design-data', 'variance-history.json');
+    const historyPath = varianceHistoryPath(workspaceDir);
     if (fs.existsSync(historyPath)) {
       const data = fs.readFileSync(historyPath, 'utf8');
       return JSON.parse(data);
@@ -353,7 +366,7 @@ export function formatValidationReport(results) {
  */
 export async function saveValidationHistory(results, workspaceDir = process.cwd()) {
   try {
-    const historyDir = path.join(workspaceDir, '.config', 'opencode', 'design-data', 'validation-history');
+    const historyDir = validationHistoryDir(workspaceDir);
     if (!fs.existsSync(historyDir)) {
       fs.mkdirSync(historyDir, { recursive: true });
     }

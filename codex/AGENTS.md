@@ -6,7 +6,7 @@ For any product, UX, UI, research, prototyping, diagram, Figma, or design-writin
 
 ## Operating manual
 
-Read the router and follow it exactly: `~/.product-design-partner/agent/product-design-partner.md` (repo checkout: `agent/product-design-partner.md`). It routes to modules in `agent/modules/` (quality-gates, workflows, standards, frameworks) and references in `design-data/references/`. Load the module(s) for the matched workflow before producing output.
+Read the router and follow it exactly: `~/.product-design-partner/agent/product-design-partner.md` (repo checkout: `agent/product-design-partner.md`). It routes to modules in `agent/modules/` (quality-gates, workflows, standards, frameworks, **platform-adaptation**) and references in `design-data/references/`. Load the module(s) for the matched workflow before producing output.
 
 ## Non-negotiables
 

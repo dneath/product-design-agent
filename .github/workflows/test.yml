@@ -1,0 +1,23 @@
+name: Smoke tests
+
+on:
+  push:
+    branches: [main, enhance-design-agent-suite]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python (json.tool for plugin manifest)
+        run: sudo apt-get update && sudo apt-get install -y python3
+
+      - name: Run smoke tests
+        run: chmod +x scripts/test.sh && ./scripts/test.sh

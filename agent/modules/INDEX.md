@@ -4,9 +4,9 @@
 
 The Product Design Partner agent is a modular design system with strict quality enforcement. It consists of:
 
-- **Core Agent** (~200 lines): Identity, workflow router, quick references
-- **5 Modules** (<300 lines each): Detailed specifications, workflows, standards, frameworks
-- **4 Plugins**: Dynamic validation, variance tracking, data migration, CSV conversion
+- **Core Agent** (~270 lines): Identity, workflow router, quick references
+- **6 Modules**: workflows, quality-gates, standards, frameworks, platform-adaptation, INDEX
+- **5 Plugins/utilities**: validation, variance, sync-commands, path-resolver, migration, CSV conversion
 - **Reference Data**: Ban lists, brand guidelines, premium patterns, design prompt libraries
 
 **Flow**: User request → Core agent routes → Loads relevant modules → Follows workflow → Plugin validates output
@@ -21,7 +21,8 @@ The Product Design Partner agent is a modular design system with strict quality 
 └── modules/
     ├── INDEX.md                           [~240 lines - This File]
     ├── quality-gates.md                   [~290 lines - Gates 1-5, Brand, Patterns]
-    ├── workflows.md                       [~560 lines - 17 Complete Workflows]
+    ├── workflows.md                       [~580 lines - 17 Workflows + Process Router §0]
+    ├── platform-adaptation.md             [LLM-specific paths, enforcement, optimizations]
     ├── standards-and-anti-patterns.md     [~135 lines - Quality + Anti-patterns]
     └── frameworks-and-artifacts.md        [~215 lines - Frameworks + Templates]
 
@@ -256,6 +257,7 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 
 ## Version History
 
+- **2026-06-15**: v1.3 — Platform adaptation module, product-design-process reference, path-resolver.mjs (cross-platform design-data paths), validator markdown-field fix, macOS install guide, scripts/test.sh smoke suite, docs/workflows.md
 - **2026-06-10**: v1.2 — Variant Protocol (2-3 distinct directions for all new UI) + 3 new workflows (Prototype Variants §15, Diagrams §16, UX Annotations & Write-ups §17), 5 new reference files (prototype-variants, diagram, annotation, research-templates, brainstorming-playbook), 4 new commands (/prototype, /diagram, /annotate, /brainstorm), Cursor + Codex packaging with `sync-commands.mjs` generator, install.sh targets for all 4 platforms
 - **2026-05-31**: Added 6 capabilities (AI Mentor, UX Flows, UX Audit, Design Converter, Figma Export, Portfolio Builder), 5 reference files, slash commands (Claude Code + OpenCode), `.claude-plugin/` packaging, portable goal-mode prompt, and two-tone brand (plum #501E60 / violet #7C3AED)
 - **2026-05-27**: Modular restructure - split 881-line agent into 6 files (1 core + 5 modules)

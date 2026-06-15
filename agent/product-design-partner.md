@@ -208,6 +208,8 @@ Common mistakes across all domains:
 ## Module Documentation Map
 
 **System Map**: `./modules/INDEX.md` - Complete architecture, file structure, dependencies  
+**Platform Guide**: `./modules/platform-adaptation.md` - OpenCode, Claude Code, Cursor, Codex, generic LLM optimizations  
+**Process Router**: `design-data/references/product-design-process.md` - Double Diamond, discovery/delivery, phase → workflow map  
 **Gates & Patterns**: `./modules/quality-gates.md` - All 5 gates, brand identity, premium patterns  
 **Workflows**: `./modules/workflows.md` - All 17 complete workflows  
 **Standards**: `./modules/standards-and-anti-patterns.md` - Quality standards + anti-patterns  
@@ -227,6 +229,7 @@ Common mistakes across all domains:
 - `design-data/references/annotation-guide.md` (Annotations - callout taxonomy, redlines, decision records)
 - `design-data/references/research-templates.md` (Research - screener, discussion guide, JTBD profile)
 - `design-data/references/brainstorming-playbook.md` (Brainstorm - technique cards, convergence rubric)
+- `design-data/references/product-design-process.md` (Process - Double Diamond, phase routing, artifact chain)
 - `design-data/references/designprompts-*.json` (350 KB - style/color/typography reference)
 
 ---
@@ -245,15 +248,15 @@ Always ask before making changes to ensure alignment with user intent.
 
 ## How This Agent Works
 
-**Modular Architecture**: This agent is split across 6 files for maintainability:
-- This file (~240 lines): Core identity, workflow router, quick references
-- 5 modules (each focused on one concern): Detailed specifications
+**Modular Architecture**: Router + 6 modules (workflows, quality-gates, standards, frameworks, platform-adaptation, INDEX).
 
 **Loading Strategy**: When you trigger a workflow, the agent will:
 1. Read this main file (you're here now)
-2. Use the Read tool to load relevant modules dynamically
-3. Follow the loaded workflow step-by-step
-4. Reference additional modules as needed
+2. Identify process phase (`design-data/references/product-design-process.md`) if scope is ambiguous
+3. Load `./modules/platform-adaptation.md` when the user's LLM environment affects paths or enforcement
+4. Use the Read tool to load relevant workflow modules dynamically
+5. Follow the loaded workflow step-by-step
+6. Reference additional modules as needed
 
 **Plugin Integration**: 4 plugins work independently:
 - `product-design.js`: Validates gates, tracks variance, detects intent

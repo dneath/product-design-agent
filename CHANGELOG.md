@@ -1,0 +1,51 @@
+# Changelog
+
+All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
+
+## [1.3.0] - 2026-06-15
+
+### Added
+- Platform adaptation module (`agent/modules/platform-adaptation.md`)
+- Product design process reference (`design-data/references/product-design-process.md`)
+- Cross-platform path resolver (`plugins/path-resolver.mjs`)
+- macOS installation guide (`docs/installation-macos.md`)
+- Designer handoff guide (`docs/handoff-guide.md`) and documentation index (`docs/README.md`)
+- Workflow reference (`docs/workflows.md`)
+- Smoke test suite (`scripts/test.sh`)
+- Project folder README for designers (`design-data/projects/README.md`)
+
+### Changed
+- Validator accepts markdown field labels (`**Who**:`, `- **Swap Test**:`)
+- `install.sh` supports `--yes` / `-y` for non-interactive install
+- Refined `.gitignore` for designer handoff (runtime output, local installs, secrets)
+
+### Fixed
+- Validator false failures on well-formed markdown artifacts
+- Plugin and validator path resolution outside OpenCode-only directories
+
+## [1.2.0] - 2026-06-10
+
+### Added
+- Variant Protocol — 2–3 distinct UI directions per new screen
+- Workflows §15 Prototype Variants, §16 Diagrams, §17 UX Annotations & Write-ups
+- Reference files: prototype-variants, diagram, annotation, research-templates, brainstorming-playbook
+- Commands: `/prototype`, `/diagram`, `/annotate`, `/brainstorm` (16 total)
+- Cursor + Codex packaging via `plugins/sync-commands.mjs`
+- `install.sh` targets: claude, cursor, codex, opencode, custom
+
+### Changed
+- Portable `design-data/` paths (no OpenCode-only prefix in modules)
+- Figma export fallback bundle + per-platform MCP setup notes
+
+## [1.1.0] - 2026-05-31
+
+### Added
+- AI Mentor, UX Flows, UX Audit, Design Converter, Figma Export, Portfolio Builder
+- 12 slash commands; Claude Code plugin packaging
+- Goal-mode prompt (`prompts/goal-mode.md`, ≤4000 chars)
+- Two-tone brand: plum `#501E60` + violet `#7C3AED`
+
+## [1.0.0] - 2026-05-31
+
+### Added
+- Initial release: 8 workflows, 5 quality gates, OpenCode plugin, DesignPrompts.dev reference data

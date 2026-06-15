@@ -27,6 +27,23 @@ This example demonstrates the complete Interface Design workflow for creating an
 - Not overwhelmed: Information density is high but organized
 - Not frustrated: Fast drill-down paths from overview to details
 
+## Intent Declaration
+
+**Who**: DevOps engineers at a SaaS company managing 20+ microservices during on-call rotation in a NOC-style war room
+**What**: Monitor API health across all services and drill into specific errors when alerts fire before escalation
+**Feel**: Confident and in control — not anxious, not overwhelmed, not frustrated by hunt for data
+
+## Domain Exploration
+
+**Domain**: air traffic control tower, ICU monitor, NOC wall, manufacturing QC line, trading floor ticker, submarine control panel
+**Color world**: status green, warning amber, critical red, neutral slate, ocean blue, deep charcoal, highlight yellow
+**Signature**: status timeline — the status timeline anchors the header rail, each service row, drill-down panel, legend strip, and empty-state preview
+
+## Variance Selection
+
+**Vibe Archetype**: Control-room-technical
+**Layout Archetype**: Status-primary
+
 ### Step 2: Domain Exploration
 
 **5+ Domain Concepts**:
@@ -47,7 +64,7 @@ This example demonstrates the complete Interface Design workflow for creating an
 7. **Highlight Yellow**: #FCD34D (selected items, search matches)
 
 **Signature Element**:
-**Real-time Status Timeline** - A horizontal scrolling timeline showing service health over the last 4 hours with minute-level granularity. Each service gets a row, colored by status (green/amber/red). Incidents appear as "drops" in the timeline that you can click to drill into details. Think: Gantt chart meets heart rate monitor.
+**status timeline** — A horizontal scrolling status timeline showing service health over the last 4 hours with minute-level granularity. Each service gets a row, colored by status (green/amber/red). Incidents appear as "drops" in the status timeline that you can click to drill into details. Think: Gantt chart meets heart rate monitor.
 
 This is distinctive because:
 - Most dashboards show current state only or require clicking into charts
@@ -57,7 +74,7 @@ This is distinctive because:
 ### Step 3: Architecture Decisions
 
 **Layout**: Status-Primary (not sidebar-primary)
-- Top 1/3: Real-time status timeline (signature element)
+- Top 1/3: status timeline (signature element)
 - Middle 1/3: Service grid (cards showing current state + key metrics)
 - Bottom 1/3: Error stream (recent errors, filterable)
 
@@ -323,15 +340,13 @@ interface Error {
 - Signature: ✓ Real-time status timeline (unique and specific)
 
 ### Gate 3: Validation Tests ✓
-- **Swap Test**: If I swap status colors (green→red), does it break? YES → Good (colors are semantic)
-- **Squint Test**: Can I see service health from across the room? YES → Timeline and card borders visible
-- **Signature Test**: Could I implement this without the timeline? YES, but it would be worse → Timeline is valuable but not crutch
-- **Token Test**: Are hardcoded values avoided? YES → All colors, spacing, typography use tokens
+- **Swap Test**: PASS — swapping status colors (green→red) breaks semantics; palette is domain-bound
+- **Squint Test**: PASS — status timeline bands and card borders remain visible when blurred
+- **Signature Test**: PASS — status timeline appears in header rail, rows, drill-down, legend, and empty state
+- **Token Test**: PASS — colors, spacing, and typography use named tokens from the color world
 
 ### Gate 4: Variance Check ✓
 - Compared against last 2 designs (none in history yet)
-- Vibe: Control-room-technical (not minimalist-editorial or brutalist-data)
-- Layout: Status-primary (not sidebar-primary or center-stage)
 - Palette: Dark-status-semantic (not monochrome or colorful-playful)
 - Result: Unique ✓
 

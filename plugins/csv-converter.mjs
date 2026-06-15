@@ -12,6 +12,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { resolveDesignDataRoot } from './path-resolver.mjs';
 
 /**
  * Parse CSV file
@@ -145,7 +146,7 @@ export async function convertCSVData(workspaceDir = process.cwd()) {
   console.log('\n📊 Converting CSV data to JSON...\n');
   
   const sourceDir = path.join(workspaceDir, '.agents', 'skills', 'ui-ux-pro-max', 'data');
-  const destDir = path.join(workspaceDir, '.config', 'opencode', 'design-data', 'references');
+  const destDir = path.join(resolveDesignDataRoot({ workspaceDir }), 'references');
   
   // Check source directory
   if (!fs.existsSync(sourceDir)) {

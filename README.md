@@ -2,6 +2,8 @@
 
 A systematic, evidence-based product design agent for AI coding assistants — **Claude Code, Cursor, Codex, and OpenCode** — with strict quality enforcement gates.
 
+**New here?** → [Designer handoff guide](docs/handoff-guide.md) · [Documentation index](docs/README.md) · [Install](docs/installation.md)
+
 ## Features
 
 - **17 Specialized Workflows**: User research, design systems, interface design, product strategy, design critique, handoff specs, accessibility audits, Figma integration, AI mentor, UX flows, UX audit, design converter, Figma export, portfolio builder — plus prototype variants, diagrams, and UX annotations & write-ups
@@ -44,16 +46,18 @@ The Product Design Partner helps with:
 product-design-agent/
 ├── agent/
 │   ├── product-design-partner.md      [Core agent definition]
-│   └── modules/                       [5 modular subagents]
+│   └── modules/                       [6 focused modules]
 │       ├── INDEX.md                   [System map]
 │       ├── quality-gates.md           [5 gates + brand identity]
-│       ├── workflows.md               [17 complete workflows]
+│       ├── workflows.md               [17 complete workflows + process router]
+│       ├── platform-adaptation.md     [OpenCode, Claude, Cursor, Codex, generic LLM]
 │       ├── standards-and-anti-patterns.md
 │       └── frameworks-and-artifacts.md
 │
 ├── plugins/
 │   ├── product-design.js              [Core validation plugin for OpenCode]
 │   ├── design-validator.mjs           [Standalone validator (any LLM)]
+│   ├── path-resolver.mjs              [Cross-platform design-data paths]
 │   ├── sync-commands.mjs              [Generates OpenCode/Cursor/Codex commands]
 │   ├── design-migrator.js             [Legacy data migration]
 │   └── csv-converter.mjs              [DesignPrompts.dev converter]
@@ -73,6 +77,7 @@ product-design-agent/
 │       ├── annotation-guide.md        [callouts, redlines, decision records]
 │       ├── research-templates.md      [screener, discussion guide, JTBD]
 │       ├── brainstorming-playbook.md  [technique cards + convergence rubric]
+│       ├── product-design-process.md  [Double Diamond, phase routing]
 │       └── designprompts-*.json       [350KB - styles, colors, typography]
 │
 ├── commands/                          [16 canonical slash commands (Claude Code)]
@@ -102,6 +107,13 @@ product-design-agent/
 ```
 
 The install script detects your environment, copies files to the right locations, validates the install, and prints usage instructions.
+
+**macOS (Intel & Apple Silicon):** see **[docs/installation-macos.md](docs/installation-macos.md)** for Homebrew Node setup, per-app paths, and `--yes` non-interactive install.
+
+```bash
+./install.sh --target cursor --yes   # skip confirmation prompt
+./scripts/test.sh                    # verify syntax, sync, validator, hook
+```
 
 ### Option B: Manual
 
@@ -247,9 +259,17 @@ node plugins/design-validator.mjs design-output.md
 
 ## Documentation
 
-- [Installation Guide](docs/installation.md) - Detailed installation for all environments
-- [Architecture Overview](docs/architecture.md) - System design and module dependencies
-- [Workflow Reference](agent/modules/workflows.md) - All 17 workflows
+| Doc | Audience |
+|-----|----------|
+| **[Designer handoff guide](docs/handoff-guide.md)** | Design teams receiving this product |
+| **[Documentation index](docs/README.md)** | Full doc map |
+| [Installation](docs/installation.md) | All platforms |
+| [macOS installation](docs/installation-macos.md) | Mac setup |
+| [Workflow reference](docs/workflows.md) | 17 workflows + commands |
+| [Architecture](docs/architecture.md) | Maintainers |
+| [Contributing](docs/contributing.md) | Extending the agent |
+| [Changelog](CHANGELOG.md) | Version history |
+| [Examples](examples/README.md) | Sample prompts |
 
 ## Brand Identity
 
@@ -263,7 +283,7 @@ See `design-data/references/brand-identity.md` for complete guidelines.
 
 ## How It Works
 
-**Modular Loading**: The core agent (product-design-partner.md) is a lightweight router (~200 lines) that dynamically loads specialized modules as needed. This keeps context usage low while providing comprehensive guidance.
+**Modular Loading**: The core router loads six modules on demand (workflows, quality-gates, standards, frameworks, platform-adaptation, INDEX). See [architecture](docs/architecture.md).
 
 **Plugin Validation** (OpenCode): The product-design.js plugin runs automatically on every design output, blocking responses that violate quality gates. It also tracks variance history and suggests skills proactively.
 
@@ -286,3 +306,7 @@ See `design-data/references/brand-identity.md` for complete guidelines.
 ## License
 
 Licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Contributions welcome — see [docs/contributing.md](docs/contributing.md). Version history lives in [CHANGELOG.md](CHANGELOG.md).

@@ -1,11 +1,15 @@
 # Installation Guide
 
-This guide covers installation for Claude Code, Cursor, Codex, OpenCode, and other LLM environments.
+Install the Product Design Partner for Claude Code, Cursor, Codex, OpenCode, or a custom path.
+
+**Designers:** start with the **[Designer handoff guide](handoff-guide.md)** — it covers onboarding, slash commands, and what stays out of git.  
+**Documentation index:** [docs/README.md](README.md)
 
 ## Prerequisites
 
 | Platform | Needs |
 |---|---|
+| **macOS** | Node 18+ (`brew install node`), Xcode CLT — see **[macOS Installation Guide](installation-macos.md)** |
 | **Claude Code** | any recent version (plugin support preferred) |
 | **Cursor** | commands (`.cursor/commands`) + rules support |
 | **Codex** | custom prompts (`~/.codex/prompts`) + AGENTS.md support |
@@ -26,11 +30,11 @@ cd product-design-agent
 ./install.sh
 
 # Or specify target explicitly
-./install.sh --target claude      # Claude Code
-./install.sh --target cursor
-./install.sh --target codex
-./install.sh --target opencode
-./install.sh --target custom --path /your/path
+./install.sh --target claude --yes
+./install.sh --target cursor --yes
+./install.sh --target codex --yes
+./install.sh --target opencode --yes
+./install.sh --target custom --path /your/path --yes
 ```
 
 The script will:
@@ -129,6 +133,16 @@ mkdir -p $INSTALL_PATH/design-data/{projects,components,tokens,validation-histor
 
 ## Verification
 
+Run the full smoke suite from the repo root:
+
+```bash
+./scripts/test.sh
+```
+
+This checks plugin syntax, command sync (16 commands), goal-mode size, hook routing, and a passing validator fixture.
+
+### Per-platform smoke tests
+
 ### Test OpenCode Installation
 
 ```bash
@@ -159,39 +173,50 @@ If installed correctly, the agent will respond and be ready to work.
 ### Test Standalone Validator
 
 ```bash
-# Create a test file
-echo "Test design output" > test-design.md
-
-# Run validator
-node plugins/design-validator.mjs test-design.md
-
-# Should output validation results
+node plugins/design-validator.mjs examples/dashboard-design.md
+# Exit code 0 = all gates passed
 ```
 
 ## Configuration
 
-### Path Dependencies
+### Path resolution
 
-The plugins reference paths like:
-```javascript
-path.join(directory, '.config', 'opencode', 'design-data', ...)
-```
+Plugins and the validator resolve `design-data/` automatically via `plugins/path-resolver.mjs`:
 
-If you install to a custom location, you may need to update these paths in:
-- `plugins/product-design.js`
-- `plugins/design-validator.mjs`
+1. `DESIGN_DATA_DIR` environment variable (override)
+2. `<workspace>/design-data/` (repo checkout)
+3. `~/.product-design-partner/design-data/` (Cursor / Codex / Claude bundle)
+4. `~/.config/opencode/design-data/` (OpenCode)
 
-### Environment Variables (Optional)
+No manual path edits are required for normal installs.
 
-You can set these to customize behavior:
+### Environment variables (optional)
+
+Copy `.env.example` to `.env` locally (never commit `.env`):
 
 ```bash
 # Override default data directory
-export DESIGN_DATA_DIR="/custom/design-data"
-
-# Disable variance tracking (not recommended)
-export DISABLE_VARIANCE_TRACKING=true
+export DESIGN_DATA_DIR="$HOME/my-design-data"
 ```
+
+Optional (OpenCode plugin only, if supported in your build):
+
+```bash
+export DISABLE_VARIANCE_TRACKING=true   # not recommended
+```
+
+## Figma MCP (optional)
+
+Required for `/figma-export` and FigJam export in `/diagram`.
+
+| Platform | Setup |
+|----------|--------|
+| **Cursor** | Settings → MCP → add `https://mcp.figma.com/mcp` |
+| **Claude Code** | `claude mcp add --transport http figma https://mcp.figma.com/mcp` |
+| **Codex** | `~/.codex/config.toml` → `[mcp_servers.figma]` url = `https://mcp.figma.com/mcp` |
+| **OpenCode** | Add the server in `opencode.json` |
+
+Without MCP, the agent delivers fallbacks: Mermaid source, token JSON, and frame-by-frame build specs.
 
 ## Troubleshooting
 
@@ -291,7 +316,9 @@ cd ~/.codex/prompts && rm -f <same 16 files>
 ## Next Steps
 
 After installation:
-1. Read the [Architecture Overview](architecture.md) to understand how the system works
-2. Review the [Workflow Reference](../agent/modules/workflows.md) for usage patterns
-3. Try the [Examples](../examples/) to see the agent in action
-4. Check [Contributing Guide](contributing.md) if you want to extend functionality
+
+1. **[Designer handoff guide](handoff-guide.md)** — onboarding for design teams
+2. **[Workflow reference](workflows.md)** — all 17 workflows and slash commands
+3. **[Examples](../examples/getting-started.md)** — sample prompts
+4. **[Architecture](architecture.md)** — how the system fits together (maintainers)
+5. **[Contributing](contributing.md)** — extend workflows and references

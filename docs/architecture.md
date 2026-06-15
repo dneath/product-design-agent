@@ -1,6 +1,8 @@
 # Architecture Overview
 
-This document explains how the Product Design Partner agent works internally.
+How the Product Design Partner fits together. For day-to-day use, designers should start with [handoff-guide.md](handoff-guide.md) and [workflows.md](workflows.md).
+
+**Version:** 1.3.0 · **Workflows:** 17 · **Slash commands:** 16 · **Platforms:** OpenCode, Claude Code, Cursor, Codex
 
 ## High-Level Architecture
 
@@ -12,11 +14,10 @@ This document explains how the Product Design Partner agent works internally.
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Core Agent Router (~240 lines)                  │
+│              Core Agent Router (~270 lines)                  │
 │           product-design-partner.md                          │
-│  • Analyzes request                                          │
-│  • Routes to appropriate workflow                            │
-│  • Loads necessary modules on-demand                         │
+│  • Analyzes request + process phase (§0)                       │
+│  • Routes to workflow; loads modules on demand                 │
 └────────────────────────┬────────────────────────────────────┘
                          │
          ┌───────────────┼───────────────┐
@@ -91,9 +92,13 @@ This document explains how the Product Design Partner agent works internally.
 - Enforcement rules
 
 #### workflows.md
-- 14 complete workflow templates
-- Step-by-step procedures
-- Output formats
+- 17 workflow templates + §0 Process Router
+- Variant Protocol for all new UI
+- Step-by-step procedures and output paths under `design-data/projects/`
+
+#### platform-adaptation.md
+- Per-platform paths, enforcement, and model compensations
+- Cursor / Codex / Claude Code / OpenCode / generic LLM
 
 #### standards-and-anti-patterns.md
 - Banned pattern definitions
@@ -105,65 +110,31 @@ This document explains how the Product Design Partner agent works internally.
 - Documentation formats
 - Handoff specifications
 
-### 3. Plugin System (OpenCode)
+### 3. Plugin & tooling (`plugins/`)
 
-**Location**: `plugins/`
+#### product-design.js
+OpenCode plugin: gate enforcement, variance tracking, intent detection, DesignPrompts integration. Uses `path-resolver.mjs` for data paths.
 
-#### product-design.js (856 lines)
-**Purpose**: Primary validation plugin for OpenCode
+#### design-validator.mjs
+Standalone validator for any platform. Accepts markdown gate fields (`**Who**:`). CLI: `node plugins/design-validator.mjs <file>`.
 
-**What it does**:
-- Runs all 5 quality gates and blocks output that fails them
-- Scans for forbidden (ban-list) patterns
-- Tracks variance to prevent repetitive vibe+layout combinations
-- Injects context-aware guidance based on detected design intent
+#### path-resolver.mjs
+Resolves `design-data/` across repo, `~/.product-design-partner/`, OpenCode config, and `DESIGN_DATA_DIR`.
 
-**Hooks** (OpenCode):
-```javascript
-return {
-  // Append intent-aware guidance + skill suggestions to the prompt
-  'tui.prompt.append': async (input, output) => { /* ... */ },
+#### sync-commands.mjs
+Generates `opencode/command/`, `cursor/commands/`, `codex/prompts/` from canonical `commands/`.
 
-  // Validate design output against all 5 gates before it's shown (blocks on failure)
-  'tui.before-response': async (input, output) => { /* ... */ },
+#### design-migrator.js / csv-converter.mjs
+One-time migration and DesignPrompts CSV conversion.
 
-  // Preserve design context (intent, tokens, variance) across compaction
-  'experimental.session.compacting': async (input, output) => { /* ... */ }
-};
-```
+### 3.5 Distribution surfaces
 
-#### design-validator.mjs (394 lines)
-**Purpose**: Standalone validator for any LLM (no OpenCode required)
-
-**Usage**:
-```bash
-node design-validator.mjs design-output.md
-```
-
-**Output**:
-- Pass/fail for each gate
-- Detailed violation reports
-- Suggestions for fixes
-- Validation history entry
-
-#### design-migrator.js (297 lines)
-**Purpose**: One-time migration of legacy design data into the current `design-data/` structure
-
-#### csv-converter.mjs
-**Purpose**: Convert DesignPrompts.dev CSV exports to JSON
-
-**Usage**:
-```bash
-node csv-converter.mjs styles.csv > designprompts-styles.json
-```
-
-### 3.5 Distribution Surfaces
-
-Beyond the agent and plugins, the suite ships several ways to invoke the same system:
-
-- **Slash commands** — `commands/` (Claude Code) and `opencode/command/` (OpenCode), 12 each: the 6 new capabilities (`/mentor`, `/ux-flows`, `/ux-audit`, `/design-converter`, `/figma-export`, `/portfolio`) plus 6 wrapping existing workflows (`/research`, `/design-system`, `/interface`, `/critique`, `/handoff`, `/strategy`).
-- **Goal-mode prompt** — `prompts/goal-mode.md`, a portable, self-contained ≤4000-char system prompt for any single instruction field.
-- **Claude Code packaging** — `.claude-plugin/plugin.json` (manifest), `agents/product-design-partner.md` (subagent), and `hooks/` (a `UserPromptSubmit` intent nudge mirroring the OpenCode `tui.prompt.append` hook).
+- **16 slash commands** — canonical set in `commands/`; generated copies for OpenCode, Cursor, Codex
+- **Goal-mode prompt** — `prompts/goal-mode.md` (≤4000 chars, no file dependencies)
+- **Claude Code** — `.claude-plugin/plugin.json`, subagent, UserPromptSubmit hook
+- **Cursor** — `cursor/rules/product-design-partner.mdc` + commands
+- **Codex** — `codex/AGENTS.md` + prompts
+- **Smoke tests** — `scripts/test.sh`
 
 ### 4. Reference Data System
 
@@ -191,13 +162,8 @@ High-quality alternatives to banned patterns:
 - Intent-driven typography systems
 - Accessibility-first layouts
 
-#### Capability reference files
-Domain knowledge backing the 6 newer workflows:
-- **mentorship-frameworks.md** — idea → concept (JTBD, riskiest assumption, concept brief)
-- **ux-flow-patterns.md** — user flows, journey maps, information architecture
-- **ux-heuristics.md** — Nielsen's 10 heuristics + WCAG 2.1 AA checklist + severity
-- **design-converter-guide.md** — sketch/screenshot → tokens → UI (gates enforced)
-- **portfolio-frameworks.md** — CRP-PDSI case-study structure
+#### Capability reference files (13 markdown + 3 JSON)
+Includes: ban-list, brand-identity, premium-patterns, prototype-variants-guide, diagram-guide, annotation-guide, research-templates, brainstorming-playbook, product-design-process, mentorship, ux-flows, ux-heuristics, design-converter, portfolio — plus DesignPrompts JSON (~350KB).
 
 #### DesignPrompts.dev JSON Files (350KB total)
 
@@ -221,15 +187,14 @@ Domain knowledge backing the 6 newer workflows:
 **Location**: `design-data/`
 
 #### projects/
-User-generated project files. Each project contains:
+User-generated work — **gitignored** except `README.md`. See [design-data/projects/README.md](../design-data/projects/README.md).
+
+Typical layout per project:
+
 ```
-projects/
-  project-name/
-    brief.md          [Initial requirements]
-    research.md       [User research findings]
-    design-system.md  [Token definitions]
-    screens/          [Interface designs]
-    handoff/          [Developer specs]
+projects/my-product/
+  concept.md · research-plan.md · flows.md · variants.md
+  prototypes/*.html · annotations.md · handoff.md · case-study.md
 ```
 
 #### components/
@@ -468,26 +433,24 @@ OpenCode plugins run in isolated context with:
 
 ## Testing
 
-There is no `npm`/Jest harness yet; verification uses Node's built-in checks and the standalone validator.
-
-### Syntax Checks
 ```bash
-node --check plugins/product-design.js
+./scripts/test.sh
+```
+
+Individual checks:
+
+```bash
 node --check plugins/design-validator.mjs
-node --check hooks/inject-design-context.mjs
-```
-
-### Gate Validation
-```bash
-# Validate a design artifact against all 5 gates
+node plugins/sync-commands.mjs
 node plugins/design-validator.mjs examples/dashboard-design.md
-# Inspect the result under design-data/validation-history/
+wc -c prompts/goal-mode.md   # must be ≤ 4000
 ```
 
-### Install Smoke Test
+Install smoke test:
+
 ```bash
-echo y | ./install.sh --target custom --path /tmp/pda-test
-find /tmp/pda-test -type f | sort   # agent, plugins, commands, prompts, data
+./install.sh --target custom --path /tmp/pda-test --yes
+./scripts/test.sh
 rm -rf /tmp/pda-test
 ```
 
@@ -521,6 +484,7 @@ grep -r "pass.*false" design-data/validation-history/
 
 ## Next Steps
 
-- [Workflow Reference](../agent/modules/workflows.md) - All 17 workflows in detail
-- [Contributing Guide](contributing.md) - Extend the system
-- [Examples](../examples/) - Learn from real usage
+- [Designer handoff guide](handoff-guide.md)
+- [Workflow reference](workflows.md)
+- [Contributing](contributing.md)
+- [Examples](../examples/README.md)

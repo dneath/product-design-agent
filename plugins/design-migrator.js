@@ -12,13 +12,14 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline/promises';
+import { resolveDesignDataRoot } from './path-resolver.mjs';
 
 /**
  * Check if migration needed
  */
 export function needsMigration(workspaceDir) {
-  const markerPath = path.join(workspaceDir, '.config', 'opencode', 'design-data', '.migrated');
-  const designDir = path.join(workspaceDir, '.config', 'opencode', 'design-data');
+  const designDir = resolveDesignDataRoot({ workspaceDir });
+  const markerPath = path.join(designDir, '.migrated');
   
   // If marker exists, migration already done
   if (fs.existsSync(markerPath)) {
@@ -55,7 +56,8 @@ export async function promptForMigration() {
   console.log('  - design-system/MASTER.md');
   console.log('  - .interface-design/references/system.md');
   console.log('\nNew location:');
-  console.log('  - ~/.config/opencode/design-data/projects/[project-name]/system.md');
+  console.log('  - your design-data directory/projects/[project-name]/system.md');
+  console.log('    (repo checkout, DESIGN_DATA_DIR, or platform bundle — see path-resolver)');
   console.log('\nOriginal files will be preserved (not deleted).');
   console.log('Backups saved to design-data/backup-[timestamp]/\n');
   
@@ -109,7 +111,8 @@ function migrateArtifact(sourcePath, workspaceDir) {
   const projectName = inferProjectName(sourcePath, content);
   
   // Create destination directory
-  const destDir = path.join(workspaceDir, '.config', 'opencode', 'design-data', 'projects', projectName);
+  const designDir = resolveDesignDataRoot({ workspaceDir });
+  const destDir = path.join(designDir, 'projects', projectName);
   if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
   }
@@ -137,7 +140,8 @@ ${content}`;
  */
 function createBackup(filePaths, workspaceDir) {
   const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
-  const backupDir = path.join(workspaceDir, '.config', 'opencode', 'design-data', `backup-${timestamp}`);
+  const designDir = resolveDesignDataRoot({ workspaceDir });
+  const backupDir = path.join(designDir, `backup-${timestamp}`);
   
   if (!fs.existsSync(backupDir)) {
     fs.mkdirSync(backupDir, { recursive: true });
@@ -178,7 +182,7 @@ export async function runMigration(workspaceDir, options = {}) {
   console.log('\n🔄 Starting migration...\n');
   
   // Ensure design-data structure exists
-  const designDir = path.join(workspaceDir, '.config', 'opencode', 'design-data');
+  const designDir = resolveDesignDataRoot({ workspaceDir });
   if (!fs.existsSync(designDir)) {
     fs.mkdirSync(designDir, { recursive: true });
   }
@@ -244,7 +248,7 @@ ${backup.files.map(f => `- \`${f.original}\` → \`${f.backup}\``).join('\n')}
 
 - Original files preserved (not deleted)
 - Migration metadata added to migrated files
-- Re-run migration by deleting \`.config/opencode/design-data/.migrated\` marker file
+- Re-run migration by deleting the \`.migrated\` marker in your design-data directory
 `;
     
     fs.writeFileSync(logPath, logContent);

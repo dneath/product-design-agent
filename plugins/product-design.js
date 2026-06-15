@@ -13,6 +13,8 @@
 
 import fs from 'fs';
 import path from 'path';
+import { varianceHistoryPath, referencePath } from './path-resolver.mjs';
+import { validateDesign, formatValidationReport } from './design-validator.mjs';
 
 /**
  * @param {Object} context - Plugin context from OpenCode
@@ -29,7 +31,7 @@ export default async function ProductDesignPlugin({ directory, client }) {
   const varianceHistory = {
     maxEntries: 10,
     history: [], // { type, vibeArchetype, layoutArchetype, timestamp, signature }
-    filePath: path.join(directory, '.config', 'opencode', 'design-data', 'variance-history.json'),
+    filePath: varianceHistoryPath(directory),
     
     /**
      * Load history from disk
@@ -587,7 +589,7 @@ export default async function ProductDesignPlugin({ directory, client }) {
    */
   async function loadDesignPromptsReference(style) {
     try {
-      const stylesPath = path.join(directory, '.config', 'opencode', 'design-data', 'references', 'designprompts-styles.json');
+      const stylesPath = referencePath(directory, 'designprompts-styles.json');
       
       if (fs.existsSync(stylesPath)) {
         const data = JSON.parse(fs.readFileSync(stylesPath, 'utf8'));
@@ -680,106 +682,14 @@ export default async function ProductDesignPlugin({ directory, client }) {
       // Check 1: Detect if this is design output
       const isDesignOutput = /```(jsx|tsx|css|html)|design|mockup|prototype|interface/i.test(responseText);
       if (!isDesignOutput) return;
-      
-      // Check 2: Intent declaration present?
-      const hasIntent = /\*\*who\*\*:|who:/i.test(responseText) &&
-                        /\*\*what\*\*:|what:/i.test(responseText) &&
-                        /\*\*feel\*\*:|feel:/i.test(responseText);
-      if (!hasIntent) {
+
+      const results = await validateDesign(responseText, directory, {
+        userPrompt: input.prompt || '',
+      });
+      if (!results.passed) {
         output.block = true;
-        output.blockReason = `❌ GATE 1 FAILED: Intent declaration missing.
-
-Must declare before design output:
-- **Who**: Specific human (role + context + mood + environment)
-- **What**: Specific task (verb + object + success state)
-- **Feel**: Specific emotion/tone (NOT "clean", "modern", "professional")
-
-Please add intent declaration and try again.`;
+        output.blockReason = formatValidationReport(results);
         return;
-      }
-      
-      // Check for forbidden generic terms in intent
-      const forbiddenTerms = ['clean', 'modern', 'intuitive', 'professional', 'sleek', 'users', 'people'];
-      const foundForbidden = forbiddenTerms.filter(term => 
-        new RegExp(`(who|what|feel):[^\\n]*${term}`, 'i').test(responseText)
-      );
-      
-      if (foundForbidden.length > 0) {
-        output.block = true;
-        output.blockReason = `❌ GATE 1 FAILED: Intent uses forbidden generic terms: ${foundForbidden.join(', ')}
-
-Avoid: "clean", "modern", "intuitive", "professional", "sleek", "users", "people"
-Use: Specific human roles, contexts, emotions, and tasks
-
-Please refine intent with specific terms and try again.`;
-        return;
-      }
-      
-      // Check 3: Domain exploration present?
-      const hasDomain = /\*\*domain\*\*:|domain:/i.test(responseText) &&
-                        /\*\*color world\*\*:|color world:/i.test(responseText) &&
-                        /\*\*signature\*\*:|signature:/i.test(responseText);
-      if (!hasDomain) {
-        output.block = true;
-        output.blockReason = `❌ GATE 2 FAILED: Domain exploration missing.
-
-Must identify before implementation:
-- **Domain**: 5+ concepts from product's world
-- **Color world**: 5+ natural colors FROM DOMAIN
-- **Signature**: 1 unique element that appears 5+ times
-
-Please add domain exploration and try again.`;
-        return;
-      }
-      
-      // Check 4: Validation tests run?
-      const hasValidation = /swap test:/i.test(responseText) &&
-                            /squint test:/i.test(responseText) &&
-                            /signature test:/i.test(responseText) &&
-                            /token test:/i.test(responseText);
-      if (!hasValidation) {
-        output.block = true;
-        output.blockReason = `❌ GATE 3 FAILED: Validation tests missing.
-
-Must run and document ALL 4 tests:
-- **Swap test**: Would it feel different with common alternatives?
-- **Squint test**: Hierarchy visible when blurred?
-- **Signature test**: Point to 5+ instances?
-- **Token test**: CSS variables belong to product's world?
-
-Please run validation tests and try again.`;
-        return;
-      }
-      
-      // Check 5: Ban list violations?
-      const banPatterns = [
-        { pattern: /border-(left|right):\s*\d+px\s+solid/i, name: 'side-stripe borders', alternative: 'Use full border with subtle color or shadow instead' },
-        { pattern: /background:\s*linear-gradient.*-webkit-background-clip:\s*text/i, name: 'gradient text', alternative: 'Use solid color with opacity variation' },
-        { pattern: /backdrop-filter:\s*blur/i, name: 'glassmorphism as default', alternative: 'Reserve for specific moments, not entire UI' },
-        { pattern: /font-family:\s*['"]?(roboto|arial|helvetica)['";\s]/i, name: 'generic fonts without justification', alternative: 'Use brand fonts (Inter + Fragment Mono)' },
-        { pattern: /transition:.*\b(width|height|top|left|bottom|right)\b/i, name: 'animating non-transform properties', alternative: 'Only animate transform and opacity' },
-        { pattern: /ease-in-out|linear/i, name: 'generic easing', alternative: 'Use custom cubic-bezier curves' }
-      ];
-      
-      for (const ban of banPatterns) {
-        if (ban.pattern.test(responseText)) {
-          // Check for user override
-          const overridePattern = new RegExp(`use.*${ban.name}.*anyway`, 'i');
-          if (overridePattern.test(input.prompt || '')) {
-            output.append.push(`\n⚠️ **Ban List Override**: ${ban.name} used per your request, but not recommended. ${ban.alternative}\n`);
-            continue;
-          }
-          
-          output.block = true;
-          output.blockReason = `❌ GATE 5 FAILED: Banned pattern detected: ${ban.name}
-
-**Why it's banned**: Signals AI-generated output, reduces craft
-**Alternative**: ${ban.alternative}
-
-To override, explicitly request: "use ${ban.name} anyway"
-Otherwise, please redesign without this pattern.`;
-          return;
-        }
       }
       
       // Check 6: Variance check (for interface types)

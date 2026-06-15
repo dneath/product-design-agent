@@ -1,6 +1,6 @@
-# Contributing to Product Design Partner Agent
+# Contributing to Product Design Partner
 
-Thank you for your interest in contributing! This guide will help you extend and improve the agent.
+Thank you for improving the agent. **Designers** extending workflows or references should also read [handoff-guide.md](handoff-guide.md) for where personal work vs shared repo content belongs.
 
 ## Code of Conduct
 
@@ -55,20 +55,20 @@ No build step or dependencies — the plugins, standalone validator, and Claude 
 ### Local Testing Environment
 
 ```bash
-# 1. Create test installation
-mkdir -p ~/test-design-agent
-export TEST_INSTALL_PATH=~/test-design-agent
+# Full smoke suite (recommended)
+./scripts/test.sh
 
-# 2. Install to test location
-./install.sh --target custom --path $TEST_INSTALL_PATH
+# Install to a scratch location
+./install.sh --target custom --path /tmp/pda-test --yes
+node /tmp/pda-test/plugins/design-validator.mjs examples/dashboard-design.md
+rm -rf /tmp/pda-test
+```
 
-# 3. Verify: plugin syntax + validate a sample artifact
-node --check plugins/product-design.js
-node plugins/design-validator.mjs examples/dashboard-design.md
+After editing slash commands, regenerate platform copies:
 
-# 4. Test with OpenCode
-# Update opencode config to point to test location
-opencode --config test-opencode.json
+```bash
+node plugins/sync-commands.mjs
+git diff opencode/command cursor/commands codex/prompts
 ```
 
 ## Architecture Rules
@@ -84,23 +84,23 @@ opencode --config test-opencode.json
 ### File Structure
 
 ```
-product-design--agent/
-├── agent/                  [Agent definition files]
-│   ├── *.md               [Markdown only, no code]
-│   └── modules/           [Loadable subagents]
-├── plugins/               [JavaScript/Node.js code]
-│   ├── *.js              [ES modules]
-│   └── *.mjs             [ES modules (explicit)]
+product-design-agent/
+├── agent/                  Agent router + modules (markdown only)
+├── commands/               Canonical slash commands — edit here
+├── cursor/                 Generated Cursor commands + rule
+├── codex/                  Generated Codex prompts + AGENTS.md
+├── opencode/command/       Generated OpenCode commands
+├── plugins/                Validators, sync, path-resolver (Node ESM)
 ├── design-data/
-│   └── references/        [Static reference data]
-├── commands/              [Claude Code slash commands]
-├── opencode/command/      [OpenCode slash commands]
-├── prompts/               [Portable goal-mode prompt]
-├── agents/                [Claude Code subagent]
-├── hooks/                 [Claude Code hooks]
-├── .claude-plugin/        [Claude Code plugin manifest]
-├── docs/                  [Documentation (you are here)]
-└── examples/              [Test cases and demos]
+│   ├── references/         Shared playbooks (commit)
+│   └── projects/           Designer output (gitignored)
+├── docs/                   Documentation index + guides
+├── examples/               Sample prompts
+├── scripts/test.sh         Smoke tests
+├── hooks/                  Claude Code UserPromptSubmit hook
+├── prompts/                Goal-mode portable prompt
+├── agents/                 Claude Code subagent stub
+└── .claude-plugin/         Plugin manifest
 ```
 
 ### Naming Conventions
@@ -217,7 +217,7 @@ If request involves:
 [Full audit with findings and recommendations]
 ```
 
-5. **Update documentation** in `agent/modules/workflows.md` (and add a slash command in `commands/` + `opencode/command/`)
+5. **Update documentation** in `agent/modules/workflows.md`, add a command in `commands/`, run `node plugins/sync-commands.mjs`
 
 6. **Test**:
 
@@ -496,26 +496,29 @@ function validateAnimationTiming(design) {
 
 ## Testing
 
-### Verifying Changes
-
-There is no `npm`/Jest harness yet. Verify with Node's built-in checks and the standalone validator:
+Run the smoke suite before opening a PR:
 
 ```bash
-# Syntax-check the plugins and hook
-node --check plugins/product-design.js
-node --check plugins/design-validator.mjs
-node --check hooks/inject-design-context.mjs
-
-# Run all 5 gates against a design artifact
-node plugins/design-validator.mjs examples/dashboard-design.md
-
-# Keep the portable prompt within budget
-wc -m prompts/goal-mode.md   # must be <= 4000
+./scripts/test.sh
 ```
 
-### Writing Tests
+This checks plugin/hook syntax, command sync (16 commands), generated command drift, goal-mode size (≤4000 chars), hook routing, validator fixtures, and `examples/dashboard-design.md`.
 
-No test harness ships today. If you add one (e.g. Jest or `node --test`), `validateDesign` from `plugins/design-validator.mjs` is the exported entry point; tests would look like:
+Individual checks (optional):
+
+```bash
+node plugins/design-validator.mjs examples/dashboard-design.md
+node plugins/sync-commands.mjs
+wc -c prompts/goal-mode.md   # must be ≤ 4000
+```
+
+## Continuous integration
+
+GitHub Actions runs `./scripts/test.sh` on every push and PR to `main` (see `.github/workflows/test.yml`). Run the same command locally before opening a PR.
+
+### Future: node --test harness
+
+Optional Jest or `node --test` coverage can import `validateDesign` from `plugins/design-validator.mjs`:
 
 ```javascript
 // example.test.js — uses the real exported validateDesign()
@@ -551,11 +554,12 @@ describe('Gate validation', () => {
 
 When adding features, update:
 
-1. **README.md**: If it changes user-facing behavior
-2. **docs/architecture.md**: If it changes internal structure
-3. **agent/modules/workflows.md**: If adding/changing workflows
-4. **docs/installation.md**: If it affects installation
-5. **CHANGELOG.md**: Always (see versioning section)
+1. **README.md** — user-facing behavior
+2. **CHANGELOG.md** — version entry
+3. **docs/workflows.md** or **agent/modules/workflows.md** — workflow changes
+4. **docs/handoff-guide.md** — if onboarding steps change
+5. **docs/installation.md** — install impact
+6. **docs/architecture.md** — structural changes
 
 ### Documentation Style
 
@@ -601,12 +605,13 @@ We use [Semantic Versioning](https://semver.org/):
 
 Before submitting PR:
 
+- [ ] `./scripts/test.sh` passes
 - [ ] Code follows existing style
-- [ ] Plugins/hook syntax-check (`node --check`) and the validator runs on a sample artifact
-- [ ] New features have tests
+- [ ] If `commands/` changed: `node plugins/sync-commands.mjs` and commit generated files
 - [ ] Documentation updated
 - [ ] CHANGELOG.md updated
 - [ ] Examples provided for new features
+- [ ] No secrets or `design-data/projects/` content in the diff
 - [ ] Commit messages are clear
 
 ### Review Criteria
