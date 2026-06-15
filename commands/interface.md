@@ -4,6 +4,11 @@ argument-hint: "[what to design + who it's for]"
 allowed-tools: Read, Grep, Glob, Write
 ---
 
+**Delegation (prefer isolated context for large UI output):**
+- **Claude Code:** spawn subagent `interface-design` with the brief below.
+- **Cursor:** use agent `interface-design` (`cursor/agents/interface-design.md` or `~/.cursor/agents/`).
+- **Codex / OpenCode:** run this command in a focused session; load only the modules listed below (OpenCode: `@product-design-partner` + plugin enforcement).
+
 Act as the **Product Design Partner** for Interface Design. **All 5 gates are mandatory** — produce no UI before they pass.
 
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):

@@ -2,6 +2,11 @@
 
 # /figma-export — Export a gates-passing design or design system into Figma via the Figma MCP.
 
+**Delegation (prefer isolated context for Figma MCP work):**
+- **Claude Code:** spawn subagent `figma-export` with the brief below.
+- **Cursor:** use agent `figma-export` (`cursor/agents/figma-export.md` or `~/.cursor/agents/`).
+- **Codex / OpenCode:** run this command in a focused session; ensure Figma MCP is connected or deliver §13 fallback bundle.
+
 Act as the **Product Design Partner** in Figma Export (write) mode.
 
 Read for method (paths assume the bundle installed at `~/.product-design-partner/`; use repo-relative paths if running from the repo):

@@ -2,7 +2,7 @@
 
 How the Product Design Partner fits together. For day-to-day use, designers should start with [handoff-guide.md](handoff-guide.md) and [workflows.md](workflows.md).
 
-**Version:** 1.3.0 · **Workflows:** 17 · **Slash commands:** 16 · **Platforms:** OpenCode, Claude Code, Cursor, Codex
+**Version:** 1.3.1 · **Workflows:** 17 · **Slash commands:** 16 · **Subagents:** 4 · **Platforms:** OpenCode, Claude Code, Cursor, Codex
 
 ## High-Level Architecture
 
@@ -18,7 +18,20 @@ How the Product Design Partner fits together. For day-to-day use, designers shou
 │           product-design-partner.md                          │
 │  • Analyzes request + process phase (§0)                       │
 │  • Routes to workflow; loads modules on demand                 │
+│  • Delegates heavy work to specialized subagents (optional)   │
 └────────────────────────┬────────────────────────────────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+         ▼               ▼               ▼
+┌────────────────┐ ┌────────────┐ ┌────────────┐
+│ Heavy subagents│ │ Workflow   │ │  Quality   │
+│ interface-design│ │  Module    │ │   Gates    │
+│ prototype-variants│ │            │ │   Module   │
+│ figma-export   │ │            │ │            │
+└───────┬────────┘ └─────┬──────┘ └─────┬──────┘
+        │                │               │
+        └────────────────┼───────────────┘
                          │
          ┌───────────────┼───────────────┐
          │               │               │
@@ -124,6 +137,9 @@ Resolves `design-data/` across repo, `~/.product-design-partner/`, OpenCode conf
 #### sync-commands.mjs
 Generates `opencode/command/`, `cursor/commands/`, `codex/prompts/` from canonical `commands/`.
 
+#### sync-agents.mjs
+Generates `cursor/agents/` from canonical `agents/` (path rewrites for bundle install).
+
 #### design-migrator.js / csv-converter.mjs
 One-time migration and DesignPrompts CSV conversion.
 
@@ -131,8 +147,8 @@ One-time migration and DesignPrompts CSV conversion.
 
 - **16 slash commands** — canonical set in `commands/`; generated copies for OpenCode, Cursor, Codex
 - **Goal-mode prompt** — `prompts/goal-mode.md` (≤4000 chars, no file dependencies)
-- **Claude Code** — `.claude-plugin/plugin.json`, subagent, UserPromptSubmit hook
-- **Cursor** — `cursor/rules/product-design-partner.mdc` + commands
+- **Claude Code** — `.claude-plugin/plugin.json`, 4 subagents, UserPromptSubmit hook
+- **Cursor** — `cursor/rules/product-design-partner.mdc` + commands + agents
 - **Codex** — `codex/AGENTS.md` + prompts
 - **Smoke tests** — `scripts/test.sh`
 

@@ -12,6 +12,24 @@ The Product Design Partner runs on four first-class platforms plus generic LLMs.
 | **Codex** | `~/.codex/AGENTS.md` | `~/.codex/prompts/` | **Instruction-only** + optional validator | Same as Cursor bundle |
 | **Generic LLM** | `prompts/goal-mode.md` or agent markdown | None (paste prompt) | Manual — run `design-validator.mjs` | Repo `design-data/` or `DESIGN_DATA_DIR` |
 
+## Heavy-workflow subagents
+
+Gate rules live only in `quality-gates.md` and `workflows.md`. Subagent stubs in `agents/` point at those files — they do not copy gate text.
+
+| Subagent | Workflow | When to spawn |
+|----------|----------|---------------|
+| `interface-design` | §3 Interface Design | Dashboards, admin panels, new gated UI |
+| `prototype-variants` | §15 Prototype Variants | 2–3 runnable HTML variants |
+| `figma-export` | §13 Figma Export | Push gated design/tokens to Figma |
+| `product-design-partner` | Router | Everything else; delegates heavy work above |
+
+| Platform | Native subagent files | How to use |
+|----------|----------------------|------------|
+| **Claude Code** | `agents/*.md` (plugin or `~/.claude/agents/`) | Spawn from picker; parent `product-design-partner` delegates |
+| **Cursor** | `cursor/agents/*.md` → `~/.cursor/agents/` | Select agent in Cursor; or slash command + agent |
+| **Codex** | None | Run `/interface`, `/prototype`, or `/figma-export` in a **fresh task**; load only listed modules; run validator manually |
+| **OpenCode** | None | `@product-design-partner` + slash commands; plugin auto-enforces gates |
+
 ## Path resolution (all platforms)
 
 Resolve paths in this order:
@@ -32,16 +50,16 @@ Plugins use `plugins/path-resolver.mjs`. Agents should prefer **repo-relative** 
 - **Validate manually**: `node ~/.config/opencode/plugins/design-validator.mjs artifact.md`
 
 ### Claude Code (macOS, Linux, Windows)
-- **Preferred install**: Plugin from repo (`.claude-plugin/plugin.json`) — enables 16 commands, subagent, and hook.
-- **Personal install**: `./install.sh --target claude` → `~/.claude/commands/` + bundle at `~/.product-design-partner/`.
+- **Preferred install**: Plugin from repo (`.claude-plugin/plugin.json`) — enables 16 commands, 4 subagents, and hook.
+- **Personal install**: `./install.sh --target claude` → `~/.claude/commands/` + all `agents/*.md` + bundle at `~/.product-design-partner/`.
 - **Paths in commands**: `${CLAUDE_PLUGIN_ROOT}/agent/modules/...` when plugin-mounted; else `~/.product-design-partner/agent/modules/...`.
-- **Context**: Use subagent for long interface/prototype work to preserve main thread.
+- **Context**: Use `interface-design`, `prototype-variants`, or `figma-export` subagents for long output; generalist handles the rest.
 - **macOS note**: Same paths on Intel and Apple Silicon; home is `/Users/<you>/`.
 
 ### Cursor (macOS, Linux, Windows)
 - **Rule attachment**: Copy `cursor/rules/product-design-partner.mdc` into **project** `.cursor/rules/` for gate enforcement on that repo.
 - **Commands**: Global `~/.cursor/commands/` or project `.cursor/commands/`. Cursor **appends** user text after the command — there is no `$ARGUMENTS` substitution.
-- **Context**: Rule is short; **Read** the full router (`agent/product-design-partner.md`) when a slash command fires.
+- **Context**: Rule is short; **Read** the full router when a slash command fires. For `/interface`, `/prototype`, `/figma-export`, prefer agents in `~/.cursor/agents/`.
 - **MCP**: Figma MCP via Settings → MCP → `https://mcp.figma.com/mcp`. Without MCP, deliver Mermaid + token JSON fallbacks.
 - **macOS**: Install with `./install.sh --target cursor`; bundle at `~/.product-design-partner/`.
 
@@ -49,7 +67,7 @@ Plugins use `plugins/path-resolver.mjs`. Agents should prefer **repo-relative** 
 - **Global identity**: `~/.codex/AGENTS.md` (append `codex/AGENTS.md` if file exists).
 - **Prompts**: `~/.codex/prompts/*.md` — supports `$ARGUMENTS`.
 - **MCP**: `~/.codex/config.toml` → `mcp_servers.figma` → `https://mcp.figma.com/mcp`.
-- **Optimization**: Codex sessions are often task-focused — lead with the matched slash prompt, then load only the workflow section needed.
+- **Optimization**: Codex sessions are often task-focused — for heavy UI, start a fresh task with `/interface`, `/prototype`, or `/figma-export`; load only the workflow section + validator before handoff.
 
 ### Generic / other LLMs (ChatGPT, Gemini, local models)
 - Paste `prompts/goal-mode.md` into the system/custom-instructions field (≤4000 chars).

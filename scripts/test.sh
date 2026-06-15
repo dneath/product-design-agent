@@ -9,6 +9,7 @@ echo "== Syntax checks =="
 node --check plugins/design-validator.mjs
 node --check plugins/path-resolver.mjs
 node --check plugins/sync-commands.mjs
+node --check plugins/sync-agents.mjs
 node --check plugins/product-design.js
 node --check hooks/inject-design-context.mjs
 python3 -m json.tool .claude-plugin/plugin.json > /dev/null
@@ -21,6 +22,17 @@ echo "== Generated commands in sync =="
 if ! git diff --quiet opencode/command cursor/commands codex/prompts; then
   echo "ERROR: sync-commands.mjs produced diffs — commit regenerated files or fix commands/"
   git diff --stat opencode/command cursor/commands codex/prompts
+  exit 1
+fi
+
+echo "== Agent sync =="
+node plugins/sync-agents.mjs
+test "$(ls agents/*.md | wc -l)" -ge 4
+
+echo "== Generated agents in sync =="
+if ! git diff --quiet cursor/agents; then
+  echo "ERROR: sync-agents.mjs produced diffs — commit regenerated files or fix agents/"
+  git diff --stat cursor/agents
   exit 1
 fi
 

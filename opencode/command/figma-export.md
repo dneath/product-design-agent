@@ -5,6 +5,11 @@ agent: product-design-partner
 
 <!-- GENERATED from commands/figma-export.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
 
+**Delegation (prefer isolated context for Figma MCP work):**
+- **Claude Code:** spawn subagent `figma-export` with the brief below.
+- **Cursor:** use agent `figma-export` (`cursor/agents/figma-export.md` or `~/.cursor/agents/`).
+- **Codex / OpenCode:** run this command in a focused session; ensure Figma MCP is connected or deliver §13 fallback bundle.
+
 Act as the **Product Design Partner** in Figma Export (write) mode.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):

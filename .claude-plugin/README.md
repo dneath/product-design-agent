@@ -7,16 +7,27 @@ This directory holds the Claude Code plugin manifest. Components are discovered 
 | Component | Path | Purpose |
 |-----------|------|---------|
 | Commands | `../commands/*.md` | 16 slash commands (interface, audit, brainstorm, …) |
-| Agent | `../agents/product-design-partner.md` | Subagent stub |
+| Agents | `../agents/*.md` | 4 subagents — generalist + 3 heavy-workflow specialists |
 | Hooks | `../hooks/hooks.json` | UserPromptSubmit intent nudge |
 | Hook script | `../hooks/inject-design-context.mjs` | Routes design prompts to slash commands |
 | Router | `../agent/product-design-partner.md` | Full operating manual |
-| References | `../design-data/references/` | Playbooks and DesignPrompts JSON |
+| References | `../design-data/references/` | Playbooks |
+
+### Subagents
+
+| Agent | Use for |
+|-------|---------|
+| `product-design-partner` | Routing, light workflows, ambiguous scope |
+| `interface-design` | Dashboards, admin panels, gated UI (workflows §3) |
+| `prototype-variants` | 2–3 runnable HTML variants (workflows §15) |
+| `figma-export` | Push gated design to Figma (workflows §13) |
+
+Gate rules live in `agent/modules/quality-gates.md` and `workflows.md` — subagents read those files; they do not duplicate gates.
 
 ## Install
 
 1. In Claude Code: `/plugin` → add this repository.
-2. Verify: `/interface` autocompletes; typing "design a dashboard" triggers the hook nudge.
+2. Verify: `/interface` autocompletes; typing "design a dashboard" triggers the hook nudge; subagents appear in the agent picker.
 
 ## Manifest
 

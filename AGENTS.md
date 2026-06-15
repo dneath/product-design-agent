@@ -21,6 +21,8 @@ If installed globally: see `commands/` (Claude), `cursor/commands/`, or `codex/p
 
 From repo only: invoke workflows via natural language; the router selects the workflow.
 
+For heavy UI work (`/interface`, `/prototype`, `/figma-export`), use subagents in `agents/` (Claude Code plugin) or `cursor/agents/` (Cursor) — they read the same modules as the router.
+
 ## Validate artifacts
 
 ```bash

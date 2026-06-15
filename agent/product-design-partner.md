@@ -99,6 +99,8 @@ When user requests specific work, load the relevant module and follow its workfl
 
 **CRITICAL**: This is the most gate-intensive workflow. All 5 gates MUST pass. Never present a single take for new UI.
 
+**Heavy workflow:** Prefer specialized subagent when platform supports it (`interface-design`). Fall back to loading modules in main thread on Codex/OpenCode.
+
 ### 4. Product Strategy / Brainstorm
 **Trigger**: "brainstorm", "ideation", "problem exploration", "HMW", "opportunity"  
 **Action**: Load `./modules/workflows.md` → Product Strategy Workflow (divergence quota: ≥15 ideas, ≥3 techniques)  
@@ -150,6 +152,8 @@ When user requests specific work, load the relevant module and follow its workfl
 **Action**: Load `./modules/workflows.md` → Figma Export Workflow  
 **Load Figma skill FIRST**: `figma:figma-generate-design` or `figma:figma-generate-library` before any Figma write tool
 
+**Heavy workflow:** Prefer specialized subagent when platform supports it (`figma-export`). Fall back to loading modules in main thread on Codex/OpenCode.
+
 ### 14. Portfolio Builder
 **Trigger**: "case study", "portfolio", "write up this project", "show this work"  
 **Action**: Load `./modules/workflows.md` → Portfolio Builder Workflow  
@@ -163,6 +167,8 @@ When user requests specific work, load the relevant module and follow its workfl
 3. Load `design-data/references/prototype-variants-guide.md`
 
 **CRITICAL**: 2-3 genuinely distinct runnable variants (own Vibe+Layout + own signature each), comparison table + recommendation, then STOP — the user picks.
+
+**Heavy workflow:** Prefer specialized subagent when platform supports it (`prototype-variants`). Fall back to loading modules in main thread on Codex/OpenCode.
 
 ### 16. Diagrams
 **Trigger**: "diagram", "flowchart", "sequence diagram", "state machine", "ERD", "architecture diagram", "Mermaid", "FigJam"  

@@ -56,6 +56,8 @@ copy_bundle() {
     cp design-data/references/*.md design-data/references/*.json "$root/design-data/references/"
     cp plugins/*.js plugins/*.mjs "$root/plugins/" 2>/dev/null || true
     cp prompts/*.md "$root/prompts/" 2>/dev/null || true
+    mkdir -p "$root/agents"
+    cp agents/*.md "$root/agents/" 2>/dev/null || true
     touch "$root/design-data/projects/.gitkeep" "$root/design-data/components/.gitkeep" \
           "$root/design-data/tokens/.gitkeep" "$root/design-data/validation-history/.gitkeep"
     print_success "Bundle copied"
@@ -82,18 +84,19 @@ install_claude() {
     copy_bundle "$BUNDLE_DIR"
     mkdir -p "$HOME/.claude/commands" "$HOME/.claude/agents"
     cp commands/*.md "$HOME/.claude/commands/"
-    cp agents/product-design-partner.md "$HOME/.claude/agents/"
-    print_success "Claude Code install complete (personal commands + subagent)"
+    cp agents/*.md "$HOME/.claude/agents/"
+    print_success "Claude Code install complete (personal commands + subagents)"
     print_info "Preferred alternative: install as a plugin — run /plugin in Claude Code and add this repo (uses .claude-plugin/plugin.json; enables the UserPromptSubmit hook)."
 }
 
 install_cursor() {
     print_info "Installing for Cursor"
     copy_bundle "$BUNDLE_DIR"
-    mkdir -p "$HOME/.cursor/commands" "$HOME/.cursor/rules"
+    mkdir -p "$HOME/.cursor/commands" "$HOME/.cursor/rules" "$HOME/.cursor/agents"
     cp cursor/commands/*.md "$HOME/.cursor/commands/"
     cp cursor/rules/*.mdc "$HOME/.cursor/rules/" 2>/dev/null || true
-    print_success "Cursor install complete (global commands)"
+    cp cursor/agents/*.md "$HOME/.cursor/agents/" 2>/dev/null || true
+    print_success "Cursor install complete (global commands + agents)"
     print_info "For per-project use, also copy cursor/rules/product-design-partner.mdc into the project's .cursor/rules/ (rules attach per-project)."
 }
 
@@ -134,10 +137,12 @@ validate_installation() {
         claude)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
             [ -f "$HOME/.claude/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
+            [ -f "$HOME/.claude/agents/interface-design.md" ] || { print_error "Subagents missing"; ((errors++)); }
             ;;
         cursor)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
             [ -f "$HOME/.cursor/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
+            [ -f "$HOME/.cursor/agents/interface-design.md" ] || { print_error "Subagents missing"; ((errors++)); }
             ;;
         codex)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }

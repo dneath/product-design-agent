@@ -2,6 +2,17 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] - 2026-06-15
+
+### Added
+- Targeted subagents for heavy workflows: `interface-design`, `prototype-variants`, `figma-export` (stubs in `agents/`; gate rules remain in `quality-gates.md` + `workflows.md` only)
+- `plugins/sync-agents.mjs` — generates `cursor/agents/` from canonical `agents/`
+- Delegation blocks in `/interface`, `/prototype`, `/figma-export` commands; router and hook nudges updated
+
+### Changed
+- `install.sh` installs all subagents for Claude Code and Cursor; bundle includes `agents/`
+- Docs: platform-adaptation, handoff guide, architecture, INDEX, AGENTS.md, Codex AGENTS.md
+
 ## [1.3.0] - 2026-06-15
 
 ### Added

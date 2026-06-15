@@ -74,8 +74,10 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 - **`cursor/commands/*.md`** (16) + **`cursor/rules/*.mdc`** — Cursor commands (GENERATED) + always-available rule
 - **`codex/prompts/*.md`** (16) + **`codex/AGENTS.md`** — Codex custom prompts (GENERATED) + global instructions
 - **`plugins/sync-commands.mjs`** — generates the OpenCode/Cursor/Codex sets from `commands/` (single source of truth)
+- **`plugins/sync-agents.mjs`** — generates `cursor/agents/` from `agents/` (single source of truth)
 - **`prompts/goal-mode.md`** — portable, self-contained ≤4000-char system prompt
-- **`agents/product-design-partner.md`** — Claude Code subagent definition
+- **`agents/*.md`** (4) — Claude Code subagents: `product-design-partner`, `interface-design`, `prototype-variants`, `figma-export`
+- **`cursor/agents/*.md`** (4) — Cursor subagents (GENERATED from `agents/`)
 - **`.claude-plugin/plugin.json`** — Claude Code plugin manifest
 - **`hooks/`** — `hooks.json` + `inject-design-context.mjs` (UserPromptSubmit intent nudge)
 

@@ -17,6 +17,10 @@ Read the router and follow it exactly: `~/.product-design-partner/agent/product-
 5. **Evidence**: trace claims to sources with confidence (High 5+ / Med 3-4 / Low 1-2); never invent research. Document decisions as decision records (annotation-guide.md).
 6. Vague request → ask one sharp question first.
 
+## Heavy workflows (no native subagents on Codex)
+
+For `/interface`, `/prototype`, and `/figma-export`, start a **fresh task** with the matching prompt. Load only the modules listed in that prompt — do not paste the full router. Run `node ~/.product-design-partner/plugins/design-validator.mjs <artifact>` before handoff.
+
 ## Custom prompts (installed in `~/.codex/prompts/`)
 
 /brainstorm (quota-enforced ideation) · /mentor (idea → concept) · /research (plans, interviews, synthesis) · /strategy · /ux-flows (journeys, IA) · /diagram (Mermaid → FigJam) · /interface (gated UI design) · /prototype (2–3 runnable variants) · /design-converter (sketch/screenshot → UI) · /design-system · /critique · /ux-audit (Nielsen + WCAG) · /annotate (callouts, redlines, rationale) · /handoff · /figma-export (via Figma MCP) · /portfolio

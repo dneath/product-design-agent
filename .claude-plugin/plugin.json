@@ -1,7 +1,7 @@
 {
   "name": "product-design-partner",
   "description": "Evidence-based product design agent: brainstorming, AI mentor, UX research/flows/audit (usability + WCAG), prototype variants (2-3 directions per new UI), diagrams, design converter, annotations & UX write-ups, Figma export, and portfolio case studies — with 5 enforced quality gates.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": {
     "name": "Dan",
     "email": "danjorn@gmail.com"

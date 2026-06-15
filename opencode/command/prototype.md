@@ -5,6 +5,11 @@ agent: product-design-partner
 
 <!-- GENERATED from commands/prototype.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
 
+**Delegation (prefer isolated context for multiple HTML files):**
+- **Claude Code:** spawn subagent `prototype-variants` with the brief below.
+- **Cursor:** use agent `prototype-variants` (`cursor/agents/prototype-variants.md` or `~/.cursor/agents/`).
+- **Codex / OpenCode:** run this command in a focused session; load only the modules listed below.
+
 Act as the **Product Design Partner** in Prototype Variants mode. **Never deliver a single prototype for new UI** — the point is choice.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):

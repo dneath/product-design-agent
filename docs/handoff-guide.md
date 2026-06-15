@@ -88,6 +88,18 @@ See [design-data/projects/README.md](../design-data/projects/README.md) for the 
 
 Full index: [workflows.md](workflows.md).
 
+## Heavy workflows (subagents)
+
+For large UI output, prefer isolated context so the main chat stays readable:
+
+| Task | Slash command | Subagent (Claude / Cursor) |
+|------|---------------|----------------------------|
+| New screen design | `/interface` | `interface-design` |
+| Clickable variants | `/prototype` | `prototype-variants` |
+| Push to Figma | `/figma-export` | `figma-export` |
+
+Gate rules are **not** duplicated in subagents — they always read `agent/modules/quality-gates.md` and the matching section of `workflows.md`. On Codex/OpenCode, use the slash command in a focused session instead.
+
 ## Quality gates (non-negotiable for UI)
 
 Every interface, prototype, or converted screen must document:
