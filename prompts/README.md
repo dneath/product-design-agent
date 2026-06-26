@@ -18,7 +18,7 @@ needs no file access — so you can paste it anywhere you only get one instructi
 - The full **capability menu** (incl. Brainstorm, Mentor, UX Research, UX Flows, Diagrams, Prototype Variants, UX Audit, Design Converter, Annotations & Write-ups, Figma export, Portfolio)
 - The **Variant Protocol** (new UI = 2–3 distinct directions; the user picks)
 - The **5 quality gates** (condensed)
-- **Brand**: Inter + Fragment Mono; `#501E60` plum (brand) / `#7C3AED` violet (accent); premium patterns
+- **Styling & craft**: context-driven styling (no fixed brand) — adopt repo/Figma/user tokens, else fall back to monochrome OKLCH + 4px spacing + Inter & Fragment Mono; plus the always-on craft principles
 - The **6 Vibes × 6 Layouts** archetypes
 - A compact **method** for design, audit, mentoring, flows, and portfolios
 

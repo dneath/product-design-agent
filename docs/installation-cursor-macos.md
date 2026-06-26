@@ -69,6 +69,8 @@ chmod +x install.sh scripts/test.sh
 | `~/.cursor/rules/` | Global rule (optional) |
 | `~/.product-design-partner/` | Router, modules, references, validator |
 
+To reverse this step, run `./uninstall.sh --target cursor` (see [Uninstall](#uninstall) below).
+
 ### Step 2 — Attach the rule to each design project
 
 The install puts commands on your **Mac**. Gate behavior attaches **per project**:
@@ -130,10 +132,12 @@ Task index: [workflows-by-task.md](workflows-by-task.md)
 | Task | Command | Agent |
 |------|---------|-------|
 | New screen | `/interface` | `interface-design` |
-| HTML variants | `/prototype` | `prototype-variants` |
+| Variant app (React) | `/prototype` | `prototype-variants` |
 | Figma export | `/figma-export` | `figma-export` |
 
 Select from Cursor’s agent menu or use the slash command alone.
+
+`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+), or use `node scripts/dev-server.mjs`.
 
 ### Save work
 
@@ -188,6 +192,18 @@ Re-copy `product-design-partner.mdc` into active projects if the rule file chang
 ---
 
 ## Uninstall
+
+**Recommended — use the uninstaller** (mirrors the install; keeps your design output by default):
+
+```bash
+./uninstall.sh --target cursor          # remove commands/agents/rule/bundle, keep your design output
+./uninstall.sh --target cursor --dry-run   # preview exactly what would be removed
+./uninstall.sh --target cursor --purge     # also delete generated output (design-data/projects) + bundle
+```
+
+Add `--yes` to skip prompts. Then remove any **per-project** rule copies: `your-project/.cursor/rules/product-design-partner.mdc`.
+
+**Manual fallback:**
 
 ```bash
 rm -rf ~/.product-design-partner

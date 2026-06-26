@@ -11,7 +11,7 @@
 | Map journeys, flows, or IA | `/ux-flows` | Flow steps, IA notes |
 | Draw a flowchart or architecture diagram | `/diagram` | Mermaid diagram (editable text) |
 | **Design a new screen** | `/interface` | Who/what/feel → 2–3 directions → refined spec |
-| **Build clickable HTML options** | `/prototype` | 2–3 `.html` files you can open in a browser |
+| **Build clickable variants** | `/prototype` | One runnable React app with A/B/C tabs to switch directions (browser-verified) |
 | Turn a sketch or screenshot into UI | `/design-converter` | Structured UI spec from your image |
 | Audit tokens and components | `/design-system` | Coverage gaps, token recommendations |
 | Review a mockup (peers or self) | `/critique` | Prioritized feedback |

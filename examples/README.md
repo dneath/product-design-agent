@@ -23,4 +23,4 @@ node plugins/design-validator.mjs examples/dashboard-design.md
 
 ## Save your own examples
 
-Team-specific examples can live in `examples/team/` (create the folder). Keep client-confidential work in `design-data/projects/` instead — that path is gitignored.
+Team-specific examples can live in `examples/team/` (create the folder). Keep client-confidential work in `design-data/projects/` instead — that path is gitignored and is the working directory where the agent writes task output (specs, `system.md`, research, and a runnable React `prototype/` with A/B/C variant tabs). See [design-data/projects/README.md](../design-data/projects/README.md) for the per-project structure.

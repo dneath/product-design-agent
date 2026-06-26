@@ -480,7 +480,7 @@ export default async function ProductDesignPlugin({ directory, client }) {
 **Figma Export Mode**:
 - Load the figma-generate-design / figma-generate-library skill FIRST
 - Export via variables/styles, not hardcoded values
-- Keep brand fonts (Inter + Fragment Mono) and two-tone plum/violet
+- Preserve the project's resolved styling (existing repo / source Figma / user-specified; fallback monochrome + 4px + Inter & Fragment Mono) — no fixed brand
 - Re-run validation tests on the exported result`,
 
       portfolio: `
@@ -494,7 +494,8 @@ export default async function ProductDesignPlugin({ directory, client }) {
 **Prototype Variants Mode**:
 - New UI is never a single take: build 2-3 genuinely distinct variants (A/B/C)
 - Distinct = own Vibe+Layout pairing + own signature element, not a palette swap
-- One self-contained HTML file per variant; real domain content; states reachable
+- Build real interactive React in one app with a tab group to switch A/B/C; real domain content; states reachable
+- Verify it renders and behaves in a real browser (delegate to a sub-agent) before presenting
 - Present a comparison table + recommendation, then STOP — the user picks the winner`,
 
       diagrams: `
@@ -538,28 +539,13 @@ export default async function ProductDesignPlugin({ directory, client }) {
   }
   
   /**
-   * Validate brand fonts
+   * Validate color hygiene (style-agnostic).
+   * Styling is resolved from context (existing repo / Figma / user / fallback) — this does
+   * NOT mandate any font, color, or brand. It only flags pure #000/#fff, which are never
+   * craft-correct: neutrals should be tinted a hair toward one hue (OKLCH).
    */
-  function validateBrandFonts(text) {
-    // Allowed brand fonts
-    const brandFonts = ['inter', 'fragment mono'];
-    
-    // Forbidden fonts (without justification)
-    const forbiddenFonts = ['roboto', 'arial', 'helvetica', 'sans-serif'];
-    
-    const violations = [];
-    for (const font of forbiddenFonts) {
-      const pattern = new RegExp(`font-family:\\s*['"]?${font}`, 'i');
-      if (pattern.test(text)) {
-        // Check if justification present
-        const justificationPattern = new RegExp(`${font}.*justification:`, 'i');
-        if (!justificationPattern.test(text)) {
-          violations.push(font);
-        }
-      }
-    }
-    
-    return violations;
+  function validateColorHygiene(text) {
+    return /#(?:000000|000|ffffff|fff)\b/i.test(text);
   }
   
   /**
@@ -723,14 +709,11 @@ Please select a different vibe + layout archetype and try again.`;
         }
       }
       
-      // Check 7: Brand font violations
-      const fontViolations = validateBrandFonts(responseText);
-      if (fontViolations.length > 0) {
-        output.append.push(`\n⚠️ **Brand Font Warning**: Non-brand fonts detected: ${fontViolations.join(', ')}
+      // Check 7: Color hygiene (style-agnostic — no brand mandate)
+      if (validateColorHygiene(responseText)) {
+        output.append.push(`\n⚠️ **Color hygiene**: Pure #000/#fff detected. Tint every neutral a hair toward one hue (OKLCH, chroma 0.005–0.01) so the grayscale reads as intentional.
 
-**Brand fonts**: Inter (headings/body), Fragment Mono (code/labels/data)
-
-If deviation intentional, please add justification. Otherwise, use brand fonts.\n`);
+Styling is context-driven — adopt the repo/Figma/user tokens. When nothing specifies a system, fall back to monochrome OKLCH + a 4px spacing scale + Inter (UI/text) & Fragment Mono (mono).\n`);
       }
     },
 

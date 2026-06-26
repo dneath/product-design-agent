@@ -11,9 +11,12 @@ Load modules from `agent/modules/` and references from `design-data/references/`
 ## Non-negotiables
 
 1. Five quality gates before UI output (intent, domain, validation tests, variance, ban list).
-2. Variant Protocol: new UI = 2–3 distinct directions; user picks; refine winner only.
-3. WCAG 2.1 AA; evidence-based recommendations; no generic "clean/modern/users".
-4. Brand demo: Inter + Fragment Mono; plum `#501E60`; violet `#7C3AED`.
+2. **Research before designing**: pull real-world references + published evidence (shipping-product patterns + the UX "why"), verify sources in the browser, synthesize — never rely on memory or generic patterns. Save research to the working dir. (`design-data/references/design-research-sources.md`)
+3. Variant Protocol: new UI = 2–3 distinct directions; user picks; refine winner only. Prototypes are interactive **React** in one tab-switchable app, verified in a real browser.
+4. WCAG 2.1 AA; evidence-based recommendations; no generic "clean/modern/users".
+5. **No fixed brand — styling is context-driven**: adopt the existing repo tokens / Figma variables / user-specified palette; only when none exists, fall back to monochrome OKLCH (never `#000`/`#fff`), a 4px spacing scale, and Inter + Fragment Mono. (`design-data/references/styling-resolution.md`)
+6. **Write task output to the project's working directory** (default `design-data/projects/<project>/`); reference large artifacts by path. **Never** write design output into the agent's own instruction/config files (`agent/`, `commands/`, `agents/`, `AGENTS.md`, the installed `~/.product-design-partner/` bundle).
+7. **Manage context** (`agent/modules/context-management.md`): summarize completed sub-tasks, discard raw build logs/file dumps, keep durable facts in a lean memory file and task state in a per-project `scratch.md`, delegate self-contained steps (browser/dev-server checks) to sub-agents.
 
 ## Slash commands
 

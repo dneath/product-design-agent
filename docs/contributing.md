@@ -77,9 +77,10 @@ git diff opencode/command cursor/commands codex/prompts
 
 1. **Modularity**: Keep modules focused and independent
 2. **Lazy Loading**: Load only what's needed
-3. **Evidence-Based**: Every recommendation must cite sources
-4. **Craft-Focused**: Prevent generic AI defaults
-5. **Accessibility-First**: WCAG 2.1 AA is non-negotiable
+3. **Research-First**: Gather real references + published evidence before designing
+4. **Evidence-Based**: Every recommendation must cite sources
+5. **Craft-Focused**: Prevent generic AI defaults; styling is context-driven (no fixed brand)
+6. **Accessibility-First**: WCAG 2.1 AA is non-negotiable
 
 ### File Structure
 
@@ -96,10 +97,12 @@ product-design-agent/
 │   └── projects/           Designer output (gitignored)
 ├── docs/                   Documentation index + guides
 ├── examples/               Sample prompts
-├── scripts/test.sh         Smoke tests
+├── scripts/                Smoke tests (test.sh) + dev-server.mjs (prototype apps)
 ├── hooks/                  Claude Code UserPromptSubmit hook
 ├── prompts/                Goal-mode portable prompt
 ├── agents/                 Claude Code subagent stub
+├── install.sh              Installer (--target / --purge / --dry-run / --yes)
+├── uninstall.sh            Mirror of install.sh (same flags)
 └── .claude-plugin/         Plugin manifest
 ```
 
@@ -108,6 +111,7 @@ product-design-agent/
 **Agent Files** (agent/*.md):
 - Lowercase with hyphens: `product-design-partner.md`
 - Module names match purpose: `quality-gates.md`, `workflows.md`
+- 7 modules total: `INDEX.md`, `workflows.md`, `quality-gates.md`, `standards-and-anti-patterns.md`, `frameworks-and-artifacts.md`, `platform-adaptation.md`, `context-management.md`
 
 **Plugin Files** (plugins/*.js):
 - Lowercase with hyphens: `design-validator.mjs`
@@ -115,6 +119,7 @@ product-design-agent/
 
 **Reference Data** (design-data/references/*.md):
 - Lowercase with hyphens: `ban-list.md`, `premium-patterns.md`
+- Styling is context-driven: `styling-resolution.md` (no fixed brand) + research-first `design-research-sources.md`
 - JSON files: `designprompts-{category}.json`
 
 ## Adding New Features

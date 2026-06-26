@@ -121,6 +121,23 @@ Add Who/What/Feel. See [quality-gates-for-designers.md](quality-gates-for-design
 
 Use `/interface` or `/prototype`.
 
+### Prototype won't open
+
+`/prototype` now creates an **interactive React app** (variants A/B/C in one tab-switchable app), not a double-click HTML file — so you have to run a dev server:
+
+```bash
+cd design-data/projects/<project>/prototype
+npm install && npm run dev    # then open the printed http://localhost URL
+```
+
+Or let the helper start/stop it for that project:
+
+```bash
+node scripts/dev-server.mjs
+```
+
+Needs Node 18+ and npm. If `npm` is missing, install Node ([nodejs.org](https://nodejs.org/) or `brew install node`).
+
 ### Don't know where files saved
 
 > Save everything under design-data/projects/[name]/ and list paths.
@@ -154,6 +171,19 @@ cd product-design-agent && git pull
 - **Codex:** merge `codex/AGENTS.md` if changed
 
 [CHANGELOG.md](../CHANGELOG.md)
+
+---
+
+## Uninstall / start clean
+
+From the cloned repo, the uninstaller mirrors the installer and **keeps your saved design work** (`design-data/projects/`) by default:
+
+```bash
+./uninstall.sh --target <claude|cursor|codex|opencode>
+./uninstall.sh --target all --dry-run   # preview removal for every target
+```
+
+Add `--dry-run` to preview or `--purge` to also delete generated output + the bundle. To start completely fresh, uninstall then re-run `./install.sh` for your platform. Detail: [Installation](installation.md#uninstalling).
 
 ---
 

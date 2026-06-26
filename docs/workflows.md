@@ -24,7 +24,7 @@ Phase guide: [product-design-process.md](../design-data/references/product-desig
 |---|----------|---------|----------------|
 | 1 | User Research | `/research` | Research plan, synthesis |
 | 2 | Design System | `/design-system` | Token audit, `system.md` |
-| 3 | Interface Design | `/interface` | Gated UI + 2–3 directions |
+| 3 | Interface Design | `/interface` | Research refs → gated UI + 2–3 directions (context-driven styling) |
 | 4 | Product Strategy | `/strategy`, `/brainstorm` | Ideas, assumption map |
 | 5 | Design Critique | `/critique` | Prioritized feedback |
 | 6 | Design Handoff | `/handoff` | `handoff.md` for engineering |
@@ -36,9 +36,17 @@ Phase guide: [product-design-process.md](../design-data/references/product-desig
 | 12 | Design Converter | `/design-converter` | UI spec from sketch/screenshot |
 | 13 | Figma Export | `/figma-export` | Figma file or build spec |
 | 14 | Portfolio Builder | `/portfolio` | `case-study.md` |
-| 15 | Prototype Variants | `/prototype` | `prototype-a.html`, etc. |
+| 15 | Prototype Variants | `/prototype` | Runnable Vite+React app (tabs A/B/C), `variants.md`, `screenshots/` |
 | 16 | Diagrams | `/diagram` | Mermaid source files |
 | 17 | UX Annotations | `/annotate` | Annotations, rationale |
+
+## Research-first & context-driven styling
+
+Before designing, the §0 Process Router and the Interface (§3) and Prototype (§15) workflows run a **research step** — pulling real product references and published UX evidence ([design-research-sources.md](../design-data/references/design-research-sources.md)) so output is grounded rather than generic.
+
+Styling is **never a fixed brand**. It is resolved from context in priority order — existing repo tokens → Figma variables → user-specified → monochrome OKLCH fallback (4px scale, Inter + Fragment Mono). See [styling-resolution.md](../design-data/references/styling-resolution.md).
+
+Prototype output is a single runnable Vite + React app with a tab group to switch variants A/B/C (browser-verified), written to `design-data/projects/<project>/prototype/` alongside `variants.md` and `screenshots/` — not separate self-contained HTML files.
 
 ## Quality gates (UI workflows)
 

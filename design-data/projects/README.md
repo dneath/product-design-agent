@@ -6,10 +6,18 @@ Nothing here is uploaded to git by default (good for client confidentiality).
 
 ## One folder per product
 
-Pick a short name (e.g. `billing-dashboard`, `onboarding-v2`) and stick with it:
+Pick a short name (e.g. `billing-dashboard`, `onboarding-v2`) and stick with it. This
+project folder is the **working directory** — the agent writes all task output here (never
+into its own config files):
 
 ```
 design-data/projects/billing-dashboard/
+├── system.md          # locked design direction & tokens (context-resolved, no fixed brand)
+├── research/          # research notes & findings
+├── variants.md        # notes comparing the prototype directions A/B/C
+├── prototype/         # runnable Vite + React app: one tab-switchable UI (variants A/B/C)
+├── screenshots/       # browser-verified captures of each variant
+└── handoff.md         # engineering handoff spec
 ```
 
 Tell the agent: *"Save under design-data/projects/billing-dashboard/"*
@@ -22,11 +30,13 @@ You don't need all of these on day one—add files as the project matures.
 |----------------|-------------------|
 | `concept.md` | Shape an idea (`/mentor`, `/strategy`) |
 | `research-plan.md` | Plan research (`/research`) |
+| `research/` | Capture research notes & findings (`/research`) |
 | `flows.md` | Map journeys (`/ux-flows`) |
 | `diagrams/` | Draw flows (`/diagram`) |
-| `variants.md` | Compare layout options |
-| `prototypes/*.html` | Build clickables (`/prototype`) — open in any browser |
-| `system.md` | Lock design direction (`/interface`) |
+| `variants.md` | Notes comparing the prototype directions A/B/C |
+| `prototype/` | Build clickables (`/prototype`) — a runnable Vite + React app: one tab-switchable UI with variants A/B/C, browser-verified |
+| `screenshots/` | Browser-verified captures of each prototype variant |
+| `system.md` | Lock design direction (`/interface`) — context-resolved tokens, no fixed brand |
 | `annotations.md` | Spec interactions (`/annotate`) |
 | `handoff.md` | Hand to engineering (`/handoff`) |
 | `case-study.md` | Portfolio piece (`/portfolio`) |

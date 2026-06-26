@@ -51,6 +51,16 @@ chmod +x install.sh
 
 In your AI app, type `/` — you should see `/interface`, `/research`, `/prototype`.
 
+### Removing it (later)
+
+Same repo, mirror command — it keeps your saved design work by default:
+
+```bash
+./uninstall.sh --target claude    # or cursor | codex | opencode
+```
+
+Add `--dry-run` to preview, or `--purge` to also delete generated output. Full detail: [Installation](installation.md#uninstalling).
+
 ---
 
 ## Your first real task (5 minutes)
@@ -78,12 +88,16 @@ If it jumps to one generic screen: *"Follow the Variant Protocol—show me three
 | Plan interviews | `/research` |
 | Map a journey or flow | `/ux-flows` or `/diagram` |
 | Design a new screen | `/interface` |
-| See clickable options | `/prototype` |
+| See clickable options | `/prototype` (see note below) |
 | Review a mockup | `/critique` or `/ux-audit` |
 | Write specs for dev | `/handoff` |
 | Push to Figma | `/figma-export` (optional MCP) |
 
 More: [workflows-by-task.md](workflows-by-task.md)
+
+**About `/prototype`:** you get an **interactive React app** — one app with **A/B/C tabs** to switch directions, opened in your **browser** (not a double-click HTML file). Running it needs Node + npm: `npm install && npm run dev` in the prototype folder (or `node scripts/dev-server.mjs`). Ask a teammate or IT if the terminal part is unfamiliar.
+
+**About styling:** there is **no fixed brand**. The agent derives colors and type from your context — existing repo tokens, a Figma file, or what you specify. With nothing to go on it falls back to a restrained monochrome scheme (OKLCH greys, never pure `#000`/`#fff`), 4px spacing, and Inter (UI/text) + Fragment Mono (code), then adapts from there.
 
 ---
 

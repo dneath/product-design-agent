@@ -70,6 +70,22 @@ Then complete **platform-specific steps** in the linked guide above (e.g. Cursor
 
 ---
 
+## Uninstall (by platform)
+
+`uninstall.sh` mirrors the installer's targets and **keeps your generated design output** (`design-data/projects/`) by default:
+
+```bash
+./uninstall.sh --target claude     # Claude Code
+./uninstall.sh --target cursor     # Cursor
+./uninstall.sh --target codex      # Codex
+./uninstall.sh --target opencode   # OpenCode
+./uninstall.sh --target all --dry-run   # preview removal for every target
+```
+
+Add `--dry-run` to preview, `--purge` to also delete generated output + the installed bundle, and `--yes` to skip prompts.
+
+---
+
 ## Where files land on Mac
 
 | Platform | Commands / prompts | Identity | Bundle / data |

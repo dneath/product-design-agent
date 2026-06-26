@@ -1,4 +1,4 @@
-# Quality Gates, Brand Identity & Premium Patterns
+# Quality Gates, Visual Foundations & Craft Patterns
 
 Before ANY design output (mockups, prototypes, wireframes, components), you MUST pass all 5 gates. Plugin validates automatically.
 
@@ -140,9 +140,9 @@ Before ANY design output (mockups, prototypes, wireframes, components), you MUST
    - ❌ Click edit → modal opens
    - ✅ Alternative: Inline editing, slide-out drawers, expand-in-place
 
-7. **Generic fonts without brand justification**
-   - ❌ Roboto, Arial, Helvetica, generic sans-serif
-   - ✅ Alternative: **Brand fonts (Inter + Fragment Mono)** or justify deviation
+7. **Defaulting type without thought** (reaching for the same system sans every time)
+   - ❌ Roboto, Arial, Helvetica, "generic sans-serif" chosen because they're there
+   - ✅ Alternative: a typeface chosen for the product and context — or inherited from the repo/Figma. When nothing specifies type, the fallback default is Inter (UI/text) + Fragment Mono (mono)
 
 8. **Spring/bounce easing**
    - ❌ `transition: all 300ms ease-in-out;` or `spring` physics
@@ -166,112 +166,59 @@ Proceeding with your override, but recommend reconsidering."
 
 ---
 
-## Brand Identity (MANDATORY)
+## Visual Foundations (Context-Driven)
 
-**Primary Brand Fonts:**
-- **Inter**: All headings, body text, UI labels
-  - Weights: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
-  - Line heights: 1.2 (headings), 1.5 (body)
-- **Fragment Mono**: Code blocks, data labels, technical content
-  - Weights: 400 (regular), 500 (medium)
-  - Use for: timestamps, IDs, API responses, terminal output
+**There is no fixed brand or house style. Never default to one.** Styling is resolved from context, in this priority order — stop at the first that applies:
 
-**Brand Colors (two-tone):**
-- **Deep Plum #501E60** — primary brand. OKLCH `oklch(34.1% 0.119 317)`. Use for: brand identity, brand moments, primary surfaces/headers.
-- **Violet #7C3AED** — interactive accent. OKLCH `oklch(54.1% 0.247 293)`. Use for: primary CTAs, active states, focus indicators, links.
-- Reserve one accent; don't dilute focus.
+1. **Existing codebase.** Working in a repo? Adopt its system. Read its design tokens *before* writing any UI: `tailwind.config.*`, CSS custom properties (`:root` blocks), `theme.*` files, a project `system.md` or `.interface-design/system.md`, shadcn/ui or other component-library config, and font imports (`<head>` / `@font-face`). Match the existing colors, spacing scale, radius, type, and component patterns. Do not stand up a second system beside theirs.
+2. **Figma source.** A Figma URL or file in play? Pull its variables and styles (`get_variable_defs`, `get_design_context`) and follow them — colors, type, spacing, components. The Figma file is the source of truth.
+3. **User-specified.** The user named a palette, font, or brand? Use it exactly.
+4. **Fallback defaults** — only when none of the above provides a system:
+   - **Color: monochrome.** A tinted-neutral grayscale built in OKLCH. Add at most one accent, and only if the domain genuinely needs one (status, a single CTA emphasis). Never `#000` / `#fff` — tint every neutral a hair toward one hue (chroma 0.005–0.01).
+   - **Spacing: a 4px-based scale** — 4, 8, 12, 16, 24, 32, 48, 64. Every gap, pad, and margin is a multiple of 4.
+   - **Fonts: Inter** (UI/text) + **Fragment Mono** (mono — code, data, IDs, timestamps). These are the *fallback*, not a brand — replace them the moment context provides type.
 
-**Enforcement**: Plugin flags non-brand fonts (Roboto, Arial, etc.) and requires justification.
+Whatever the source, the **color world still comes from the product's domain** (Gate 2). Resolution decides the *system*; domain exploration decides the *meaning* of colors within it. Record what won and why in the project's `system.md`.
+
+**Enforcement**: Plugin flags hardcoded `#000`/`#fff` and a missing styling-source decision; it no longer mandates any specific font or color.
 
 ---
 
-## Premium Architecture Patterns
+## Craft Principles (Default Quality Bar)
 
-These patterns elevate from "AI-generated" to "senior designer made this":
+These raise every default from "generic" to "considered." Apply regardless of which styling source won above. Full detail: `design-data/references/premium-patterns.md`.
 
-### Double-Bezel Architecture
-Nested containment for premium feel:
-```css
-/* Outer shell */
-.outer-bezel {
-  padding: clamp(20px, 3vw, 40px);
-  background: var(--surface-elevation-1);
-  border-radius: 24px;
-}
+**Color** — Work in OKLCH; reduce chroma as lightness nears 0 or 100. Pick a *strategy* before colors: restrained (tinted neutrals + one accent ≤10% — the product default), committed (one saturated color across 30–60%), full palette (3–4 named roles), or drenched. Color carries meaning (status, action, emphasis); gray builds structure. Never add color without a reason.
 
-/* Inner core (calculated: outer radius - 8px) */
-.inner-core {
-  padding: clamp(16px, 2.5vw, 32px);
-  background: var(--surface-elevation-2);
-  border-radius: 16px;
-}
-```
+**Theme (light vs. dark)** — Never a default. Write one sentence of physical scene (who, where, ambient light, mood) concrete enough to force the answer. "SRE glancing at severity on a 27″ monitor at 2am in a dim room" forces dark; "a dashboard" forces nothing.
 
-### Button-in-Button Pattern
-Nested CTA with icon wrapper:
-```css
-.cta-outer {
-  padding: 16px 24px;
-  background: var(--primary);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+**Typography** — Hierarchy through scale + weight, ≥1.25 ratio between steps; never size alone. Cap body line length at 65–75ch. `tabular-nums` for any number that updates. `text-wrap: balance` on headings, `text-wrap: pretty` on body.
 
-.icon-wrapper {
-  padding: 4px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-}
-```
+**Depth — commit to ONE strategy** — borders-only (dense tools), subtle shadows (approachable products), layered shadows (cards with presence), or surface-color shifts. Don't mix. Where you use shadows, layer several low-opacity `box-shadow`s rather than one hard border — shadows adapt to any background. Surface elevation is whisper-quiet: each step a few percent of lightness, same hue, shift only lightness; you feel the hierarchy more than see it. Sidebars share the canvas background with a border, not a different color.
 
-### Whisper-Quiet Elevation
-Surface jumps by 3-5% lightness (never harsh):
-```css
-:root {
-  /* Dark mode: progressively lighter */
-  --surface-base: oklch(20% 0.01 240);
-  --surface-elevated-1: oklch(23% 0.01 240); /* +3% */
-  --surface-elevated-2: oklch(26% 0.01 240); /* +3% */
-  --surface-elevated-3: oklch(29% 0.01 240); /* +3% */
-  
-  /* Light mode: progressively darker */
-  --surface-base-light: oklch(98% 0.01 240);
-  --surface-elevated-1-light: oklch(95% 0.01 240); /* -3% */
-  --surface-elevated-2-light: oklch(92% 0.01 240); /* -3% */
-}
-```
+**Border radius** — Concentric: outer radius = inner radius + padding. Mismatched nested radii are the most common thing that makes UI feel "off." Build a scale (small inputs/buttons → medium cards → large modals); don't mix sharp and soft at random.
 
-### Custom Motion (Cubic-Bezier Only)
-```css
-/* Premium easing curves */
-:root {
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
-}
+**Spacing & alignment** — Vary spacing for rhythm; identical padding everywhere is monotony. Keep padding symmetrical unless content demands otherwise. Align optically when geometric centering looks off (icons in buttons, play triangles, asymmetric glyphs).
 
-/* Scroll entry animation */
-.fade-up-in {
-  opacity: 0;
-  transform: translateY(16px);
-  filter: blur(4px);
-  transition: 
-    opacity 700ms var(--ease-out-expo),
-    transform 700ms var(--ease-out-expo),
-    filter 700ms var(--ease-out-expo);
-}
+**Motion** — Ease-out curves only (quart/quint/expo); no spring, bounce, or elastic in product UI. Animate only `transform`/`opacity`/`filter` — never layout properties, never `transition: all` (name exact properties). Fast micro-interactions (~150–200ms), longer for larger transitions; `scale(0.96)` on press. Split and stagger enter animations (~100ms apart); keep exits subtler than enters.
 
-.fade-up-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-```
+**Detail** — Interactive targets ≥40×40px hit area (extend with a pseudo-element if the visual is smaller). Subtle 1px image outline (`rgba(0,0,0,.1)` light / `rgba(255,255,255,.1)` dark — pure black/white, never a tinted neutral, or it reads as dirt on the edge). One icon set; icons clarify, never decorate. Every interactive element needs all states (default/hover/active/focus/disabled); data needs loading/empty/error.
 
-**Enforcement**: If design uses linear/ease-in-out transitions or animates width/height/top/left, BLOCK.
+**The bar** — if another agent given the same prompt would produce substantially the same screen, it's generic; return to domain and intent. Every choice must answer "why this, not the common alternative?"
+
+---
+
+## Optional Craft Techniques (NOT defaults)
+
+Techniques you *may* reach for when the resolved style calls for them — never a required house style, never applied by reflex. Full detail: `design-data/references/premium-patterns.md`.
+
+- **Nested containment** ("double-bezel") — an outer shell wrapping an inner core with concentric radii (inner = outer − padding). Use when a surface genuinely benefits from layered framing; skip for dense/flat tools.
+- **Button-in-button** — an icon wrapper nested inside a CTA, for sparing emphasis.
+- **Custom motion curves** — named cubic-bezier ease-out tokens (expo/quart) instead of `ease-in-out`.
+
+The always-on pieces from that reference (OKLCH elevation generation, ease-out tokens, transform/opacity-only performance rules) are already folded into the Craft Principles above.
+
+**Enforcement**: animating layout properties, `transition: all`, or spring/bounce in product UI still BLOCKS (ban list #8–9).
 
 ---
 
@@ -283,7 +230,7 @@ Surface jumps by 3-5% lightness (never harsh):
 
 ## See Also
 
-- **Ban List Details**: `design-data/references/ban-list.md` (284 lines - complete rationale)
-- **Brand Guidelines**: `design-data/references/brand-identity.md` (336 lines - full guidelines)
-- **Premium Patterns**: `design-data/references/premium-patterns.md` (326 lines - advanced patterns)
+- **Ban List Details**: `design-data/references/ban-list.md` (complete rationale)
+- **Styling Resolution**: `design-data/references/styling-resolution.md` (context-driven styling + fallback defaults)
+- **Craft Patterns**: `design-data/references/premium-patterns.md` (optional advanced techniques)
 - **Anti-Patterns**: `standards-and-anti-patterns.md` (interface design anti-patterns)

@@ -1,8 +1,14 @@
-# Premium Architecture Patterns
+# Craft Patterns (Optional Techniques)
 
-These patterns elevate design from "looks AI-generated" to "senior designer made this".
+A toolkit of techniques you **may** reach for — **never a required house style and never applied by reflex.** This agent has no fixed brand or visual identity; styling is resolved from context (see `styling-resolution.md`). Use these only when the *resolved* style genuinely calls for them, and skip them for dense/flat tools where they'd add noise.
 
-## 1. Double-Bezel Architecture
+Two parts of this file are **always-on**, regardless of style, because they're craft rather than aesthetics — they're folded into the Craft Principles in `quality-gates.md`:
+- **Whisper-quiet elevation** — OKLCH surfaces that shift lightness only (same hue), a few percent per step.
+- **Ease-out motion** — named cubic-bezier curves; animate `transform`/`opacity`/`filter` only, never layout properties, never `transition: all`.
+
+Everything else below (nested containment, button-in-button) is **opt-in**.
+
+## 1. Double-Bezel Architecture (optional)
 
 Nested containment creates premium feel through layered depth.
 
@@ -270,14 +276,17 @@ Premium easing curves that feel refined, not cartoony.
 
 ## Integration Checklist
 
-When applying premium patterns:
+Always-on (apply regardless of style):
 
-- [ ] **Double-Bezel**: Used for 2+ important containers
-- [ ] **Button-in-Button**: Applied to primary CTA
-- [ ] **Whisper-Quiet Elevation**: Defined 4-5 level scale
-- [ ] **Custom Motion**: No linear/ease-in-out, only cubic-bezier
-- [ ] **Performance**: Only transform/opacity animations
-- [ ] **Consistency**: Same patterns used across similar components
+- [ ] **Whisper-Quiet Elevation**: Surfaces shift lightness only (same hue), a few percent per step
+- [ ] **Custom Motion**: No linear/ease-in-out, only cubic-bezier ease-out
+- [ ] **Performance**: Only transform/opacity/filter animations; never `transition: all`
+
+Opt-in (only when the resolved style calls for it — skip for dense/flat tools):
+
+- [ ] **Double-Bezel**: nested containment where layered framing genuinely helps
+- [ ] **Button-in-Button**: an icon wrapper inside a primary CTA, for sparing emphasis
+- [ ] **Consistency**: whichever opt-in patterns you use, apply them consistently
 
 ---
 

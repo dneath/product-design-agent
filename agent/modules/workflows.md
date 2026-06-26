@@ -18,7 +18,9 @@ Before picking a workflow, identify the **phase** (see `design-data/references/p
 
 **Greenfield feature chain**: concept/research → flows/diagrams → variants (§15) or gated interface (§3) → annotations → handoff.
 
-**Platform note**: Load `./modules/platform-adaptation.md` when paths or gate enforcement differ by LLM (OpenCode plugin vs Cursor/Codex instruction-only).
+**Research-first (applies to every Develop/Define workflow)**: before designing a new screen, flow, component, or solving a specific UX problem, pull real references + published evidence and synthesize them — don't rely on memory or generic patterns. See `design-data/references/design-research-sources.md`. Save research artifacts to the working directory and cite by path.
+
+**Platform note**: Load `./modules/platform-adaptation.md` when paths or gate enforcement differ by LLM (OpenCode plugin vs Cursor/Codex instruction-only). On long/multi-step tasks load `./modules/context-management.md` (compaction, scratch file, sub-agent isolation, output hygiene).
 
 ---
 
@@ -85,19 +87,25 @@ Before picking a workflow, identify the **phase** (see `design-data/references/p
    - Feel: [Specific not generic]
    - **Verification**: Read intent aloud. If it could apply to any product, REJECT and refine.
 
-2. **[GATE 2] Domain Exploration** (MANDATORY - BLOCK if skipped):
+2. **Research first** (research-first — do this before exploring/designing):
+   - Pull real references + published evidence for this problem: how shipping products solve it (Mobbin, Page Flows, real apps) + the UX "why" (NN/g, Baymard, Laws of UX, WCAG). Use 3–5 sources across categories; prefer evidence over opinion.
+   - **Verify sources in the browser** (delegate heavy browsing to a sub-agent that returns links + notes + screenshots — not raw pages).
+   - Save the research artifact to `design-data/projects/[project-name]/research/` and cite it by path; it feeds the domain exploration below.
+   - Full method + source list: `design-data/references/design-research-sources.md`
+
+3. **[GATE 2] Domain Exploration** (MANDATORY - BLOCK if skipped):
    - Domain: [5+ concepts from product's world]
    - Color world: [5+ natural colors FROM DOMAIN]
    - Signature: [1 unique element, must appear 5+ times]
-   - Defaults to reject: [3 with alternatives]
+   - Defaults to reject: [3 with alternatives] — grounded in the research above
    - **Verification**: Signature must appear in final output 5+ times or REJECT.
 
-3. **[GATE 4] Variance Check** (MANDATORY - consult plugin):
+4. **[GATE 4] Variance Check** (MANDATORY - consult plugin):
    - Query plugin: "Check variance history for [interface type]"
-   - Pick **2–3 distinct Vibe + Layout pairings** — one per variant (see step 4); none may repeat the last 2 outputs
+   - Pick **2–3 distinct Vibe + Layout pairings** — one per variant (see step 5); none may repeat the last 2 outputs
    - Document choices: "Variant A — Vibe: [X], Layout: [Y]; Variant B — …"
 
-4. **[VARIANT PROTOCOL] Generate 2–3 Variants** (MANDATORY for new UI):
+5. **[VARIANT PROTOCOL] Generate 2–3 Variants** (MANDATORY for new UI):
    - Produce **2–3 genuinely distinct directions** (default 3; 2 if the brief is tightly constrained), labeled **A / B / C**
    - Distinct means different Vibe + Layout pairing, different signature element, and (where it matters) different IA emphasis — NOT a palette swap of one design
    - Each variant gets a name, a one-line concept ("Variant B 'Control Tower' — Dark Technical × Terminal Grid; signature: live SLA tick-rail"), and a structure sketch
@@ -106,26 +114,26 @@ Before picking a workflow, identify the **phase** (see `design-data/references/p
    - Skip ONLY when the user explicitly asks for one direction or is iterating on an already-chosen variant
    - Full protocol: `design-data/references/prototype-variants-guide.md`
 
-5. **Establish Foundations** (chosen variant):
-   - Apply Premium Architecture Patterns (Double-Bezel, Button-in-Button, Whisper-Quiet Elevation)
-   - Use Custom Motion (cubic-bezier only, transform/opacity only)
+6. **Establish Foundations** (chosen variant):
+   - **Resolve styling from context** (quality-gates.md → Visual Foundations): existing repo tokens → Figma variables → user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing scale; Inter + Fragment Mono). Record the source in `system.md`.
+   - Apply **Craft Principles**: whisper-quiet elevation (shift lightness only), concentric radius, four text levels + border progression, ease-out motion (cubic-bezier, transform/opacity only), tabular numbers, ≥40×40px hit areas
    - Apply the chosen variant's [Vibe Archetype] + [Layout Archetype]
-   - Use brand fonts: Inter (headings/body), Fragment Mono (code/labels/data)
+   - Optional craft techniques (nested containment, button-in-button) only if the resolved style calls for them — never by reflex
 
-6. **[GATE 5] Ban List Check** (MANDATORY - BLOCK if violated):
+7. **[GATE 5] Ban List Check** (MANDATORY - BLOCK if violated):
    - Scan output for banned patterns
    - If found, REJECT and redesign (or allow user override)
 
-7. **[GATE 3] Validation Tests** (MANDATORY - ALL must pass):
+8. **[GATE 3] Validation Tests** (MANDATORY - ALL must pass):
    - Swap test: [Pass/Fail + evidence]
    - Squint test: [Pass/Fail + evidence]
    - Signature test: [Pass/Fail + evidence]
    - Token test: [Pass/Fail + evidence]
    - **If ANY test fails, REJECT and iterate**
 
-8. **Document System**:
+9. **Document System**:
    - Save to `design-data/projects/[project-name]/system.md`
-   - Include: Intent, Domain exploration, all variants considered + the chosen one, Validation results
+   - Include: Intent, Research references, Domain exploration, all variants considered + the chosen one, Validation results
    - Add to variance history via plugin
 
 **Key Standards**:
@@ -403,13 +411,13 @@ https://www.figma.com/file/[fileKey]/[fileName]
 1. **Confirm Figma MCP is connected** (and a target file/page exists or should be created)
 2. **Prepare the source**: a gates-passing design (from Interface Design / Design Converter) or design-system tokens
 3. **Load the Figma skill FIRST**: `figma:figma-generate-design` (a page/view) or `figma:figma-generate-library` (a design system) — MANDATORY before any use_figma / generate_figma_design call
-4. **Map tokens → Figma**: color/text/spacing styles or variables (OKLCH → hex); brand fonts Inter + Fragment Mono; two-tone plum/violet
+4. **Map tokens → Figma**: color/text/spacing styles or variables (OKLCH → hex) from the project's **resolved** styling (existing repo / source Figma / user-specified; fallback monochrome + 4px + Inter & Fragment Mono) — never a fixed brand
 5. **Assemble** section-by-section using design-system components/variables, not hardcoded values
 6. **Verify** against Gates 3 & 5 in the generated file; report the file URL
 
 **Key Standards**:
 - Always load the relevant `figma-*` skill before calling Figma write tools
-- Use variables/styles, not hardcoded values; preserve brand fonts + two-tone color
+- Use variables/styles, not hardcoded values; preserve the project's resolved tokens (no fixed brand)
 - Re-run validation tests on the exported result
 
 **No Figma MCP connected?** Don't dead-end. Deliver the fallback bundle instead: (a) tokens as Figma-importable JSON (`design-data/tokens/[project-name].json`), (b) a frame-by-frame build spec (`figma-build-spec.md`: frames, auto-layout settings, styles per node), and (c) the platform-specific connection step — Claude Code: `claude mcp add --transport http figma https://mcp.figma.com/mcp`; Cursor: Settings → MCP → add `https://mcp.figma.com/mcp`; Codex: add an `mcp_servers.figma` entry in `~/.codex/config.toml`; OpenCode: add the server in `opencode.json`.
@@ -448,26 +456,34 @@ https://www.figma.com/file/[fileKey]/[fileName]
 
 **STRICT ENFORCEMENT ACTIVE**: All 5 gates apply. The Variant Protocol is the point of this workflow — never deliver a single prototype for new UI.
 
+**Build in React.** Prototypes are real, interactive React so full functionality is visible (state, validation, transitions, real interactions), not static mockups. The variants live in **one app** with a **tab group / toggle at the top to switch between Variant A / B / C**, so the user compares them side by side in a single running app rather than juggling files.
+
 **Steps**:
-1. **Run Gates 1-2** (intent, domain) once — they're shared across variants
-2. **[Gate 4] Pick 2-3 distinct Vibe + Layout pairings** — one per variant, none repeating recent history
-3. **Define each variant**: name, one-line concept, signature element, IA emphasis — verify distinctness (different pairing + different signature, not a reskin)
-4. **Build one runnable file per variant**: single-file HTML/CSS (vanilla JS only if needed; zero build steps), named `prototype-a.html`, `prototype-b.html`, `prototype-c.html`
-   - Real content from the domain, never lorem ipsum
-   - Representative states visible or toggleable: default, hover, focus, loading, error, empty
-   - Brand fonts via Google Fonts link + system fallback; tokens as CSS variables with domain names
-5. **Run Gates 5 + 3 per variant** (ban list, validation tests) — each variant must pass independently
-6. **Present the comparison**: table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation + how to open the files. **STOP — the user picks**
-7. **Refine the winner**: fold in feedback, optionally borrow the best detail from a losing variant, then document
+1. **Research first** (research-first): pull real references + evidence for this UI (shipping-product patterns via Mobbin/Page Flows, plus NN/g/Baymard/Laws of UX for the "why"); verify sources in the browser (delegate); save to `design-data/projects/<project>/research/` and cite by path. It grounds the domain and the variant directions. (`design-data/references/design-research-sources.md`)
+2. **Run Gates 1-2** (intent, domain) once — they're shared across variants; domain is grounded in the research above
+3. **Resolve styling** (quality-gates.md → Visual Foundations): existing repo tokens → Figma → user-specified → fallback (monochrome OKLCH, 4px spacing, Inter + Fragment Mono). If the repo is already a React/Vite/Next project, build inside it and reuse its setup + tokens.
+4. **[Gate 4] Pick 2-3 distinct Vibe + Layout pairings** — one per variant, none repeating recent history
+5. **Define each variant**: name, one-line concept, signature element, IA emphasis — verify distinctness (different pairing + different signature, not a reskin)
+6. **Scaffold one React app** in the project working directory (Vite + React if standalone; reuse the repo's stack if inside one):
+   - A **`<VariantSwitcher>`** tab group / segmented control renders `<VariantA/>`, `<VariantB/>`, `<VariantC/>`; remembers selection (e.g. URL hash `#variant-b`)
+   - Each variant is a real interactive component — working state, inputs, validation, transitions; real domain content, never lorem ipsum
+   - Representative data states reachable per variant: default, hover, focus, loading, error, empty (a small in-app state toggle)
+   - Tokens as CSS variables with domain names; fonts from the resolved styling (repo `@font-face`/`next/font`, else Inter + Fragment Mono)
+7. **Run Gates 5 + 3 per variant** (ban list, validation tests) — each variant must pass independently
+8. **Verify in the browser (delegate to a sub-agent for isolation)**: start the project's dev server via the detection script (`node scripts/dev-server.mjs ...` — never assume a port; see Dev Server, below), drive it with the browser/Playwright skill, switch through every tab, exercise the interactions and states, screenshot each variant. The sub-agent returns only a short pass/fail + screenshot paths + any console errors — not the raw logs. Fix anything that doesn't render or behave correctly before presenting.
+9. **Present the comparison**: table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation + **the one command to run the app** + screenshot paths. **STOP — the user picks**
+10. **Refine the winner**: fold in feedback, optionally borrow the best detail from a losing variant, then document
 
 **Key Standards**:
 - Variants differ in structure and character, not hue — see distinctness axes in the guide
-- A prototype that needs a build step is a prototype the user won't open
+- Real interactive React, one app, tab-switchable — the user runs `npm run dev` once and clicks between directions
+- Verify it actually renders and behaves in a real browser before claiming it works (evidence, not assertion)
 - Losing variants are kept (they're cheap insurance and portfolio evidence)
 
 **Reference**: `design-data/references/prototype-variants-guide.md`
-**Required Modules**: `quality-gates.md` (all 5 gates)
-**Output**: `design-data/projects/[project-name]/prototypes/prototype-{a,b,c}.html` + `variants.md` (comparison + decision)
+**Required Modules**: `quality-gates.md` (all 5 gates), `context-management.md` (sub-agent isolation, output hygiene)
+**Dev server**: `scripts/dev-server.mjs` (project-scoped detect/start — see workflow §0 note and README)
+**Output**: a runnable React app at `design-data/projects/[project-name]/prototype/` (or inside the repo when working in one) + `variants.md` (comparison + decision) + `screenshots/` from browser verification
 
 ---
 

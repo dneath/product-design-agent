@@ -2,7 +2,7 @@
 
 How the Product Design Partner fits together. For day-to-day use, designers should start with [designer-quick-start.md](designer-quick-start.md), [handoff-guide.md](handoff-guide.md), and [workflows-by-task.md](workflows-by-task.md).
 
-**Version:** 1.3.1 · **Workflows:** 17 · **Slash commands:** 16 · **Subagents:** 4 · **Platforms:** OpenCode, Claude Code, Cursor, Codex
+**Version:** 1.3.1 · **Workflows:** 17 · **Modules:** 7 · **Slash commands:** 16 · **Subagents:** 4 · **Platforms:** OpenCode, Claude Code, Cursor, Codex
 
 ## High-Level Architecture
 
@@ -47,9 +47,10 @@ How the Product Design Partner fits together. For day-to-day use, designers shou
                       ▼
          ┌────────────────────────┐
          │   Reference Data       │
-         │  • Ban list (284 ln)   │
-         │  • Brand ID (336 ln)   │
-         │  • Patterns (326 ln)   │
+         │  • Ban list (292 ln)   │
+         │  • Styling resolution  │
+         │  • Patterns (optional)  │
+         │  • Research sources    │
          │  • UX/mentor/portfolio │
          │  • DesignPrompts JSON  │
          └────────────────────────┘
@@ -93,6 +94,7 @@ How the Product Design Partner fits together. For day-to-day use, designers shou
 
 **Location**: `agent/modules/`
 **Purpose**: Specialized subagents loaded on-demand
+**Count**: 7 modules — INDEX, workflows, quality-gates, standards-and-anti-patterns, frameworks-and-artifacts, platform-adaptation, context-management
 
 #### INDEX.md
 - System map of all modules
@@ -101,11 +103,12 @@ How the Product Design Partner fits together. For day-to-day use, designers shou
 
 #### quality-gates.md
 - 5 mandatory validation gates
-- Brand identity guidelines
+- Visual Foundations (context-driven) — no fixed brand; styling resolved from context
+- Craft Principles (always-on quality bar) + Optional Craft Techniques (opt-in)
 - Enforcement rules
 
 #### workflows.md
-- 17 workflow templates + §0 Process Router
+- 17 workflow templates + §0 Process Router (research-first routing)
 - Variant Protocol for all new UI
 - Step-by-step procedures and output paths under `design-data/projects/`
 
@@ -115,13 +118,18 @@ How the Product Design Partner fits together. For day-to-day use, designers shou
 
 #### standards-and-anti-patterns.md
 - Banned pattern definitions
-- Premium pattern templates
+- Optional craft techniques (opt-in, not a required architecture)
 - Quality criteria
 
 #### frameworks-and-artifacts.md
 - Design deliverable templates
 - Documentation formats
 - Handoff specifications
+
+#### context-management.md
+- Compaction / summarization guidance
+- Lean memory file + per-project `scratch.md`
+- Sub-agent isolation and output hygiene
 
 ### 3. Plugin & tooling (`plugins/`)
 
@@ -132,7 +140,7 @@ OpenCode plugin: gate enforcement, variance tracking, intent detection, DesignPr
 Standalone validator for any platform. Accepts markdown gate fields (`**Who**:`). CLI: `node plugins/design-validator.mjs <file>`.
 
 #### path-resolver.mjs
-Resolves `design-data/` across repo, `~/.product-design-partner/`, OpenCode config, and `DESIGN_DATA_DIR`.
+Resolves `design-data/` across repo, `~/.product-design-partner/`, OpenCode config, and `DESIGN_DATA_DIR`. Also exposes `resolveProjectOutputRoot()` and `projectOutputDir(workspaceDir, projectName)` — these resolve where generated work is written (the project working directory) and **never** resolve into the agent's own instruction/config files or the installed bundle.
 
 #### sync-commands.mjs
 Generates `opencode/command/`, `cursor/commands/`, `codex/prompts/` from canonical `commands/`.
@@ -151,6 +159,8 @@ One-time migration and DesignPrompts CSV conversion.
 - **Cursor** — `cursor/rules/product-design-partner.mdc` + commands + agents
 - **Codex** — `codex/AGENTS.md` + prompts
 - **Smoke tests** — `scripts/test.sh`
+- **Dev server** — `scripts/dev-server.mjs` (project-scoped check/start/stop/url for prototype apps; no false matches across unrelated ports)
+- **Install / uninstall** — `install.sh` and `uninstall.sh` (mirrored: `--target opencode|claude|cursor|codex|custom|all`, `--purge`, `--dry-run`, `--yes`)
 
 ### 4. Reference Data System
 
@@ -164,22 +174,23 @@ Forbidden patterns that signal generic AI output:
 - Predictable layouts (centered hero, 3-card grid)
 - 10 total patterns with detection rules
 
-#### brand-identity.md (336 lines)
-Agent's own design system (demonstrates principles):
-- Typography: Inter + Fragment Mono
-- Color: Deep plum #501E60 (brand) + violet #7C3AED (accent)
-- Architecture: Double-Bezel, Button-in-Button, Whisper-Quiet Elevation
-- Motion: Custom easing curves
+#### styling-resolution.md (189 lines)
+Context-driven styling guide — **there is no fixed brand or house style**. Styling is resolved from context every time, in priority order:
+1. **Existing repo tokens** (Tailwind config, CSS `:root`/`@theme`, token files, shadcn/MUI/Chakra theme) — adopt and extend, never replace.
+2. **Figma variables** — pull variables/styles and map them 1:1 to CSS variables.
+3. **User-specified** palette / font / brand / reference — use exactly.
+4. **Fallback defaults** (only when none of the above applies): monochrome tinted-neutral grayscale in **OKLCH** (never `#000`/`#fff`); a **4px** spacing scale; **Inter** (UI/text) + **Fragment Mono** (mono). The single accent (if any) comes from the product's domain.
 
-#### premium-patterns.md (326 lines)
-High-quality alternatives to banned patterns:
-- 15 premium architecture patterns
-- Evidence-based color palettes
-- Intent-driven typography systems
-- Accessibility-first layouts
+(Formerly `brand-identity.md`; the previous fixed brand palette was removed in favor of context-driven styling.)
 
-#### Capability reference files (13 markdown + 3 JSON)
-Includes: ban-list, brand-identity, premium-patterns, prototype-variants-guide, diagram-guide, annotation-guide, research-templates, brainstorming-playbook, product-design-process, mentorship, ux-flows, ux-heuristics, design-converter, portfolio — plus DesignPrompts JSON (~350KB).
+#### premium-patterns.md (335 lines)
+**Optional** craft techniques — opt-in, not a required architecture. Patterns like Double-Bezel and Button-in-Button are available when a design calls for them, but are never mandatory. Always-on craft (whisper-quiet elevation, ease-out motion) lives in the Craft Principles of `quality-gates.md`, not here.
+
+#### design-research-sources.md (83 lines)
+Research-first methodology — where and how to gather real references and published evidence **before** designing (real product UI, visual/motion inspiration, code/component sources, evidence-based UX research), plus the expected output shape. Feeds §0 routing and the Interface (§3) and Prototype (§15) workflows.
+
+#### Capability reference files (14 markdown + 3 JSON)
+Includes: ban-list, styling-resolution, premium-patterns, design-research-sources, prototype-variants-guide, diagram-guide, annotation-guide, research-templates, brainstorming-playbook, product-design-process, mentorship, ux-flows, ux-heuristics, design-converter, portfolio — plus DesignPrompts JSON (~350KB).
 
 #### DesignPrompts.dev JSON Files (350KB total)
 
@@ -210,8 +221,13 @@ Typical layout per project:
 ```
 projects/my-product/
   concept.md · research-plan.md · flows.md · variants.md
-  prototypes/*.html · annotations.md · handoff.md · case-study.md
+  prototype/        runnable Vite + React app (tabs A/B/C) + screenshots/
+  annotations.md · handoff.md · case-study.md
 ```
+
+Generated work is always written to the project working directory (resolved via
+`projectOutputDir()` / `resolveProjectOutputRoot()`), never into the agent's own
+instruction/config files or the installed bundle.
 
 #### components/
 Reusable component definitions:
@@ -223,13 +239,17 @@ components/
 ```
 
 #### tokens/
-Design token definitions (JSON):
+Design token definitions (JSON). Tokens are resolved from context (existing repo →
+Figma → user-specified → fallback). The example below shows the **fallback** set: a
+monochrome OKLCH neutral ramp (never `#000`/`#fff`) on a 4px spacing scale.
 ```json
 {
   "color": {
-    "primary": "#501E60",
-    "secondary": "#7C3F92"
+    "surface": "oklch(0.98 0.004 250)",
+    "foreground": "oklch(0.20 0.01 250)",
+    "accent": "oklch(0.55 0.13 250)"
   },
+  "spacing": [4, 8, 12, 16, 24, 32, 48, 64],
   "typography": {
     "heading": "Inter",
     "body": "Inter",
@@ -237,6 +257,7 @@ Design token definitions (JSON):
   }
 }
 ```
+When working inside a repo or from Figma, mirror that system's tokens instead.
 
 #### validation-history/
 JSON logs of all validation runs:

@@ -19,7 +19,7 @@ Gate rules live only in `quality-gates.md` and `workflows.md`. Subagent stubs in
 | Subagent | Workflow | When to spawn |
 |----------|----------|---------------|
 | `interface-design` | §3 Interface Design | Dashboards, admin panels, new gated UI |
-| `prototype-variants` | §15 Prototype Variants | 2–3 runnable HTML variants |
+| `prototype-variants` | §15 Prototype Variants | 2–3 runnable React variants in one tab-switchable app, browser-verified |
 | `figma-export` | §13 Figma Export | Push gated design/tokens to Figma |
 | `product-design-partner` | Router | Everything else; delegates heavy work above |
 
@@ -85,7 +85,13 @@ Plugins use `plugins/path-resolver.mjs`. Agents should prefer **repo-relative** 
 | **Single solution** | Variant Protocol — refuse single UI for new screens |
 | **Weak structured output** | Use templates from `frameworks-and-artifacts.md` verbatim |
 | **Small context window** | `goal-mode.md` only; one workflow section; one reference file |
-| **Strong coding, weak UX** | Run Gates 3–5 before any HTML/CSS; require annotation pass (§17) |
+| **Strong coding, weak UX** | Run Gates 3–5 before any UI; require annotation pass (§17) |
+| **Loses the thread on long tasks** | Follow `context-management.md`: summarize finished sub-tasks, keep state in a per-project `scratch.md`, delegate isolated steps to sub-agents |
+| **Dumps logs / inlines big files** | Output hygiene (`context-management.md`): write artifacts to the working dir, reference by path, truncate verbose tool output |
+
+## Context & token discipline
+
+On long or multi-step work, load `context-management.md` and apply it: summarize completed sub-tasks and discard raw intermediate output (build logs, file dumps); keep durable project facts in a lean memory file and volatile task state in a per-project `scratch.md`; delegate self-contained steps (browser verification, dev-server checks) to sub-agents that return only a short result; write large artifacts to the working directory and reference them by path. Native compaction is reinforced by the `experimental.session.compacting` hook (OpenCode) which preserves design context during compression.
 
 ## Validation without plugins
 
@@ -109,6 +115,9 @@ git clone <repo> && cd product-design-agent
 chmod +x install.sh scripts/test.sh
 ./install.sh --target cursor --yes   # or claude | codex | opencode
 ./scripts/test.sh
+
+# Remove everything later
+./uninstall.sh --target cursor --yes # or claude | codex | opencode | all
 ```
 
 See `docs/installation-macos.md` (hub) and `docs/installation-<platform>-macos.md` for full per-platform macOS guides.

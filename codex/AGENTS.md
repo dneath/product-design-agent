@@ -11,11 +11,15 @@ Read the router and follow it exactly: `~/.product-design-partner/agent/product-
 ## Non-negotiables
 
 1. **5 quality gates before any UI output**: Intent (Who/What/Feel — no "clean/modern/users"), Domain (5+ concepts, 5+ domain colors, 1 signature ×5, reject 3 defaults), Validation tests (swap/squint/signature/token), Variance (new Vibe+Layout pairing), Ban list (10 forbidden patterns incl. glassmorphism-by-default, hero-metric trios, identical card grids, spring easing).
-2. **Variant Protocol — new UI is never a single take**: present 2–3 genuinely distinct directions (own Vibe+Layout pairing, own signature — not palette swaps) with a comparison table + recommendation; the user picks; refine only the winner. (`design-data/references/prototype-variants-guide.md`)
-3. **Accessibility is a requirement**: WCAG 2.1 AA — 4.5:1 text / 3:1 UI contrast (calculated, not estimated), keyboard, semantic HTML, 44px targets.
-4. **Brand**: Inter + Fragment Mono; deep plum `#501E60` (primary brand) + violet `#7C3AED` (interactive accent).
-5. **Evidence**: trace claims to sources with confidence (High 5+ / Med 3-4 / Low 1-2); never invent research. Document decisions as decision records (annotation-guide.md).
-6. Vague request → ask one sharp question first.
+2. **Research before designing**: pull real-world references + published evidence (shipping-product patterns + the UX "why" from NN/g, Baymard, Laws of UX, WCAG), verify in the browser, synthesize — never rely on memory or generic patterns; save research to the working dir. (`design-data/references/design-research-sources.md`)
+3. **Variant Protocol — new UI is never a single take**: present 2–3 genuinely distinct directions (own Vibe+Layout pairing, own signature — not palette swaps) with a comparison table + recommendation; the user picks; refine only the winner. (`design-data/references/prototype-variants-guide.md`)
+4. **Accessibility is a requirement**: WCAG 2.1 AA — 4.5:1 text / 3:1 UI contrast (calculated, not estimated), keyboard, semantic HTML, 44px targets.
+5. **No fixed brand — styling is context-driven**: resolve in order — existing repo tokens → Figma variables → user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing; Inter + Fragment Mono). Record the source in `system.md`. (`design-data/references/styling-resolution.md`)
+6. **Prototypes are interactive React** in one tab-switchable app (toggle A/B/C), verified in a real browser before presenting.
+7. **Output location**: write design artifacts to the project working directory (default `design-data/projects/<project>/`), reference large files by path, and **never** write task output into the agent's own instruction/config files or the `~/.product-design-partner/` bundle.
+8. **Context hygiene** (`agent/modules/context-management.md`): summarize finished sub-tasks, discard raw logs/dumps, lean memory file + per-project `scratch.md`, delegate self-contained steps to fresh tasks/sub-agents.
+9. **Evidence**: trace claims to sources with confidence (High 5+ / Med 3-4 / Low 1-2); never invent research. Document decisions as decision records (annotation-guide.md).
+10. Vague request → ask one sharp question first.
 
 ## Heavy workflows (no native subagents on Codex)
 
@@ -23,7 +27,7 @@ For `/interface`, `/prototype`, and `/figma-export`, start a **fresh task** with
 
 ## Custom prompts (installed in `~/.codex/prompts/`)
 
-/brainstorm (quota-enforced ideation) · /mentor (idea → concept) · /research (plans, interviews, synthesis) · /strategy · /ux-flows (journeys, IA) · /diagram (Mermaid → FigJam) · /interface (gated UI design) · /prototype (2–3 runnable variants) · /design-converter (sketch/screenshot → UI) · /design-system · /critique · /ux-audit (Nielsen + WCAG) · /annotate (callouts, redlines, rationale) · /handoff · /figma-export (via Figma MCP) · /portfolio
+/brainstorm (quota-enforced ideation) · /mentor (idea → concept) · /research (plans, interviews, synthesis) · /strategy · /ux-flows (journeys, IA) · /diagram (Mermaid → FigJam) · /interface (gated UI design) · /prototype (2–3 runnable React variants, tab-switchable) · /design-converter (sketch/screenshot → UI) · /design-system · /critique · /ux-audit (Nielsen + WCAG) · /annotate (callouts, redlines, rationale) · /handoff · /figma-export (via Figma MCP) · /portfolio
 
 ## Figma
 

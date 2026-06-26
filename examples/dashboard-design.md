@@ -82,7 +82,9 @@ This is distinctive because:
 
 **Why**: Engineers need to see health first, then investigate. Timeline at top provides context for everything below.
 
-**Typography**:
+**Typography** (no repo or Figma type system was detected for this project, so this uses
+the fallback defaults — Inter for UI/text, Fragment Mono for mono. With an existing
+codebase or Figma file, those type tokens would be used instead):
 - **Headings**: Inter SemiBold 18px (service names, section titles)
 - **Data**: Fragment Mono 14px (timestamps, error codes, metrics)
 - **Body**: Inter Regular 14px (descriptions, tooltips)
@@ -368,6 +370,15 @@ Checked against 10 forbidden patterns:
 
 ## Design System Tokens
 
+These tokens were resolved from this project's *context* — the domain exploration above
+(the status palette) plus a monochrome-neutral fallback for surfaces and text — **not** from
+any fixed brand. There is no mandated brand color; styling resolves in order from existing
+repo tokens → Figma variables → user-specified → fallback (monochrome OKLCH neutrals, never
+`#000`/`#fff`). The status greens/ambers/reds below are kept because they are *domain-derived*
+(service-health semantics), not decoration. Export each token as a CSS custom property
+(e.g. `--color-status-healthy`) and reference the variables in components rather than
+hardcoding hex values.
+
 ```json
 {
   "color": {
@@ -440,7 +451,10 @@ Checked against 10 forbidden patterns:
 
 ## Next Steps
 
-1. **Prototype**: Build timeline component first (highest risk/novelty)
+1. **Prototype**: Build an interactive React prototype — one tab-switchable app with
+   variants A/B/C, browser-verified — under `design-data/projects/api-dashboard/prototype/`
+   (plus `variants.md` and `screenshots/`), starting with the timeline component
+   (highest risk/novelty)
 2. **User Testing**: Show to 3 DevOps engineers, validate on-call workflow
 3. **Iterate**: Based on feedback, adjust information density
 4. **Implement**: Full build with production data integration

@@ -5,9 +5,9 @@
 The Product Design Partner agent is a modular design system with strict quality enforcement. It consists of:
 
 - **Core Agent** (~270 lines): Identity, workflow router, quick references
-- **6 Modules**: workflows, quality-gates, standards, frameworks, platform-adaptation, INDEX
+- **7 Modules**: workflows, quality-gates, standards, frameworks, platform-adaptation, context-management, INDEX
 - **5 Plugins/utilities**: validation, variance, sync-commands, path-resolver, migration, CSV conversion
-- **Reference Data**: Ban lists, brand guidelines, premium patterns, design prompt libraries
+- **Reference Data**: Ban lists, styling resolution, craft patterns, design prompt libraries
 
 **Flow**: User request → Core agent routes → Loads relevant modules → Follows workflow → Plugin validates output
 
@@ -20,9 +20,10 @@ The Product Design Partner agent is a modular design system with strict quality 
 ├── product-design-partner.md              [~240 lines - Core Agent / Router]
 └── modules/
     ├── INDEX.md                           [~240 lines - This File]
-    ├── quality-gates.md                   [~290 lines - Gates 1-5, Brand, Patterns]
+    ├── quality-gates.md                   [Gates 1-5, Visual Foundations, Craft Principles]
     ├── workflows.md                       [~580 lines - 17 Workflows + Process Router §0]
     ├── platform-adaptation.md             [LLM-specific paths, enforcement, optimizations]
+    ├── context-management.md              [Token/context hygiene: compaction, scratch, sub-agents, output]
     ├── standards-and-anti-patterns.md     [~135 lines - Quality + Anti-patterns]
     └── frameworks-and-artifacts.md        [~215 lines - Frameworks + Templates]
 
@@ -34,15 +35,16 @@ The Product Design Partner agent is a modular design system with strict quality 
 
 ~/.config/opencode/design-data/
 ├── references/
-│   ├── ban-list.md                        [284 lines - Forbidden Patterns]
-│   ├── brand-identity.md                  [336 lines - Brand Guidelines, two-tone color]
-│   ├── premium-patterns.md                [326 lines - Architecture Patterns]
+│   ├── ban-list.md                        [Forbidden Patterns]
+│   ├── design-research-sources.md         [Research-first: where + how to research, evidence over opinion]
+│   ├── styling-resolution.md              [Context-driven styling + fallback defaults]
+│   ├── premium-patterns.md                [Optional craft techniques]
 │   ├── mentorship-frameworks.md           [AI Mentor - idea → concept]
 │   ├── ux-flow-patterns.md                [UX Flows - journeys, IA]
 │   ├── ux-heuristics.md                   [UX Audit - Nielsen + WCAG]
 │   ├── design-converter-guide.md          [Design Converter - image → UI]
 │   ├── portfolio-frameworks.md            [Portfolio - case studies]
-│   ├── prototype-variants-guide.md        [Prototype Variants - 2-3 distinct directions]
+│   ├── prototype-variants-guide.md        [Prototype Variants - 2-3 React directions, tab-switchable]
 │   ├── diagram-guide.md                   [Diagrams - Mermaid, ASCII wireframes, FigJam]
 │   ├── annotation-guide.md                [Annotations - callouts, redlines, decision records]
 │   ├── research-templates.md              [Research - screener, discussion guide, JTBD]
@@ -80,6 +82,8 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 - **`cursor/agents/*.md`** (4) — Cursor subagents (GENERATED from `agents/`)
 - **`.claude-plugin/plugin.json`** — Claude Code plugin manifest
 - **`hooks/`** — `hooks.json` + `inject-design-context.mjs` (UserPromptSubmit intent nudge)
+- **`scripts/`** — `dev-server.mjs` (project-scoped dev-server detect/start/stop), `test.sh` (smoke suite)
+- **`install.sh`** / **`uninstall.sh`** — install to / fully remove from all four harnesses
 
 ## Module Dependencies
 
@@ -95,8 +99,8 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 - Gate 3: Validation Tests (Swap/Squint/Signature/Token)
 - Gate 4: Variance Check (Vibe + Layout archetypes)
 - Gate 5: Ban List (10 forbidden patterns)
-- Brand Identity (Inter + Fragment Mono; plum #501E60 brand + violet #7C3AED accent)
-- Premium Architecture Patterns (Double-Bezel, Button-in-Button, Whisper-Quiet, Custom Motion)
+- Visual Foundations (context-driven styling; monochrome / 4px / Inter + Fragment Mono fallback)
+- Craft Principles (OKLCH color, whisper-quiet elevation, concentric radius, ease-out motion, detail) + optional techniques
 
 ### workflows.md
 **Used by:** All user requests (router determines which workflow)
@@ -116,7 +120,7 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 12. Design Converter Workflow (sketch/screenshot → UI; all 5 gates)
 13. Figma Export Workflow (write direction via Figma MCP; no-MCP fallback bundle)
 14. Portfolio Builder Workflow (case studies)
-15. Prototype Variants Workflow (2-3 runnable single-file prototypes; user picks)
+15. Prototype Variants Workflow (2-3 runnable React variants in one tab-switchable app; user picks)
 16. Diagram Workflow (Mermaid flow/sequence/state/journey/ER/architecture; FigJam export)
 17. UX Annotations & Write-ups Workflow (typed callouts, redlines, decision records)
 
@@ -137,6 +141,15 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 - 5 Decision Framework Categories: Research Methods, Analysis, Brainstorming, Design Principles, Critique
 - 5 Output Artifact Templates: System Documentation, Research Plan, Synthesis Report, Component Docs, Handoff Spec
 
+### context-management.md
+**Used by:** Every long-running or multi-step task (loaded by the router when work spans several steps or nears a token threshold)
+
+**Contains:**
+- Summarization & compaction (discard raw build logs / file dumps; condense completed sub-tasks)
+- Persistent memory pattern (lean `AGENTS.md` for durable facts; per-project `scratch.md` for task state)
+- Sub-agent / task isolation (delegate browser checks, dev-server checks, file reads; return short results)
+- Output hygiene (write large artifacts to the working directory, reference by path; truncate verbose tool output)
+
 ---
 
 ## Plugin Integration Points
@@ -153,7 +166,7 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 - Variance tracking (6 vibes × 6 layouts = 36 combinations, prevents repetition in last 2 outputs)
 - Design intent detection (matches user message to workflows)
 - Ban list enforcement (scans for 10 forbidden patterns)
-- Brand font validation (flags non-Inter/Fragment Mono)
+- Styling-source check (flags hardcoded `#000`/`#fff`; no font or color mandate)
 - DesignPrompts.dev integration (loads style reference data)
 - Figma URL detection (activates collaboration mode)
 
@@ -202,8 +215,11 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 | **Validation tests** | quality-gates.md | Gate 3 |
 | **Variance check** | quality-gates.md | Gate 4 |
 | **Ban list** | quality-gates.md | Gate 5 |
-| **Brand fonts/colors** | quality-gates.md | Brand Identity |
-| **Premium patterns** | quality-gates.md | Architecture Patterns |
+| **Styling resolution / fonts / colors** | quality-gates.md | Visual Foundations |
+| **Craft principles & optional techniques** | quality-gates.md | Craft Principles |
+| **Context / token management** | context-management.md | (whole file) |
+| **Where to write output** | context-management.md | Output Hygiene |
+| **Research before designing** | design-research-sources.md | Where + How to Research |
 | **Research workflow** | workflows.md | Section 1 |
 | **Design system workflow** | workflows.md | Section 2 |
 | **Interface design workflow** | workflows.md | Section 3 |
@@ -242,12 +258,13 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
    - `workflows.md` → Interface Design Workflow
 4. **Follows workflow:**
    - Step 1: Gate 1 - Frame Intent (Who/What/Feel)
-   - Step 2: Gate 2 - Domain Exploration
-   - Step 3: Gate 4 - Variance Check (consults plugin)
-   - Step 4: Establish Foundations (premium patterns)
-   - Step 5: Gate 5 - Ban List Check
-   - Step 6: Gate 3 - Validation Tests
-   - Step 7: Document System
+   - Step 2: Research first (real references + evidence) → grounds the domain
+   - Step 3: Gate 2 - Domain Exploration
+   - Step 4: Gate 4 - Variance Check (consults plugin)
+   - Step 5: Establish Foundations (resolved styling + craft principles)
+   - Step 6: Gate 5 - Ban List Check
+   - Step 7: Gate 3 - Validation Tests
+   - Step 8: Document System
 5. **Plugin validates:**
    - `product-design.js` runs `tui.before-response` hook
    - Checks all gates dynamically via pattern matching
@@ -259,6 +276,7 @@ Beyond the installed agent/plugin/data, the repository ships interface and packa
 
 ## Version History
 
+- **2026-06-25**: v1.4 — Removed the fixed brand → **context-driven Visual Foundations** (repo/Figma/user → monochrome OKLCH + 4px + Inter/Fragment Mono fallback); `brand-identity.md` → `styling-resolution.md`; quality-gates "Brand Identity"/"Premium Patterns" → "Visual Foundations" + "Craft Principles" + optional techniques. **React prototypes** in one tab-switchable app, browser-verified. New **`context-management.md`** module (7 modules total). New **`design-research-sources.md`** + research-first principle. New **`scripts/dev-server.mjs`** (project-scoped dev-server detection) and **`uninstall.sh`**. File-output rule (write to working dir, never the agent's own files) + `path-resolver` output functions.
 - **2026-06-15**: v1.3 — Platform adaptation module, product-design-process reference, path-resolver.mjs (cross-platform design-data paths), validator markdown-field fix, macOS install guide, scripts/test.sh smoke suite, docs/workflows.md
 - **2026-06-10**: v1.2 — Variant Protocol (2-3 distinct directions for all new UI) + 3 new workflows (Prototype Variants §15, Diagrams §16, UX Annotations & Write-ups §17), 5 new reference files (prototype-variants, diagram, annotation, research-templates, brainstorming-playbook), 4 new commands (/prototype, /diagram, /annotate, /brainstorm), Cursor + Codex packaging with `sync-commands.mjs` generator, install.sh targets for all 4 platforms
 - **2026-05-31**: Added 6 capabilities (AI Mentor, UX Flows, UX Audit, Design Converter, Figma Export, Portfolio Builder), 5 reference files, slash commands (Claude Code + OpenCode), `.claude-plugin/` packaging, portable goal-mode prompt, and two-tone brand (plum #501E60 / violet #7C3AED)

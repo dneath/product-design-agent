@@ -31,6 +31,7 @@ Product Design Partner — find the right doc for your role.
 | [Workflow index (technical)](workflows.md) | § numbers, output filenames |
 | [Saving project files](../design-data/projects/README.md) | Where specs live |
 | [Ban list](../design-data/references/ban-list.md) | Patterns the agent avoids |
+| [Design research sources](../design-data/references/design-research-sources.md) | Research-first references the agent cites before designing |
 
 ## Maintainers
 
@@ -39,6 +40,7 @@ Product Design Partner — find the right doc for your role.
 | [Architecture](architecture.md) | Modules, plugins, sync |
 | [Contributing](contributing.md) | Extend workflows |
 | [Platform adaptation](../agent/modules/platform-adaptation.md) | Per-LLM behavior |
+| [Context management](../agent/modules/context-management.md) | Token / context budgeting across long sessions |
 | [Changelog](../CHANGELOG.md) | Version history |
 
 ## Verify install

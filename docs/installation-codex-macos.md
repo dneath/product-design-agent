@@ -71,6 +71,8 @@ chmod +x install.sh scripts/test.sh
 | `~/.codex/AGENTS.md` | Agent identity (created if missing) |
 | `~/.product-design-partner/` | Router, modules, references, validator |
 
+To reverse this, run `./uninstall.sh --target codex` (see [Uninstall](#uninstall) below).
+
 ### If you already have `~/.codex/AGENTS.md`
 
 The installer **does not overwrite** your file. Append the design partner block:
@@ -131,6 +133,8 @@ Full command list: [workflows-by-task.md](workflows-by-task.md)
 2. Run `/interface` or `/prototype` with a full brief
 3. Before `/handoff`, run the validator on the spec file
 
+`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+), or use `node scripts/dev-server.mjs`.
+
 ### Save work
 
 > Save under design-data/projects/my-app/
@@ -182,6 +186,18 @@ cd product-design-agent && git pull
 ---
 
 ## Uninstall
+
+**Recommended — use the uninstaller** (mirrors the install; keeps your design output by default):
+
+```bash
+./uninstall.sh --target codex           # remove prompts/bundle, keep your design output
+./uninstall.sh --target codex --dry-run    # preview exactly what would be removed
+./uninstall.sh --target codex --purge      # also delete generated output (design-data/projects) + bundle
+```
+
+Add `--yes` to skip prompts. Then edit `~/.codex/AGENTS.md` and remove the Product Design Partner section if you appended it.
+
+**Manual fallback:**
 
 ```bash
 rm -rf ~/.product-design-partner

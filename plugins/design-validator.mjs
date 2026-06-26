@@ -249,8 +249,8 @@ function validateBanList(artifact, userPrompt = '') {
     },
     {
       pattern: /font-family:\s*['"]?(roboto|arial|helvetica)['";\s]/i,
-      name: 'generic fonts without justification',
-      alternative: 'Use brand fonts (Inter + Fragment Mono)'
+      name: 'defaulting type without thought',
+      alternative: 'Choose a typeface for the product/context, or inherit from the repo/Figma. When nothing specifies type, fall back to Inter (UI/text) + Fragment Mono (mono)'
     },
     {
       pattern: /transition:.*\b(width|height|top|left|bottom|right)\b/i,

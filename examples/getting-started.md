@@ -52,7 +52,9 @@ interface ButtonProps {
 - Text: White #FFFFFF (7.8:1 contrast ✓)
 - Border-radius: 6px
 - Padding: 12px 24px
-- Font: Inter SemiBold 15px
+- Font: Inter SemiBold 15px (fallback default — Inter is used only when no repo, Figma, or
+  user-specified type system exists; the command-blue color above is domain-derived, not a
+  fixed brand)
 
 **Interaction**:
 - Hover: Darken 10%, scale 1.02

@@ -50,8 +50,8 @@ process.stdin.on('end', () => {
     'Before any UI output, pass all 5 gates — Intent (Who/What/Feel, no generic words), ' +
     'Domain (5+ concepts/colors + 1 signature ×5), Validation tests (swap/squint/signature/token), ' +
     'Variance (new Vibe+Layout), Ban list. New UI = Variant Protocol: 2-3 distinct directions, ' +
-    'user picks. Brand: Inter + Fragment Mono; ' +
-    '#501E60 plum (brand) / #7C3AED violet (accent). WCAG 2.1 AA; document decisions.\n'
+    'user picks. Styling is context-driven (no fixed brand): adopt repo/Figma/user tokens, ' +
+    'else fall back to monochrome OKLCH + 4px spacing + Inter & Fragment Mono. WCAG 2.1 AA; document decisions.\n'
   );
   process.exit(0);
 });

@@ -71,6 +71,8 @@ chmod +x install.sh
 
 **Verify:** Type `/` in chat — see design commands.
 
+**Remove later:** `./uninstall.sh --target <claude|cursor|codex|opencode>` from the same repo. It keeps your saved design work in `design-data/projects/` by default; add `--dry-run` to preview or `--purge` to also delete generated output. Detail: [Installation](installation.md#uninstalling).
+
 ---
 
 ### 2. Attach identity (5 min)
@@ -100,6 +102,8 @@ Examples: [getting-started.md](../examples/getting-started.md) · [workflows-by-
 
 ### 4. Save your work (5 min)
 
+All artifacts land in your **project working directory** under `design-data/projects/<project>/` (on your machine, gitignored — not in the shared tool repo):
+
 > Save artifacts under design-data/projects/billing-dashboard/
 
 | File | When |
@@ -107,7 +111,7 @@ Examples: [getting-started.md](../examples/getting-started.md) · [workflows-by-
 | `concept.md` | Early mentor/strategy |
 | `research-plan.md` | After `/research` |
 | `flows.md` | After `/ux-flows` |
-| `variants.md` + `prototypes/` | After `/prototype` |
+| `variants.md` + `prototype/` (runnable React app) | After `/prototype` |
 | `system.md` | After `/interface` |
 | `handoff.md` | Before dev (`/handoff`) |
 
@@ -140,8 +144,10 @@ Examples: [getting-started.md](../examples/getting-started.md) · [workflows-by-
 | Task | Command | Agent |
 |------|---------|-------|
 | New screen | `/interface` | `interface-design` |
-| HTML prototypes | `/prototype` | `prototype-variants` |
+| Prototype (React app) | `/prototype` | `prototype-variants` |
 | Figma export | `/figma-export` | `figma-export` |
+
+`/prototype` produces a runnable Vite + React app at `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+) or `node scripts/dev-server.mjs`.
 
 Codex: use `/interface` in a fresh task. OpenCode: `@product-design-partner` + plugin.
 

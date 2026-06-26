@@ -177,29 +177,37 @@ These patterns are FORBIDDEN in design output. They signal AI-generated work and
 
 ---
 
-## 7. Generic Fonts Without Justification
+## 7. Defaulting Type Without Thought
 
-**Pattern**: `font-family: 'Roboto', 'Arial', 'Helvetica', sans-serif`
+**Pattern**: `font-family: 'Roboto', 'Arial', 'Helvetica', sans-serif` — reaching for the same system sans every time because it's there.
 
-**Why it's banned**: Ignores brand identity. Inter + Fragment Mono are brand fonts.
+**Why it's banned**: Typography is not a container, it IS the design — type chosen by reflex is the loudest tell of generic output. There is **no fixed brand here**: the right typeface comes from context.
 
-**Alternative**: Use brand fonts or justify deviation.
+**Alternative**: Resolve type from context, in order —
+1. **Existing repo** → use the fonts already loaded (`next/font`, `@font-face`, `<link>`).
+2. **Figma source** → use its text styles.
+3. **User-specified** → use what they named.
+4. **Fallback only** → Inter (UI/text) + Fragment Mono (mono).
+
+In every case the choice must be deliberate and recorded in `system.md`.
 
 ```css
-/* ❌ BANNED */
+/* ❌ BANNED: chosen by reflex, no resolution */
 body {
   font-family: 'Roboto', sans-serif;
 }
 
-/* ✅ ALTERNATIVE: Brand fonts */
+/* ✅ Fallback (when no repo / Figma / user system specifies type) */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 code, .data-label {
-  font-family: 'Fragment Mono', monospace;
+  font-family: 'Fragment Mono', ui-monospace, monospace;
 }
 ```
+
+See `design-data/references/styling-resolution.md` for the full resolution order.
 
 ---
 

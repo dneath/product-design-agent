@@ -25,6 +25,8 @@ The agent lists:
 - **Colors from that world** — e.g. queue amber, stable green, breach coral (not random hex from Dribbble)
 - **One signature element** used repeatedly — e.g. a severity rail in the header, rows, filters, detail panel, legend
 
+> **No fixed brand.** Styling is context-driven: the agent reads existing repo tokens first, then a Figma file, then anything you specify. With no signal it falls back to a restrained monochrome scheme (OKLCH greys, never pure `#000`/`#fff`), 4px spacing, and Inter (UI/text) + Fragment Mono (code) — then adapts to the domain. There is no single locked palette or typeface to memorize.
+
 ## Gate 3 — Four quick tests
 
 Before handoff, the agent documents four sanity checks:

@@ -41,6 +41,8 @@ Full comparison: [platform-adaptation.md](../agent/modules/platform-adaptation.m
 
 **macOS:** [installation-macos.md](installation-macos.md) — Xcode CLT, Homebrew Node, clone repo.
 
+> **Prototypes are React.** `/prototype` outputs a runnable Vite + React app (tabs A/B/C). To *run* a prototype you need Node 18+ and a package manager (`npm install && npm run dev`), regardless of platform.
+
 ---
 
 ## Quick install (all platforms)
@@ -58,6 +60,20 @@ chmod +x install.sh scripts/test.sh
 ```
 
 The script copies files, validates paths, and prints next steps.
+
+### Quick uninstall (all platforms)
+
+`uninstall.sh` mirrors the installer's targets. By default it **preserves your generated design output** (`design-data/projects/`):
+
+```bash
+./uninstall.sh --target claude      # Claude Code
+./uninstall.sh --target cursor      # Cursor
+./uninstall.sh --target codex       # Codex
+./uninstall.sh --target opencode    # OpenCode
+./uninstall.sh --target all --dry-run   # preview removal for every target
+```
+
+Add `--dry-run` to preview, `--purge` to also delete generated output + the installed bundle, and `--yes` to skip prompts.
 
 ---
 
@@ -89,6 +105,14 @@ Enables 16 commands, 4 subagents, UserPromptSubmit hook. See [.claude-plugin/REA
 
 Installs `~/.claude/commands/`, `~/.claude/agents/`, `~/.product-design-partner/`.
 
+### Uninstall (Claude Code)
+
+```bash
+./uninstall.sh --target claude          # remove commands/agents/bundle, keep your design output
+./uninstall.sh --target claude --dry-run   # preview first
+./uninstall.sh --target claude --purge     # also delete generated output (design-data/projects)
+```
+
 ### Verify
 
 - `/interface` autocompletes in Claude Code
@@ -116,6 +140,16 @@ Download from [cursor.com](https://cursor.com).
 ```bash
 ./install.sh --target cursor --yes
 ```
+
+### Uninstall (Cursor)
+
+```bash
+./uninstall.sh --target cursor          # remove commands/agents/rule/bundle, keep your design output
+./uninstall.sh --target cursor --dry-run   # preview first
+./uninstall.sh --target cursor --purge     # also delete generated output (design-data/projects)
+```
+
+Also remove any per-project copies of `.cursor/rules/product-design-partner.mdc`.
 
 ### Attach rule per project (required for gates)
 
@@ -158,6 +192,16 @@ If `~/.codex/AGENTS.md` already exists:
 cat codex/AGENTS.md >> ~/.codex/AGENTS.md
 ```
 
+### Uninstall (Codex)
+
+```bash
+./uninstall.sh --target codex           # remove prompts/bundle, keep your design output
+./uninstall.sh --target codex --dry-run    # preview first
+./uninstall.sh --target codex --purge      # also delete generated output (design-data/projects)
+```
+
+Then edit `~/.codex/AGENTS.md` and remove the Product Design Partner section if you appended it.
+
 ### Verify
 
 - `ls ~/.codex/prompts/interface.md`
@@ -191,6 +235,14 @@ Per your OpenCode documentation.
 
 Installs agent, modules, plugins, commands, and reference data under `~/.config/opencode/`.
 
+### Uninstall (OpenCode)
+
+```bash
+./uninstall.sh --target opencode        # remove agent/plugins/commands/references, keep your design output
+./uninstall.sh --target opencode --dry-run   # preview first
+./uninstall.sh --target opencode --purge     # also delete generated output (design-data/projects)
+```
+
 ### Verify
 
 ```bash
@@ -216,6 +268,14 @@ cp design-data/references/* ~/.config/opencode/design-data/references/
 
 ```bash
 ./install.sh --target custom --path /your/custom/path --yes
+```
+
+### Uninstall (custom path)
+
+```bash
+./uninstall.sh --target custom --path /your/custom/path   # keep your design output
+./uninstall.sh --target custom --path /your/custom/path --dry-run   # preview first
+./uninstall.sh --target custom --path /your/custom/path --purge     # also delete generated output
 ```
 
 Load `agent/product-design-partner.md` as system prompt; keep `design-data/` readable; validate with:
@@ -322,12 +382,15 @@ cd product-design-agent && git pull
 
 ## Uninstalling
 
-See platform-specific guides for exact file lists, or:
+Use `uninstall.sh` (sibling of `install.sh`); it mirrors the install targets and **preserves your generated design output by default**:
 
 ```bash
-rm -rf ~/.product-design-partner
-# Plus platform dirs — see installation-*-macos.md
+./uninstall.sh --target claude       # or cursor | codex | opencode | custom
+./uninstall.sh --target all --dry-run   # preview removal for every target
+./uninstall.sh --target all --purge     # remove everything incl. generated output + bundle
 ```
+
+Flags: `--dry-run` (preview), `--purge` (also delete `design-data/projects` + bundle), `--yes` (skip prompts). Per-platform detail: see the `installation-*-macos.md` guides.
 
 ---
 

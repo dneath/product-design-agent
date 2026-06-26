@@ -12,7 +12,8 @@ A systematic, evidence-based product design agent for AI coding assistants — *
 - **Variant Protocol**: every new UI is delivered as **2–3 genuinely distinct directions** (own vibe+layout pairing and signature element each) with a comparison table and recommendation — you pick the winner, the agent refines it
 - **5 Quality Gates**: Mandatory validation for intent declaration, domain exploration, validation tests, variance tracking, and ban list enforcement
 - **Evidence-Based**: Every recommendation traces to sources with confidence levels; UX decisions documented as decision records
-- **Craft-Focused**: Intent-first design with self-critique mandate to avoid generic AI defaults
+- **Research-First**: Researches real references + published evidence before designing (curated sources in `design-data/references/design-research-sources.md`)
+- **Craft-Focused**: Intent-first design with self-critique mandate to avoid generic AI defaults; context-driven styling with no fixed brand
 - **WCAG 2.1 AA**: Accessibility built in as core requirement, not afterthought
 - **Variance Tracking**: Prevents repetitive design patterns across outputs
 - **Reference Libary**: 350KB reference library of styles, colors, and typography
@@ -38,7 +39,7 @@ The Product Design Partner helps with:
 - **Design Converter**: Turning sketches or screenshots into UI
 - **Figma Export**: Pushing designs and design systems into Figma
 - **Portfolio Builder**: Generating case studies from project artifacts
-- **Prototype Variants**: 2–3 runnable, distinct single-file prototypes per new UI — you choose the best one
+- **Prototype Variants**: 2–3 interactive React directions in one app (tab group/toggle to switch A/B/C), verified in a real browser — you choose the best one
 - **Diagrams**: Flowcharts, sequence/state/journey/ER/architecture diagrams (Mermaid, optional FigJam export)
 - **UX Annotations & Write-ups**: Numbered typed callouts (interaction/state/motion/content/a11y/logic), redlines, and design-rationale decision records
 
@@ -48,11 +49,12 @@ The Product Design Partner helps with:
 product-design-agent/
 ├── agent/
 │   ├── product-design-partner.md      [Core agent definition]
-│   └── modules/                       [6 focused modules]
+│   └── modules/                       [7 focused modules]
 │       ├── INDEX.md                   [System map]
-│       ├── quality-gates.md           [5 gates + brand identity]
+│       ├── quality-gates.md           [5 gates + context-driven visual foundations]
 │       ├── workflows.md               [17 complete workflows + process router]
 │       ├── platform-adaptation.md     [OpenCode, Claude, Cursor, Codex, generic LLM]
+│       ├── context-management.md      [summarization, lean memory + scratch.md, sub-agent isolation]
 │       ├── standards-and-anti-patterns.md
 │       └── frameworks-and-artifacts.md
 │
@@ -67,8 +69,9 @@ product-design-agent/
 ├── design-data/
 │   └── references/                    [reference data]
 │       ├── ban-list.md                [forbidden patterns]
-│       ├── brand-identity.md          [brand guidelines + two-tone color]
-│       ├── premium-patterns.md        [architecture patterns]
+│       ├── styling-resolution.md      [context-driven styling resolution order]
+│       ├── premium-patterns.md        [optional craft techniques]
+│       ├── design-research-sources.md [curated research sources + how to research]
 │       ├── mentorship-frameworks.md   [AI mentor: idea → concept]
 │       ├── ux-flow-patterns.md        [UX flows & IA]
 │       ├── ux-heuristics.md           [UX audit: Nielsen + WCAG]
@@ -89,6 +92,10 @@ product-design-agent/
 ├── prompts/                           [portable goal-mode prompt]
 ├── agents/                            [Claude Code subagent]
 ├── hooks/                             [UserPromptSubmit intent nudge]
+├── scripts/
+│   ├── dev-server.mjs                 [project-scoped dev-server: check/start/stop/url]
+│   └── test.sh                        [smoke tests]
+├── install.sh / uninstall.sh          [install + clean uninstall (mirrored flags)]
 └── .claude-plugin/                    [Claude Code plugin manifest]
 ```
 
@@ -116,6 +123,18 @@ The install script detects your environment, copies files to the right locations
 ./install.sh --target cursor --yes   # skip confirmation prompt
 ./scripts/test.sh                    # verify syntax, sync, validator, hook
 ```
+
+### Uninstall
+
+`uninstall.sh` mirrors `install.sh` — same `--target` values (`opencode | claude | cursor | codex | custom | all`):
+
+```bash
+./uninstall.sh --target claude                # remove a single target's install
+./uninstall.sh --target all --dry-run         # preview what would be removed
+./uninstall.sh --target all --purge --yes     # remove everything, incl. generated output
+```
+
+Uninstall preserves your generated design output (`design-data/projects/`) by default; `--purge` removes it too.
 
 ### Option B: Manual
 
@@ -196,7 +215,7 @@ Available on all four platforms (Claude Code plugin / Cursor / Codex / OpenCode)
 | Command | Does |
 |---------|------|
 | `/brainstorm` | Quota-enforced ideation: ≥15 ideas, ≥3 techniques, scored shortlist |
-| `/prototype` | 2–3 runnable, distinct prototype variants — you pick the winner |
+| `/prototype` | 2–3 interactive React variants in one app (browser-verified) — you pick the winner |
 | `/diagram` | Flow / sequence / state / journey / ER / architecture diagram (Mermaid → FigJam) |
 | `/annotate` | Numbered typed callouts + redlines + UX rationale decision records |
 | `/mentor` | Guide an idea → product concept |
@@ -281,19 +300,30 @@ node plugins/design-validator.mjs design-output.md
 | [Changelog](CHANGELOG.md) | Version history |
 | [Examples](examples/README.md) | Sample prompts |
 
-## Brand Identity
+## Visual Foundations (context-driven styling)
 
-The agent uses its own design system as a demonstration:
+The agent has **no fixed brand** and never defaults to one. Visual style is resolved from context, in order:
 
-- **Fonts**: Inter (headings/body), Fragment Mono (code/labels/data)
-- **Color**: Deep plum #501E60 (primary brand) + violet #7C3AED (interactive accent)
-- **Architecture**: Double-Bezel, Button-in-Button, Whisper-Quiet Elevation, Custom Motion
+1. **Existing repo tokens** — Tailwind config, CSS variables, theme files, component library, fonts already in the project
+2. **Figma variables** — pulled via the Figma MCP when available
+3. **User-specified** — any brand, palette, or type you provide
+4. **Fallback defaults** (only when nothing above exists): monochrome OKLCH neutrals (never pure `#000`/`#fff`), a 4px-based spacing scale, Inter for UI/text + Fragment Mono for mono
 
-See `design-data/references/brand-identity.md` for complete guidelines.
+Defaults are paired with craft principles — OKLCH color, whisper-quiet elevation, concentric border radius, optical alignment, ease-out motion (transform/opacity only), tabular numbers, image outlines, scale-on-press, ≥40×40px hit areas, and balanced/pretty text wrapping.
+
+See `design-data/references/styling-resolution.md` for the full resolution order, and `design-data/references/premium-patterns.md` for optional craft techniques.
 
 ## How It Works
 
-**Modular Loading**: The core router loads six modules on demand (workflows, quality-gates, standards, frameworks, platform-adaptation, INDEX). See [architecture](docs/architecture.md).
+**Modular Loading**: The core router loads seven modules on demand (workflows, quality-gates, standards, frameworks, platform-adaptation, context-management, INDEX). See [architecture](docs/architecture.md).
+
+**Research-First**: Before designing, the agent researches real-world references and published evidence — see `design-data/references/design-research-sources.md` for curated sources, research method, and output format.
+
+**File Output**: Task output is always written to the active project working directory (default `design-data/projects/<project>/`); large artifacts are referenced by path. The agent never writes output into its own instruction/config files or the installed bundle.
+
+**Dev-Server Detection**: `scripts/dev-server.mjs` reliably finds, starts, stops, and reports the URL of a project's dev server (`check` / `start` / `stop` / `url`), scoped to the specific project so it never false-matches unrelated ports.
+
+**Context Management**: The `context-management` module keeps sessions lean — summarization/compaction, a lean project-memory file plus a per-project `scratch.md`, sub-agent isolation for browser and dev-server checks, and output hygiene.
 
 **Plugin Validation** (OpenCode): The product-design.js plugin runs automatically on every design output, blocking responses that violate quality gates. It also tracks variance history and suggests skills proactively.
 

@@ -48,17 +48,91 @@ Define each variant BEFORE building it:
 
 ---
 
-## Build Standards (runnable prototypes)
+## Build Standards (runnable React prototypes)
 
-- **One self-contained HTML file per variant** — inline CSS, vanilla JS only if interaction demands it, zero build steps. If the user can't double-click it, it's not a prototype.
-- **Real domain content** — never lorem ipsum, never `Item 1/2/3`. Invent plausible domain data.
-- **States visible**: default + hover/focus styles always; loading/error/empty reachable via a small state-toggle control in a corner (`?state=` param or buttons).
-- **Tokens as CSS variables with domain names** (`--sla-critical`, not `--red-500`) — Gate 3 token test applies per variant.
-- **Brand fonts**: Google Fonts `<link>` for Inter + Fragment Mono with system fallbacks.
+Prototypes are **real, interactive React** — full functionality is visible (working state, inputs, validation, transitions, real interactions), not static mockups. All variants live in **one app** behind a **tab group / toggle** so the user compares them side by side in a single running app.
+
+- **One React app, tab-switchable variants.** A `<VariantSwitcher>` renders `<VariantA/>` / `<VariantB/>` / `<VariantC/>`; it remembers the selection (URL hash like `#variant-b`) so a refresh keeps the tab. Vite + React when standalone; reuse the repo's stack (Next, CRA, etc.) when working inside one.
+- **Genuinely interactive** — each variant is a working component: real state, inputs that validate, transitions, optimistic updates where they matter. "Interactive" means you can actually use it, not hover-only CSS.
+- **Real domain content** — never lorem ipsum, never `Item 1/2/3`. Invent plausible domain data (a small in-file fixture module is fine).
+- **Data states reachable per variant** via an in-app toggle: default + hover/focus always; loading / error / empty switchable.
+- **Styling is resolved from context** (no fixed brand): existing repo tokens → Figma → user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing; Inter + Fragment Mono). Tokens are CSS variables with **domain names** (`--sla-critical`, not `--red-500`) — Gate 3 token test applies per variant.
 - **Each variant passes Gates 5 and 3 independently.** A variant that fails its own validation is not offered.
 
-File names: `prototype-a.html`, `prototype-b.html`, `prototype-c.html` in
-`design-data/projects/[project-name]/prototypes/`.
+### Minimal scaffold
+
+```
+design-data/projects/<project>/prototype/   (or inside the repo when working in one)
+├── index.html
+├── package.json            # vite + react + react-dom; script: "dev": "vite"
+├── vite.config.js
+└── src/
+    ├── main.jsx            # mounts <App/>
+    ├── App.jsx             # <VariantSwitcher/>
+    ├── tokens.css          # domain-named CSS variables (resolved styling)
+    ├── data.js             # plausible domain fixtures + state fixtures
+    ├── VariantSwitcher.jsx
+    ├── VariantA.jsx
+    ├── VariantB.jsx
+    └── VariantC.jsx
+```
+
+```jsx
+// VariantSwitcher.jsx — tab group to switch directions
+import { useState } from 'react';
+import VariantA from './VariantA';
+import VariantB from './VariantB';
+import VariantC from './VariantC';
+
+const VARIANTS = [
+  { id: 'a', label: 'A · Ledger',        Component: VariantA },
+  { id: 'b', label: 'B · Control Tower', Component: VariantB },
+  { id: 'c', label: 'C · Field Notes',   Component: VariantC },
+];
+
+export default function VariantSwitcher() {
+  const initial = window.location.hash.replace('#variant-', '') || 'a';
+  const [active, setActive] = useState(VARIANTS.some(v => v.id === initial) ? initial : 'a');
+  const Active = VARIANTS.find(v => v.id === active).Component;
+
+  return (
+    <>
+      <div role="tablist" aria-label="Prototype variants" className="variant-tabs">
+        {VARIANTS.map(v => (
+          <button
+            key={v.id}
+            role="tab"
+            aria-selected={active === v.id}
+            onClick={() => { setActive(v.id); window.location.hash = `variant-${v.id}`; }}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+      <main><Active /></main>
+    </>
+  );
+}
+```
+
+Each variant component owns its own state toggle for default/loading/error/empty.
+
+---
+
+## Browser Verification (mandatory before presenting)
+
+A prototype you haven't run is a claim, not a result. **Delegate verification to a sub-agent** (fresh context) so build noise never reaches the main thread.
+
+1. **Start the project's dev server** with the detection script — never assume a port, never hand-pick one that might collide:
+   ```bash
+   node scripts/dev-server.mjs start --dir design-data/projects/<project>/prototype
+   ```
+   It detects whether *this project's* server is already running (matching dir + port), reuses it if so, otherwise starts it and prints the exact URL.
+2. **Drive it with the browser / Playwright skill**: open the URL, click through **every** tab, exercise the real interactions (type into inputs, submit, trigger validation), and switch through each variant's data states.
+3. **Screenshot each variant** to `design-data/projects/<project>/prototype/screenshots/`.
+4. **Fix anything** that fails to render or misbehaves (console errors, broken state, layout breakage) before presenting.
+5. The sub-agent returns only: pass/fail per variant, screenshot paths, and any console errors — **not** the raw dev-server log.
+6. Stop the server when done: `node scripts/dev-server.mjs stop --dir <app>`.
 
 ---
 
@@ -80,6 +154,7 @@ Present all variants with this table, then a recommendation, then **stop and ask
 luminance hierarchy survives the squint test best. A is the fallback if the audience
 skews occasional users.
 
+Run all three in one app: `cd <prototype dir> && npm install && npm run dev`, then switch tabs A/B/C.
 Which direction should I develop? (You can also mix: e.g., "B with A's summary header.")
 ```
 
@@ -104,4 +179,6 @@ Selection rules:
 - ❌ A favorite plus two strawmen built to lose
 - ❌ Presenting variants without a recommendation (abdicating judgment)
 - ❌ Continuing to develop all variants after selection (split effort, no depth)
-- ❌ Prototypes that require `npm install`
+- ❌ Separate files the user must open one by one (variants belong in one tab-switchable app)
+- ❌ Static mockups with no real interaction, or presenting without running it in a browser first
+- ❌ Hand-picking a dev-server port instead of using `scripts/dev-server.mjs` (false matches, collisions)

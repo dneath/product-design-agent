@@ -19,7 +19,7 @@ This directory holds the Claude Code plugin manifest. Components are discovered 
 |-------|---------|
 | `product-design-partner` | Routing, light workflows, ambiguous scope |
 | `interface-design` | Dashboards, admin panels, gated UI (workflows §3) |
-| `prototype-variants` | 2–3 runnable HTML variants (workflows §15) |
+| `prototype-variants` | 2–3 interactive React variants in one app, browser-verified (workflows §15) |
 | `figma-export` | Push gated design to Figma (workflows §13) |
 
 Gate rules live in `agent/modules/quality-gates.md` and `workflows.md` — subagents read those files; they do not duplicate gates.

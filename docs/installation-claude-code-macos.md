@@ -130,6 +130,8 @@ cd product-design-agent
 | `~/.claude/agents/` | 4 subagent definitions |
 | `~/.product-design-partner/` | Full bundle (router, modules, references, plugins) |
 
+To reverse Method B, run `./uninstall.sh --target claude` (see [Uninstall](#uninstall) below).
+
 ---
 
 ## Verify installation
@@ -196,11 +198,13 @@ Full task index: [workflows-by-task.md](workflows-by-task.md)
 | Task | Command | Subagent |
 |------|---------|----------|
 | New screen | `/interface` | `interface-design` |
-| HTML variants | `/prototype` | `prototype-variants` |
+| Variant app (React) | `/prototype` | `prototype-variants` |
 | Figma export | `/figma-export` | `figma-export` |
 | Everything else | any command | `product-design-partner` |
 
 In Claude Code, pick a subagent from the agent menu or say: *“Use the interface-design subagent to …”*
+
+`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+), or use `node scripts/dev-server.mjs` for project-scoped start/stop.
 
 ### Save your work
 
@@ -288,7 +292,17 @@ If using the plugin: `/plugin` → update or re-add the repository.
 
 **Plugin:** `/plugin` → remove **product-design-partner**
 
-**Personal files:**
+**Personal files (Method B) — recommended, use the uninstaller:**
+
+```bash
+./uninstall.sh --target claude          # remove commands/agents/bundle, keep your design output
+./uninstall.sh --target claude --dry-run   # preview exactly what would be removed
+./uninstall.sh --target claude --purge     # also delete generated output (design-data/projects) + bundle
+```
+
+By default the uninstaller **preserves** your generated design output in `design-data/projects/`. Add `--yes` to skip prompts.
+
+**Manual fallback** (if you prefer to remove files by hand):
 
 ```bash
 rm -rf ~/.product-design-partner

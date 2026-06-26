@@ -10,8 +10,8 @@
 - Report contradictions honestly - don't hide or force-fit
 
 ### Systematic
-- Token-based design systems (not hardcoded values)
-- Consistent spacing scales (4pt/8pt grid)
+- Token-based design systems (not hardcoded values); styling resolved from context (repo → Figma → user → fallback), no fixed brand
+- Consistent spacing scale (adopt the repo's; else a 4px base)
 - Defined elevation/shadow systems
 - Text hierarchy (primary, secondary, tertiary, muted)
 - Border progression (standard, softer, emphasis, maximum)
@@ -48,6 +48,14 @@
 - Debounce/throttle high-frequency events
 - Transform/opacity animations only (not width/height)
 
+### Output-Hygienic & Context-Aware
+- Write task output to the project working directory (default `design-data/projects/[project-name]/`); never into the agent's own instruction/config files or the installed bundle
+- Reference large artifacts by path; don't inline them into the conversation
+- Summarize completed sub-tasks; discard raw build logs and file dumps; compact near the token limit
+- Durable facts in a lean project memory file; volatile task state in a separate `scratch.md`
+- Delegate self-contained steps (browser verification, dev-server checks, long reads) to sub-agents that return short results
+- Full guidance: `context-management.md`
+
 ---
 
 ## Anti-Patterns (What to Avoid)
@@ -78,7 +86,8 @@
 - ❌ Hero-metric template (big number + label + icon grid)
 - ❌ Identical card grids (3-across, same height)
 - ❌ Modal-first thinking
-- ❌ Generic fonts (Roboto, Arial) without justification
+- ❌ Defaulting type without resolving from context (repo/Figma/user → Inter + Fragment Mono fallback)
+- ❌ Imposing a fixed brand/palette instead of resolving styling from context
 - ❌ Spring/bounce easing
 - ❌ Animating width/height/top/left
 - ❌ Defaulting on typography, navigation, data presentation
@@ -121,6 +130,14 @@
 - ❌ Overly formal or robotic tone
 - ❌ Relying on color alone for error indication
 
+### Output & Context Anti-Patterns
+- ❌ Writing task output into the agent's own instruction/config files or the installed bundle
+- ❌ No specified location → writing somewhere other than the project working directory
+- ❌ Inlining large artifacts (full files, build logs) into the conversation instead of referencing by path
+- ❌ Carrying raw intermediate output (logs, dumps) forward instead of summarizing
+- ❌ Letting the project memory file grow unpruned, or mixing volatile scratch state into it
+- ❌ Static prototypes, or presenting a prototype without verifying it in a real browser
+
 ---
 
 ## Referenced By
@@ -130,5 +147,7 @@ All workflows reference this module for quality checks and anti-pattern awarenes
 ## See Also
 
 - **Gate 5 Ban List**: `quality-gates.md` → Gate 5 (complete list with alternatives and CSS examples)
-- **Ban List Details**: `design-data/references/ban-list.md` (284 lines - detailed rationale for each pattern)
-- **Premium Patterns**: `quality-gates.md` → Premium Architecture Patterns (what to do instead)
+- **Ban List Details**: `design-data/references/ban-list.md` (detailed rationale for each pattern)
+- **Craft Principles**: `quality-gates.md` → Craft Principles + Optional Craft Techniques (what to do instead)
+- **Styling Resolution**: `design-data/references/styling-resolution.md` (context-driven styling + fallback defaults)
+- **Context Management**: `context-management.md` (compaction, memory/scratch, sub-agents, output hygiene)

@@ -1,7 +1,13 @@
 /**
  * Cross-platform design-data path resolution.
  *
- * Search order:
+ * Two distinct concerns:
+ *   - READ reference data / agent operational state (variance + validation history):
+ *     resolveDesignDataRoot() — may point at the installed bundle.
+ *   - WRITE task output (prototypes, system.md, tokens, screenshots):
+ *     resolveProjectOutputRoot() — ALWAYS the working project, NEVER the agent's own bundle.
+ *
+ * Read search order (resolveDesignDataRoot):
  *   1. DESIGN_DATA_DIR env var (explicit override)
  *   2. <workspace>/design-data/ (repo checkout or project-local)
  *   3. <workspace>/.config/opencode/design-data/ (OpenCode per-project)
@@ -39,6 +45,45 @@ export function resolveDesignDataRoot(options = {}) {
   }
 
   return path.join(workspaceDir, 'design-data');
+}
+
+/**
+ * Resolve where TASK OUTPUT (design artifacts the agent creates for the user) is WRITTEN.
+ *
+ * Unlike resolveDesignDataRoot — which may resolve to the read-only installed bundle —
+ * this NEVER returns a path inside the agent's own bundle (`~/.product-design-partner`)
+ * or a global config dir. Task output belongs in the user's working project.
+ *
+ * Order:
+ *   1. DESIGN_OUTPUT_DIR env var (explicit override)
+ *   2. <workspace>/design-data/  (the current working project)
+ *
+ * @param {Object} [options]
+ * @param {string} [options.workspaceDir]
+ * @param {string} [options.explicitRoot]
+ * @returns {string} Absolute path to the output design-data root (caller creates it)
+ */
+export function resolveProjectOutputRoot(options = {}) {
+  if (options.explicitRoot) return path.resolve(options.explicitRoot);
+  if (process.env.DESIGN_OUTPUT_DIR) return path.resolve(process.env.DESIGN_OUTPUT_DIR);
+
+  const workspaceDir = path.resolve(options.workspaceDir || process.cwd());
+  const bundle = path.resolve(path.join(os.homedir(), '.product-design-partner'));
+
+  // Guard: never let task output land inside the installed bundle (the agent's own files).
+  const base = workspaceDir.startsWith(bundle) ? path.resolve(process.cwd()) : workspaceDir;
+  const safeBase = base.startsWith(bundle) ? os.homedir() : base;
+  return path.join(safeBase, 'design-data');
+}
+
+/**
+ * Absolute path to a single project's output directory. Caller is responsible for mkdir.
+ * @param {string} workspaceDir
+ * @param {string} projectName
+ * @returns {string}
+ */
+export function projectOutputDir(workspaceDir, projectName) {
+  return path.join(resolveProjectOutputRoot({ workspaceDir }), 'projects', projectName);
 }
 
 /** @param {string} workspaceDir @returns {string} */

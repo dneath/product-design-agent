@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "pairingName": "Primary Brand (Inter + Fragment Mono)",
+    "pairingName": "Fallback Default (Inter + Fragment Mono)",
     "category": "Sans + Mono",
     "headingFont": "Inter",
     "bodyFont": "Fragment Mono",
@@ -15,11 +15,11 @@
       "purple",
       "systematic"
     ],
-    "bestFor": "All applications requiring brand consistency, SaaS, dashboards, technical products, documentation",
+    "bestFor": "Fallback pairing when the repo/Figma/user specifies no type: SaaS, dashboards, technical products, documentation",
     "googleFontsUrl": "https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700;800|Fragment+Mono:wght@400",
     "cssImport": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fragment+Mono:wght@400&display=swap');",
     "tailwindConfig": "fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fragment Mono', 'monospace'] }",
-    "notes": "BRAND MANDATORY: Inter for all headings/body. Fragment Mono for labels/data/code. Purple #7C3AED accent."
+    "notes": "Fallback default only (no fixed brand): Inter for headings/body, Fragment Mono for labels/data/code. Resolve styling from the repo/Figma/user first; add an accent only if the domain needs one."
   },
   {
     "id": "2",
@@ -100,7 +100,7 @@
     "googleFontsUrl": "https://fonts.google.com/share?selection.family=DM+Sans:wght@400;500;700|Space+Grotesk:wght@400;500;600;700",
     "cssImport": "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
     "tailwindConfig": "fontFamily: { heading: ['Space Grotesk', 'sans-serif'], body: ['DM Sans', 'sans-serif'] }",
-    "notes": "Space Grotesk has unique character. Use with purple accent #7C3AED."
+    "notes": "Space Grotesk has unique character. Pair with an accent drawn from the product's domain."
   },
   {
     "id": "6",
@@ -262,7 +262,7 @@
     "googleFontsUrl": "https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700;800|Fragment+Mono:wght@400",
     "cssImport": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fragment+Mono:wght@400&display=swap');",
     "tailwindConfig": "fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fragment Mono', 'monospace'] }",
-    "notes": "BRAND: Inter for all UI. Fragment Mono for data/labels. Brand plum #501E60, violet #7C3AED accent."
+    "notes": "Fallback default: Inter for UI, Fragment Mono for data/labels. Resolve styling from context first; accent only if the domain needs one."
   },
   {
     "id": "14",
@@ -623,7 +623,7 @@
     "googleFontsUrl": "https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700;800|Fragment+Mono:wght@400",
     "cssImport": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fragment+Mono:wght@400&display=swap');",
     "tailwindConfig": "fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fragment Mono', 'monospace'] }",
-    "notes": "BRAND: Inter conveys trust. Fragment Mono for financial data. Purple #7C3AED accent."
+    "notes": "Inter conveys trust; Fragment Mono for financial data. A fallback suggestion — prefer the product's own type when present."
   },
   {
     "id": "32",
@@ -844,7 +844,7 @@
     "googleFontsUrl": "https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700|Fragment+Mono:wght@400",
     "cssImport": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fragment+Mono:wght@400&display=swap');",
     "tailwindConfig": "fontFamily: { mono: ['Fragment Mono', 'monospace'], sans: ['Inter', 'sans-serif'] }",
-    "notes": "BRAND: Fragment Mono for all data/metrics. Inter for labels. Purple accent."
+    "notes": "Fragment Mono for data/metrics, Inter for labels — a fallback suggestion; adopt the product's type when present."
   },
   {
     "id": "43",

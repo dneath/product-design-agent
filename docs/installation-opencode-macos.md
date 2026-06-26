@@ -66,6 +66,8 @@ chmod +x install.sh scripts/test.sh
 | `~/.config/opencode/command/` | 16 slash commands |
 | `~/.config/opencode/design-data/references/` | Playbooks |
 
+To reverse this, run `./uninstall.sh --target opencode` (see [Uninstall](#uninstall) below).
+
 ---
 
 ## Verify installation
@@ -122,6 +124,8 @@ design-data/projects/my-app/
 ```
 
 Default root: `~/.config/opencode/design-data/projects/` (or project-local `.config/opencode/` if present).
+
+`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+ is already required for OpenCode), or use `node scripts/dev-server.mjs`.
 
 ### Validation history
 
@@ -202,6 +206,18 @@ cd product-design-agent && git pull
 ---
 
 ## Uninstall
+
+**Recommended — use the uninstaller** (mirrors the install; keeps your design output by default):
+
+```bash
+./uninstall.sh --target opencode        # remove agent/plugins/commands/references, keep your design output
+./uninstall.sh --target opencode --dry-run   # preview exactly what would be removed
+./uninstall.sh --target opencode --purge     # also delete generated output (design-data/projects) + bundle
+```
+
+Add `--yes` to skip prompts. By default your generated work in `design-data/projects/` is preserved; `--purge` removes it.
+
+**Manual fallback:**
 
 ```bash
 rm ~/.config/opencode/agents/product-design-partner.md

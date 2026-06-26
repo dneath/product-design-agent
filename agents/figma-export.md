@@ -17,7 +17,7 @@ Source design must already pass gates 1–2 (from Interface Design or Design Con
 
 **Output contract:**
 
-1. Map tokens → Figma variables/styles; brand fonts Inter + Fragment Mono; plum `#501E60` / violet `#7C3AED`.
+1. Map tokens → Figma variables/styles using the project's **resolved** styling (existing repo tokens / source Figma / user-specified; fallback: monochrome OKLCH + 4px spacing + Inter & Fragment Mono). Never inject a fixed brand.
 2. Save token mapping to `design-data/tokens/<project>.json`.
 3. Report Figma file URL when export succeeds.
 4. Return to parent: 3–5 lines — what was exported, file URL or fallback delivered, token path, gate 3/5 status.
