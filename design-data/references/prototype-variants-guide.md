@@ -121,18 +121,22 @@ Each variant component owns its own state toggle for default/loading/error/empty
 
 ## Browser Verification (mandatory before presenting)
 
-A prototype you haven't run is a claim, not a result. **Delegate verification to a sub-agent** (fresh context) so build noise never reaches the main thread.
+A prototype you haven't run is a claim, not a result. The `prototype-variants` subagent **is** the isolated context — verify **inline** with your own tools; do not try to spawn a further sub-agent.
+
+Resolve the script path in this order: Claude plugin → `${CLAUDE_PLUGIN_ROOT}/scripts/dev-server.mjs`; bundle install → `~/.product-design-partner/scripts/dev-server.mjs`; OpenCode → `~/.config/opencode/scripts/dev-server.mjs`; repo checkout → `scripts/dev-server.mjs`.
 
 1. **Start the project's dev server** with the detection script — never assume a port, never hand-pick one that might collide:
    ```bash
-   node scripts/dev-server.mjs start --dir design-data/projects/<project>/prototype
+   node ${CLAUDE_PLUGIN_ROOT}/scripts/dev-server.mjs start --dir design-data/projects/<project>/prototype
    ```
    It detects whether *this project's* server is already running (matching dir + port), reuses it if so, otherwise starts it and prints the exact URL.
-2. **Drive it with the browser / Playwright skill**: open the URL, click through **every** tab, exercise the real interactions (type into inputs, submit, trigger validation), and switch through each variant's data states.
+2. **Drive it with the `playwright-cli` skill**: open the URL, click through **every** tab, exercise the real interactions (type into inputs, submit, trigger validation), and switch through each variant's data states.
 3. **Screenshot each variant** to `design-data/projects/<project>/prototype/screenshots/`.
 4. **Fix anything** that fails to render or misbehaves (console errors, broken state, layout breakage) before presenting.
-5. The sub-agent returns only: pass/fail per variant, screenshot paths, and any console errors — **not** the raw dev-server log.
-6. Stop the server when done: `node scripts/dev-server.mjs stop --dir <app>`.
+5. **Honesty gate** — claim a variant "verified" only when its screenshot file exists on disk (confirm with Glob/`ls`). Report only: pass/fail per variant, screenshot paths, and any console errors — **not** the raw dev-server log. Never write "verified" / "it works" without screenshot paths that exist.
+6. Stop the server when done: `node ${CLAUDE_PLUGIN_ROOT}/scripts/dev-server.mjs stop --dir <app>`.
+
+**If verification can't run** (no Bash, `node`/`npm` missing, no `playwright-cli` skill, or the dev server won't start): do not fabricate. Present the variants labeled **UNVERIFIED — built, not yet run**, quote the dev-server script's own `error`/`note` text, and give the user `cd <prototype dir> && npm install && npm run dev`. Still present the comparison and STOP for their choice.
 
 ---
 

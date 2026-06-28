@@ -20,5 +20,6 @@ Steps:
 6. Complete all 8 states.
 7. [Gates 3 & 5] Run validation tests + ban list.
 8. Emit semantic, accessible markup + a token sheet + an explicit assumptions list.
+9. **Validate before claiming done:** run `node ~/.product-design-partner/plugins/design-validator.mjs design-data/projects/<project>/converted.md` (if `${CLAUDE_PLUGIN_ROOT}` is unset, use `~/.product-design-partner/plugins/...` or the repo's `plugins/...`). Report the validator's pass/fail from its actual output. If you can't run it (no Bash / `node` missing), say so plainly and list which gates you checked by hand — never claim "all gates pass" without evidence.
 
 Save to `design-data/projects/<project>/converted.md`.

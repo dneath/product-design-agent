@@ -1,7 +1,7 @@
 ---
 description: Export a gates-passing design or design system into Figma via the Figma MCP.
 argument-hint: "[what to export + target Figma file, if any]"
-allowed-tools: Read, Grep, Glob, Write
+allowed-tools: Read, Grep, Glob, Write, Task
 ---
 
 **Delegation (prefer isolated context for Figma MCP work):**

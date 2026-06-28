@@ -2,6 +2,12 @@
 
 Before ANY design output (mockups, prototypes, wireframes, components), you MUST pass all 5 gates. Plugin validates automatically.
 
+## Execution discipline (applies to every gated workflow)
+
+- **Run the gates in order, and name each as you run it.** Never merge two gates or skip ahead; don't claim a gate passed without showing what satisfied it.
+- **STOP means stop.** When a workflow says present variants + recommendation and let the user choose, present and **yield** — refine nothing until the user replies.
+- **Evidence before assertions.** Only claim something is "verified" / "works" / "passes" when there is proof: a validator's actual output, or an artifact (e.g. a screenshot file) that exists on disk. If you can't produce the proof, say so and label the output **UNVERIFIED** — never fabricate a pass. (See `platform-adaptation.md` → Sonnet-class models.)
+
 ---
 
 ## Gate 1: Intent Declaration (MANDATORY - BLOCKS OUTPUT)

@@ -41,6 +41,17 @@ Resolve paths in this order:
 
 Plugins use `plugins/path-resolver.mjs`. Agents should prefer **repo-relative** `design-data/` when working inside a checkout; use `~/.product-design-partner/` when installed globally.
 
+### Executable scripts & the validator (canonical resolution order)
+
+The dev-server script and the gate validator are **executables run with `node`**, not data — resolve them in this order and use the first that exists:
+
+1. **Claude plugin** → `${CLAUDE_PLUGIN_ROOT}/scripts/dev-server.mjs`, `${CLAUDE_PLUGIN_ROOT}/plugins/design-validator.mjs`
+2. **Bundle install** (Cursor / Codex / Claude personal) → `~/.product-design-partner/scripts/...`, `~/.product-design-partner/plugins/...`
+3. **OpenCode** → `~/.config/opencode/scripts/...`, `~/.config/opencode/plugins/...`
+4. **Repo checkout** → `scripts/...`, `plugins/...`
+
+`install.sh` copies `scripts/` and `plugins/` into the bundle and into the OpenCode config dir, so both exist after a non-repo install. **Never** run a bare `node scripts/dev-server.mjs` and assume it resolves from the user's project cwd — it won't under a plugin/bundle install. The sync rewrites the `${CLAUDE_PLUGIN_ROOT}` token to the right absolute path per platform (OpenCode commands now use `~/.config/opencode/...`), so the generated commands are correct everywhere.
+
 ## Per-platform optimizations
 
 ### OpenCode
@@ -88,6 +99,21 @@ Plugins use `plugins/path-resolver.mjs`. Agents should prefer **repo-relative** 
 | **Strong coding, weak UX** | Run Gates 3–5 before any UI; require annotation pass (§17) |
 | **Loses the thread on long tasks** | Follow `context-management.md`: summarize finished sub-tasks, keep state in a per-project `scratch.md`, delegate isolated steps to sub-agents |
 | **Dumps logs / inlines big files** | Output hygiene (`context-management.md`): write artifacts to the working dir, reference by path, truncate verbose tool output |
+| **Optimistic completion (claims success it didn't earn)** | Honesty gate: a "verified"/"works" claim requires an artifact **on disk** (e.g. a screenshot file); none ⇒ label **UNVERIFIED**. Evidence before assertions. |
+| **Drops requirements in dense steps** | One requirement per checkbox; self-check each box before moving on. |
+| **Fabricates around a missing tool/path** | Degrade honestly: surface the tool/path gap + the exact command for the user to run; mark output UNVERIFIED. |
+
+### Sonnet-class models (4.5 / 4.6)
+
+Strong coders that nonetheless break on the long, gated, tool-driven workflows (`/prototype` most of all). The failures are predictable — compensate explicitly:
+
+- **Never claim verification without evidence.** A prototype is "verified" only when a screenshot file exists on disk (confirm with Glob/`ls`). If the dev server / `node` / `playwright-cli` skill is missing, present **UNVERIFIED** with the run command — do not fabricate a pass. This is the single most important compensation.
+- **Run gates in listed order, named.** Announce each gate as you run it; never merge two or skip ahead. Same for multi-step workflows — one step at a time.
+- **Checklists over prose.** When a step carries several requirements, treat each as a checkbox and confirm it before continuing; weak models silently drop trailing clauses in run-on sentences.
+- **Variants must differ structurally.** Run the guide's reskin check (remove color + font — still distinguishable?). Palette swaps are not variants.
+- **STOP is a hard halt.** After presenting variants + recommendation, yield. Refine nothing until the user picks.
+- **A sub-agent does not spawn sub-agents.** If you were delegated a step, do it inline with your own Bash + browser skill — don't try to nest another agent you have no tool to create.
+- **Resolve script paths, don't assume cwd.** Use the `${CLAUDE_PLUGIN_ROOT}` → bundle → repo order above; a bare `node scripts/...` will fail under a plugin/bundle install.
 
 ## Context & token discipline
 

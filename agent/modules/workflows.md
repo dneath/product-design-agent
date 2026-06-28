@@ -470,8 +470,9 @@ https://www.figma.com/file/[fileKey]/[fileName]
    - Representative data states reachable per variant: default, hover, focus, loading, error, empty (a small in-app state toggle)
    - Tokens as CSS variables with domain names; fonts from the resolved styling (repo `@font-face`/`next/font`, else Inter + Fragment Mono)
 7. **Run Gates 5 + 3 per variant** (ban list, validation tests) — each variant must pass independently
-8. **Verify in the browser (delegate to a sub-agent for isolation)**: start the project's dev server via the detection script (`node scripts/dev-server.mjs ...` — never assume a port; see Dev Server, below), drive it with the browser/Playwright skill, switch through every tab, exercise the interactions and states, screenshot each variant. The sub-agent returns only a short pass/fail + screenshot paths + any console errors — not the raw logs. Fix anything that doesn't render or behave correctly before presenting.
-9. **Present the comparison**: table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation + **the one command to run the app** + screenshot paths. **STOP — the user picks**
+8. **Verify in the browser**: if you are the `prototype-variants` subagent you already have an isolated context — do the verification **inline**, do not nest another sub-agent. Start the project's dev server via the detection script (`node <scripts>/dev-server.mjs start --dir <app>` — never assume a port; see Dev Server, below for path resolution), drive it with the `playwright-cli` skill, switch through every tab, exercise the interactions and states, and screenshot each variant to `<app>/screenshots/`. Fix anything that doesn't render or behave correctly before presenting.
+   - **Honesty gate**: claim a variant "verified" only when its screenshot file exists on disk (confirm with Glob/`ls`). If the dev server, `node`/`npm`, or the `playwright-cli` skill is unavailable, present the prototype as **UNVERIFIED — built, not yet run**, quote the dev-server script's own `error`/`note`, and give the user `cd <app> && npm install && npm run dev`. Never fabricate a pass.
+9. **Present the comparison**: table (intent fit · hierarchy · signature · strongest moment · trade-off) + your recommendation + **the one command to run the app** + screenshot paths (or the UNVERIFIED notice). **STOP — present and yield; the user picks. Refine nothing until they reply.**
 10. **Refine the winner**: fold in feedback, optionally borrow the best detail from a losing variant, then document
 
 **Key Standards**:
@@ -482,7 +483,7 @@ https://www.figma.com/file/[fileKey]/[fileName]
 
 **Reference**: `design-data/references/prototype-variants-guide.md`
 **Required Modules**: `quality-gates.md` (all 5 gates), `context-management.md` (sub-agent isolation, output hygiene)
-**Dev server**: `scripts/dev-server.mjs` (project-scoped detect/start — see workflow §0 note and README)
+**Dev server**: the project-scoped detect/start script. Resolve its path in this order: Claude plugin → `${CLAUDE_PLUGIN_ROOT}/scripts/dev-server.mjs`; bundle install → `~/.product-design-partner/scripts/dev-server.mjs`; OpenCode → `~/.config/opencode/scripts/dev-server.mjs`; repo checkout → `scripts/dev-server.mjs` (see workflow §0 note and README)
 **Output**: a runnable React app at `design-data/projects/[project-name]/prototype/` (or inside the repo when working in one) + `variants.md` (comparison + decision) + `screenshots/` from browser verification
 
 ---

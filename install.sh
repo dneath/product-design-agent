@@ -50,11 +50,12 @@ copy_bundle() {
     mkdir -p "$root/agent/modules" "$root/design-data/references" \
              "$root/design-data/projects" "$root/design-data/components" \
              "$root/design-data/tokens" "$root/design-data/validation-history" \
-             "$root/plugins" "$root/prompts"
+             "$root/plugins" "$root/prompts" "$root/scripts"
     cp agent/product-design-partner.md "$root/agent/"
     cp agent/modules/*.md "$root/agent/modules/"
     cp design-data/references/*.md design-data/references/*.json "$root/design-data/references/"
     cp plugins/*.js plugins/*.mjs "$root/plugins/" 2>/dev/null || true
+    cp scripts/*.mjs scripts/*.sh "$root/scripts/" 2>/dev/null || true
     cp prompts/*.md "$root/prompts/" 2>/dev/null || true
     mkdir -p "$root/agents"
     cp agents/*.md "$root/agents/" 2>/dev/null || true
@@ -67,12 +68,13 @@ install_opencode() {
     local cfg="$HOME/.config/opencode"
     print_info "Installing for OpenCode at $cfg"
     mkdir -p "$cfg/agents/product-design-partner/modules" "$cfg/plugins" \
-             "$cfg/command" "$cfg/prompts" "$cfg/design-data/references" \
+             "$cfg/command" "$cfg/prompts" "$cfg/scripts" "$cfg/design-data/references" \
              "$cfg/design-data/projects" "$cfg/design-data/components" \
              "$cfg/design-data/tokens" "$cfg/design-data/validation-history"
     cp agent/product-design-partner.md "$cfg/agents/"
     cp agent/modules/*.md "$cfg/agents/product-design-partner/modules/"
     cp plugins/*.js plugins/*.mjs "$cfg/plugins/" 2>/dev/null || true
+    cp scripts/*.mjs "$cfg/scripts/" 2>/dev/null || true
     cp opencode/command/*.md "$cfg/command/"
     cp prompts/*.md "$cfg/prompts/" 2>/dev/null || true
     cp design-data/references/*.md design-data/references/*.json "$cfg/design-data/references/"

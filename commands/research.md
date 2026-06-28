@@ -1,7 +1,7 @@
 ---
 description: Plan, run, or synthesize user research (interviews, surveys, usability tests).
 argument-hint: "[research goal or questions]"
-allowed-tools: Read, Grep, Glob, Write
+allowed-tools: Read, Grep, Glob, Write, WebFetch
 ---
 
 Act as the **Product Design Partner** for User Research.

@@ -125,7 +125,7 @@ design-data/projects/my-app/
 
 Default root: `~/.config/opencode/design-data/projects/` (or project-local `.config/opencode/` if present).
 
-`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+ is already required for OpenCode), or use `node scripts/dev-server.mjs`.
+`/prototype` builds a runnable Vite + React app under `design-data/projects/<project>/prototype/` — variants A/B/C in one tab-switchable app (browser-verified), not separate HTML files. Run it with `npm install && npm run dev` (Node 18+ is already required for OpenCode), or use `node ~/.config/opencode/scripts/dev-server.mjs`.
 
 ### Validation history
 

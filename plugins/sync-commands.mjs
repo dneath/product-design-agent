@@ -43,6 +43,10 @@ function toOpencode({ name, fm, body }) {
     .replace(READ_LINE_CLAUDE, 'Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):')
     .replaceAll(`${PLUGIN_ROOT}agent/modules/`, 'agents/product-design-partner/modules/')
     .replaceAll(`${PLUGIN_ROOT}design-data/`, 'design-data/')
+    // Executables are run with `node` from the user's project cwd, so they need an
+    // absolute path (like the Cursor/Codex bundle paths) — not a bare relative one.
+    .replaceAll(`${PLUGIN_ROOT}scripts/`, '~/.config/opencode/scripts/')
+    .replaceAll(`${PLUGIN_ROOT}plugins/`, '~/.config/opencode/plugins/')
     .replaceAll(PLUGIN_ROOT, '');
   return `---\ndescription: ${fm.description}\nagent: product-design-partner\n---\n\n${banner(name)}\n\n${b}\n`;
 }

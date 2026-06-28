@@ -87,6 +87,7 @@ remove_bundle() {
         # Remove only the agent's own files, keep design-data.
         rm_path "$root/agent"
         rm_path "$root/plugins"
+        rm_path "$root/scripts"
         rm_path "$root/prompts"
         rm_path "$root/agents"
         rm_path "$root/design-data/references"
@@ -101,6 +102,7 @@ uninstall_opencode() {
     rm_path "$cfg/agents/product-design-partner.md"
     rm_path "$cfg/agents/product-design-partner"
     remove_mirrored "plugins" "" "$cfg/plugins" "$FALLBACK_PLUGINS"
+    remove_mirrored "scripts" "" "$cfg/scripts" "dev-server.mjs"
     remove_mirrored "opencode/command" ".md" "$cfg/command" "$FALLBACK_COMMANDS"
     remove_mirrored "prompts" ".md" "$cfg/prompts" "$FALLBACK_PROMPTS"
     rm_path "$cfg/design-data/references"

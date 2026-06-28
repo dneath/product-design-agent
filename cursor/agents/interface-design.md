@@ -3,7 +3,7 @@
 ---
 name: interface-design
 description: Gate-heavy interface design with Variant Protocol (2–3 distinct directions). Use for dashboards, admin panels, SaaS UI, and data-heavy screens — not for research, critique, or handoff-only tasks.
-tools: Read, Grep, Glob, Write
+tools: Read, Grep, Glob, Write, Bash
 model: inherit
 ---
 
@@ -19,9 +19,9 @@ If identity or brand is unclear, read only **Core Principles** and **Brand Ident
 
 **Output contract:**
 
-1. Follow workflows §3 step-by-step; never present a single take for new UI.
+1. Follow workflows §3 step-by-step, in order; never present a single take for new UI. Present + STOP for the user's choice; refine nothing until they pick.
 2. Save to `design-data/projects/<project>/system.md` (include variants considered + chosen direction).
-3. Before returning, run: `node plugins/design-validator.mjs <artifact-path>` (repo root or bundle path).
-4. Return to parent: 3–5 lines — summary, chosen variant, artifact path(s), validator pass/fail.
+3. Before returning, run: `node ~/.product-design-partner/plugins/design-validator.mjs <artifact-path>` (if `${CLAUDE_PLUGIN_ROOT}` is unset, use `~/.product-design-partner/plugins/...` or the repo's `plugins/...`). Report the validator's pass/fail from its **actual output**. If you can't run it (no Bash / `node` missing), say so and list which gates you checked by hand — never claim a pass without evidence.
+4. Return to parent: 3–5 lines — summary, chosen variant, artifact path(s), validator pass/fail (or "validator not run — gates checked manually").
 
 If the brief is vague, ask one sharp question before proceeding.
