@@ -6,82 +6,99 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 echo "== Syntax checks =="
-node --check plugins/design-validator.mjs
-node --check plugins/path-resolver.mjs
-node --check plugins/sync-commands.mjs
-node --check plugins/sync-agents.mjs
-node --check plugins/product-design.js
+node --check scripts/dev-server.mjs
+node --check scripts/path-resolver.mjs
+node --check scripts/sync-commands.mjs
+node --check scripts/sync-agents.mjs
 node --check hooks/inject-design-context.mjs
-python3 -m json.tool .claude-plugin/plugin.json > /dev/null
+node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json','utf8'))"
+node -e "JSON.parse(require('fs').readFileSync('hooks/hooks.json','utf8'))"
+bash -n install.sh
+bash -n uninstall.sh
+if command -v shellcheck >/dev/null 2>&1; then
+  shellcheck -S warning install.sh uninstall.sh scripts/test.sh
+else
+  echo "  (shellcheck not installed — skipped locally, enforced in CI)"
+fi
 
-echo "== Command sync =="
-node plugins/sync-commands.mjs
-test "$(ls commands/*.md | wc -l)" -eq 16
+echo "== File counts =="
+test "$(ls commands/*.md | wc -l)" -eq 10
+test "$(ls agents/*.md | wc -l)" -eq 4
+test "$(ls agent/modules/*.md | wc -l)" -eq 9
+test "$(ls design-data/references/*.md | wc -l)" -eq 5
+test "$(ls design-data/templates/*.md | wc -l)" -eq 2
 
-echo "== Generated commands in sync =="
-if ! git diff --quiet opencode/command cursor/commands codex/prompts; then
-  echo "ERROR: sync-commands.mjs produced diffs — commit regenerated files or fix commands/"
-  git diff --stat opencode/command cursor/commands codex/prompts
+echo "== Line budgets (short modules keep weaker models on track) =="
+test "$(wc -l < agent/product-design-partner.md)" -lt 150
+for f in agent/modules/*.md; do
+  lines=$(wc -l < "$f")
+  if [ "$lines" -gt 170 ]; then
+    echo "ERROR: $f is $lines lines (budget: 170)"; exit 1
+  fi
+done
+
+echo "== Command conventions (sync-generator coupling) =="
+READ_LINE='Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):'
+for f in commands/*.md; do
+  grep -qF "$READ_LINE" "$f" || { echo "ERROR: $f missing the exact 'Read for method' line"; exit 1; }
+  grep -qE '^[^:]+: \$ARGUMENTS$' "$f" || { echo "ERROR: $f missing a ': \$ARGUMENTS' line"; exit 1; }
+done
+
+echo "== Command + agent sync =="
+node scripts/sync-commands.mjs
+node scripts/sync-agents.mjs
+test "$(ls opencode/command/*.md | wc -l)" -eq 10
+test "$(ls cursor/commands/*.md | wc -l)" -eq 10
+test "$(ls codex/prompts/*.md | wc -l)" -eq 10
+test "$(ls cursor/agents/*.md | wc -l)" -eq 4
+
+echo "== Generated files committed and in sync =="
+if ! git diff --quiet opencode/command cursor/commands cursor/agents codex/prompts; then
+  echo "ERROR: sync generators produced diffs — commit regenerated files or fix the sources"
+  git diff --stat opencode/command cursor/commands cursor/agents codex/prompts
   exit 1
 fi
 
-echo "== Agent sync =="
-node plugins/sync-agents.mjs
-test "$(ls agents/*.md | wc -l)" -ge 4
-
-echo "== Generated agents in sync =="
-if ! git diff --quiet cursor/agents; then
-  echo "ERROR: sync-agents.mjs produced diffs — commit regenerated files or fix agents/"
-  git diff --stat cursor/agents
-  exit 1
-fi
-
-echo "== Goal-mode size =="
-BYTES=$(wc -c < prompts/goal-mode.md | tr -d ' ')
-test "$BYTES" -le 4000
+echo "== Goal-mode prompt budget =="
+test "$(wc -c < prompts/goal-mode.md)" -le 4000
 
 echo "== Hook routing =="
-echo '{"prompt":"brainstorm onboarding ideas"}' | node hooks/inject-design-context.mjs | grep -q '/brainstorm'
-echo '{"prompt":"what is 2+2"}' | node hooks/inject-design-context.mjs; test $? -eq 0
+out=$(echo '{"prompt":"prototype the settings page"}' | node hooks/inject-design-context.mjs)
+echo "$out" | grep -q '/prototype' || { echo "ERROR: hook missed /prototype"; exit 1; }
+out=$(echo '{"prompt":"build me a deck for leadership"}' | node hooks/inject-design-context.mjs)
+echo "$out" | grep -q '/deck' || { echo "ERROR: hook missed /deck"; exit 1; }
+out=$(echo '{"prompt":"journey map for onboarding"}' | node hooks/inject-design-context.mjs)
+echo "$out" | grep -q '/flows' || { echo "ERROR: hook missed /flows (absorbed trigger)"; exit 1; }
+out=$(echo '{"prompt":"heuristic evaluation of this form"}' | node hooks/inject-design-context.mjs)
+echo "$out" | grep -q '/critique' || { echo "ERROR: hook missed /critique (absorbed trigger)"; exit 1; }
+out=$(echo '{"prompt":"what is 2+2"}' | node hooks/inject-design-context.mjs)
+test -z "$out" || { echo "ERROR: hook fired on a non-design prompt"; exit 1; }
+# Hook must only ever emit v2 command names.
+all_hook_cmds=$(grep -oE '→ /[a-z-]+' hooks/inject-design-context.mjs | sort -u | tr -d '→ ')
+for c in $all_hook_cmds; do
+  test -f "commands/${c#/}.md" || { echo "ERROR: hook routes to $c but commands/${c#/}.md does not exist"; exit 1; }
+done
 
-echo "== Validator (passing fixture) =="
-FIXTURE="$ROOT/design-data/projects/.test-fixture-pass.md"
-mkdir -p "$(dirname "$FIXTURE")"
-cat > "$FIXTURE" << 'EOF'
-# Dashboard Design
+echo "== No references to deleted v1 files =="
+if git grep -nE 'quality-gates\.md|workflows\.md|design-validator|designprompts|frameworks-and-artifacts|platform-adaptation\.md|standards-and-anti-patterns|styling-resolution\.md|prototype-variants-guide|brainstorming-playbook|ux-heuristics\.md|ux-flow-patterns|diagram-guide|annotation-guide|research-templates\.md|design-research-sources|mentorship-frameworks|portfolio-frameworks|premium-patterns|ban-list\.md|product-design-process\.md|/interface\b|/ux-audit|/mentor\b|/strategy\b|/annotate\b|/portfolio\b|/design-converter|/ux-flows|/diagram\b' \
+    -- '*.md' '*.mjs' '*.sh' '*.mdc' '*.json' ':!CHANGELOG.md' ':!MIGRATION.md' ':!install.sh' ':!uninstall.sh' ':!scripts/test.sh'; then
+  echo "ERROR: stale references to deleted v1 files/commands found (above)"
+  exit 1
+fi
 
-## Intent Declaration
-**Who**: Priya, a support ops lead at a 40-person SaaS company, checking queue health during morning standup on a laptop in a bright open office
-**What**: Triage the highest-priority tickets and reassign overflow before the 9am sync
-**Feel**: In control without alarm — urgent items are obvious but the screen does not scream
-
-## Domain Exploration
-**Domain**: ticket queue, SLA breach, agent capacity, escalation ladder, customer sentiment, handoff notes
-**Color world**: queue amber, breach coral, calm slate, resolved green, neutral paper, alert rust
-**Signature**: severity rail — severity rail in header, severity rail on rows, severity rail in filters, severity rail in detail, severity rail in legend
-
-## Variance Selection
-**Vibe Archetype**: Dark Technical
-**Layout Archetype**: Terminal Grid
-
-## Validation Results
-- **Swap Test**: PASS — swapping to light editorial layout would lose the ops-floor density cue
-- **Squint Test**: PASS — severity rail and row bands remain visible when blurred
-- **Signature Test**: PASS — severity rail in five regions listed above
-- **Token Test**: PASS — tokens named queue-amber, breach-coral, paper-slate belong to support ops domain
-EOF
-node plugins/design-validator.mjs "$FIXTURE"
-rm -f "$FIXTURE"
-
-echo "== Validator (public example) =="
-node plugins/design-validator.mjs examples/dashboard-design.md
-
-echo "== validateDesign failure wiring =="
-node --input-type=module -e "
-import { validateDesign } from './plugins/design-validator.mjs';
-const { passed } = await validateDesign('# Bad\nno gates');
-if (passed) process.exit(1);
-"
+echo "== Install/uninstall roundtrip =="
+T=$(mktemp -d)
+./install.sh --target custom --path "$T/bundle" --yes > /dev/null
+test -f "$T/bundle/agent/product-design-partner.md"
+test -f "$T/bundle/agent/modules/prototyping.md"
+test -f "$T/bundle/design-data/templates/handoff-template.md"
+test -f "$T/bundle/scripts/dev-server.mjs"
+test ! -d "$T/bundle/plugins"
+./uninstall.sh --target custom --path "$T/bundle" --dry-run --yes > /dev/null
+test -d "$T/bundle"   # dry-run must not delete
+./uninstall.sh --target custom --path "$T/bundle" --purge --yes > /dev/null
+test ! -d "$T/bundle"
+rm -rf "$T"
 
 echo ""
 echo "All tests passed."

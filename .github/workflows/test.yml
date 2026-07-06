@@ -2,7 +2,7 @@ name: Smoke tests
 
 on:
   push:
-    branches: [main, enhance-design-agent-suite]
+    branches: [main, "feat/**"]
   pull_request:
     branches: [main]
 
@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Python (json.tool for plugin manifest)
-        run: sudo apt-get update && sudo apt-get install -y python3
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Run smoke tests
         run: chmod +x scripts/test.sh && ./scripts/test.sh

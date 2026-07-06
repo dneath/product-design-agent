@@ -1,28 +1,27 @@
 ---
-description: Export a gates-passing design or design system into Figma via the Figma MCP.
+description: Push a finished design or token set into Figma via the Figma MCP — or deliver the no-MCP fallback bundle.
 argument-hint: "[what to export + target Figma file, if any]"
 ---
 
-<!-- GENERATED from commands/figma-export.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
-
-**Delegation (prefer isolated context for Figma MCP work):**
-- **Claude Code:** spawn subagent `figma-export` with the brief below.
-- **Cursor:** use agent `figma-export` (`cursor/agents/figma-export.md` or `~/.cursor/agents/`).
-- **Codex / OpenCode:** run this command in a focused session; ensure Figma MCP is connected or deliver §13 fallback bundle.
+<!-- GENERATED from commands/figma-export.md by scripts/sync-commands.mjs — edit the source, then re-run. -->
 
 Act as the **Product Design Partner** in Figma Export (write) mode.
 
+**First**: run the Thinking Protocol from `~/.product-design-partner/agent/product-design-partner.md` — all 5 boxes, shown.
+
+**Delegation:** if sub-agents are available (e.g. a `figma-export` agent), give it the brief below; it does not spawn further sub-agents. Otherwise run this in a focused session.
+
 Read for method (paths assume the bundle installed at `~/.product-design-partner/`; use repo-relative paths if running from the repo):
-- `~/.product-design-partner/agent/modules/workflows.md` → §13 Figma Export
+- `~/.product-design-partner/agent/modules/design-systems.md` (§6 Figma export)
+- `~/.product-design-partner/agent/modules/environment.md`
 
 Export request: $ARGUMENTS
 
 Steps:
-1. Confirm the Figma MCP is connected. If not, give the platform-specific step (Claude Code: `claude mcp add --transport http figma https://mcp.figma.com/mcp`; Cursor: Settings → MCP → add `https://mcp.figma.com/mcp`; Codex: `mcp_servers.figma` in `~/.codex/config.toml`; OpenCode: add the server in `opencode.json`) and deliver the fallback bundle meanwhile: Figma-importable token JSON + a frame-by-frame build spec (see §13's fallback box and §8 Plan mode).
-2. Ensure the source design has passed the 5 gates — run `/interface` or `/design-converter` first if needed.
-3. **Load the Figma skill FIRST** — `/figma-generate-design` for a page/view, or `/figma-generate-library` for a design system. This is mandatory before any `use_figma` / `generate_figma_design` call.
-4. Map tokens → Figma styles/variables (OKLCH → hex) using the project's **resolved** styling (existing repo tokens / source Figma / user-specified; fallback: monochrome + 4px spacing + Inter & Fragment Mono). Never inject a fixed brand.
-5. Assemble section-by-section using design-system components/variables, not hardcoded values.
-6. Re-run Gates 3 & 5 on the result; report the Figma file URL.
+1. Confirm the Figma MCP is connected. If not: give the platform-specific connection step (Claude Code: `claude mcp add --transport http figma https://mcp.figma.com/mcp`; Cursor: Settings → MCP; Codex: `mcp_servers.figma` in `~/.codex/config.toml`; OpenCode: `opencode.json`) AND deliver the fallback bundle meanwhile — Figma-importable token JSON + a frame-by-frame build spec.
+2. **Load the Figma generation skill FIRST** (design skill for a page/view, library skill for a design system) — mandatory before any Figma write tool.
+3. Map the project's **resolved** tokens → Figma variables/styles 1:1 (OKLCH → hex). Never inject a fixed brand.
+4. Assemble section-by-section using components/variables, not hardcoded values.
+5. Verify what was created (read it back or screenshot it) and report the Figma URL — or the fallback bundle path. Never claim an export you didn't run.
 
-Save the token mapping to `design-data/tokens/<project>.json`.
+Save the token mapping to the project's working directory (`tokens.json`), referenced by path.

@@ -1,26 +1,22 @@
 # Examples
 
-Sample prompts you can paste into Cursor or Claude Code (with the design partner installed).
+Sample prompts to paste into Claude Code, Cursor, Codex, or OpenCode with the Product Design
+Partner installed.
 
-| File | Best for |
-|------|----------|
-| [getting-started.md](getting-started.md) | Everyday scenarios — buttons, audits, critique, copy |
-| [dashboard-design.md](dashboard-design.md) | Full dashboard walkthrough (technical reference) |
+- [getting-started.md](getting-started.md) — one worked prompt per command, with what to expect back.
 
-**New to the tool?** [Quick start for designers](../docs/designer-quick-start.md)
-
-## Try a prompt (Cursor)
+## Try one now
 
 ```
-/interface Monitoring dashboard for DevOps engineers during incident response — calm urgency, not panic
+/prototype A support-ticket queue for a 4-person SaaS team drowning in email — triage speed over completeness
 ```
 
-## Optional: validate a file (IT / maintainers)
+Expect: the Thinking Protocol answers first, then 2–4 structurally different variants in one
+tab-switchable React app with realistic data, a comparison table, a recommendation — and a stop,
+so you pick the direction.
 
-```bash
-node plugins/design-validator.mjs examples/dashboard-design.md
-```
+## Save your own
 
-## Save your own examples
-
-Team-specific examples can live in `examples/team/` (create the folder). Keep client-confidential work in `design-data/projects/` instead — that path is gitignored and is the working directory where the agent writes task output (specs, `system.md`, research, and a runnable React `prototype/` with A/B/C variant tabs). See [design-data/projects/README.md](../design-data/projects/README.md) for the per-project structure.
+Team-specific examples can live in `examples/team/` (create the folder). Keep client-confidential
+work in `design-data/projects/` instead — that path is gitignored and is the working directory
+where the agent writes task output. See [design-data/projects/README.md](../design-data/projects/README.md).

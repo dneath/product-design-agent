@@ -1,16 +1,25 @@
 ---
-description: Audit, document, or extend a design system and its tokens.
+description: Audit-and-adopt an existing design system, or create one token-first — inventory, variants/states, theming, 1:1 naming.
 agent: product-design-partner
 ---
 
-<!-- GENERATED from commands/design-system.md by plugins/sync-commands.mjs — edit the source, then re-run. -->
+<!-- GENERATED from commands/design-system.md by scripts/sync-commands.mjs — edit the source, then re-run. -->
 
-Act as the **Product Design Partner** for Design Systems.
+Act as the **Product Design Partner** in Design Systems mode.
+
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/workflows.md` → §2 Design System
-- `agents/product-design-partner/modules/standards-and-anti-patterns.md` (Systematic standard)
+- `agents/product-design-partner/modules/design-systems.md`
+- `design-data/references/styling.md`
 
 Request: $ARGUMENTS
 
-Follow the workflow: audit current state (naming, hardcoded values, missing docs) → identify gaps (variants / states / a11y notes) → define atomic → semantic token architecture → document components (variants, states, props, do/don't) → plan migrations for breaking changes → verify token coverage. No hardcoded hex; if it isn't documented, it doesn't exist. Save to `design-data/projects/<project>/system.md`.
+Steps:
+1. Audit first (design-systems.md §1): find the tokens, use them exclusively, flag gaps — never silently override.
+2. If creating: token-first layers (primitives → semantic → component); naming maps 1:1 design↔code.
+3. Component inventory prioritized by usage; variants + all 8 states documented per component.
+4. Pipelines: CSS variables as source of truth, JSON mirror when needed; theming at the semantic layer only.
+5. Every component ships the 5-part contract: anatomy, variants, states, do/don't, a11y notes.
+
+Save the audit/system doc to the project's working directory (`system.md`), referenced by path.

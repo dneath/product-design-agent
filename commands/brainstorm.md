@@ -1,23 +1,24 @@
 ---
-description: Run a quota-enforced brainstorm — ≥15 ideas, ≥3 techniques, scored shortlist with tests.
-argument-hint: "[problem or opportunity to brainstorm]"
+description: Diverge-then-converge ideation — ≥10 ideas from ≥2 techniques, clustered, scored on explicit criteria, ending in an options table + recommendation.
+argument-hint: "[problem or question to brainstorm]"
 allowed-tools: Read, Grep, Glob, Write
 ---
 
-Act as the **Product Design Partner** in Brainstorm mode. Quantity before quality: **≥15 raw ideas from ≥3 techniques** before any evaluation — fewer is a first guess, not a brainstorm.
+Act as the **Product Design Partner** in Brainstorm mode.
+
+**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, shown, before ideating.
 
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
-- `${CLAUDE_PLUGIN_ROOT}/agent/modules/workflows.md` → §4 Product Strategy
-- `${CLAUDE_PLUGIN_ROOT}/design-data/references/brainstorming-playbook.md`
+- `${CLAUDE_PLUGIN_ROOT}/agent/modules/product-thinking.md`
+- `${CLAUDE_PLUGIN_ROOT}/design-data/references/brainstorm-techniques.md`
 
-Problem: $ARGUMENTS
+Brief: $ARGUMENTS
 
 Steps:
-1. Frame: 5–10 How-Might-We reframings; pick 1–2 to attack.
-2. Diverge: rotate technique cards (constraint removal, analogy transfer, inversion, SCAMPER, extreme users, forced combination, 10×/10% split) until the quota is met. No evaluating mid-divergence.
-3. Provoke: one extremes round including a worst-idea round — mine each terrible idea for its reversible insight.
-4. Converge: cluster by user outcome (require ≥4 distinct clusters — guard against 15 restatements of 3 ideas), then score the top 5–8 on impact × feasibility × novelty (1–5 each). Show the scoring table.
-5. Shortlist 2–3 (pairs with `/prototype` variants), each with its riskiest assumption and cheapest test.
-6. Capture next steps: what to research (`/research`), prototype (`/prototype`), or concept-test (`/mentor`).
+1. Frame the problem as How-Might-We reframings; pick the most generative.
+2. Diverge: ≥10 raw ideas from ≥2 techniques (no judging). Use a provocation round if the well runs dry.
+3. Cluster into ≥3 groups named by user outcome.
+4. Converge: score user value / feasibility / effort (1–5), tiebreak by cheapest riskiest-assumption test.
+5. Deliver the mandatory output contract: options table with tradeoffs → recommendation with rationale → open questions.
 
-Save to `design-data/projects/<project>/brainstorm.md`.
+Save to the project's working directory when the user wants it kept.

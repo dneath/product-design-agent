@@ -1,20 +1,19 @@
 #!/bin/bash
 
-# Product Design Partner Agent - Installation Script
+# Product Design Partner — Installation Script (v2)
 # Targets: opencode | claude (Claude Code) | cursor | codex | custom
 
 set -e
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 print_header() {
     echo -e "${BLUE}================================================${NC}"
-    echo -e "${BLUE}  Product Design Partner Agent - Installer${NC}"
+    echo -e "${BLUE}  Product Design Partner — Installer (v2)${NC}"
     echo -e "${BLUE}================================================${NC}"
     echo ""
 }
@@ -27,7 +26,10 @@ print_info()    { echo -e "${BLUE}ℹ${NC} $1"; }
 # Shared bundle location for cursor/codex/claude personal installs
 BUNDLE_DIR="$HOME/.product-design-partner"
 
-# Detect installation target
+# Codex AGENTS.md marker block (MUST match uninstall.sh exactly)
+PDP_BEGIN='<!-- >>> product-design-partner v2 >>> -->'
+PDP_END='<!-- <<< product-design-partner v2 <<< -->'
+
 detect_target() {
     if [ -d "$HOME/.config/opencode" ]; then
         echo "opencode"
@@ -42,42 +44,54 @@ detect_target() {
     fi
 }
 
-# Copy the full bundle (agent + modules + reference data + plugins + prompts)
-# to a root directory, mirroring the repo layout.
+# Remove v1.x artifacts (enforcement plugins, validators) left by older installs.
+sweep_legacy() {
+    local dir=$1
+    local removed=0
+    for f in product-design.js design-validator.mjs design-migrator.js csv-converter.mjs \
+             path-resolver.mjs sync-commands.mjs sync-agents.mjs; do
+        if [ -f "$dir/plugins/$f" ]; then rm -f "$dir/plugins/$f"; removed=1; fi
+    done
+    rmdir "$dir/plugins" 2>/dev/null || true
+    if [ "$removed" -eq 1 ]; then
+        print_info "Removed legacy v1.x plugin files from $dir/plugins/"
+    fi
+}
+
+# Copy the full bundle (agent + modules + references + templates + scripts + prompts + agents)
 copy_bundle() {
     local root=$1
     print_info "Copying bundle to $root ..."
     mkdir -p "$root/agent/modules" "$root/design-data/references" \
-             "$root/design-data/projects" "$root/design-data/components" \
-             "$root/design-data/tokens" "$root/design-data/validation-history" \
-             "$root/plugins" "$root/prompts" "$root/scripts"
+             "$root/design-data/templates" "$root/design-data/projects" \
+             "$root/prompts" "$root/scripts" "$root/agents"
     cp agent/product-design-partner.md "$root/agent/"
     cp agent/modules/*.md "$root/agent/modules/"
-    cp design-data/references/*.md design-data/references/*.json "$root/design-data/references/"
-    cp plugins/*.js plugins/*.mjs "$root/plugins/" 2>/dev/null || true
-    cp scripts/*.mjs scripts/*.sh "$root/scripts/" 2>/dev/null || true
+    cp design-data/references/*.md "$root/design-data/references/"
+    cp design-data/templates/*.md "$root/design-data/templates/"
+    cp design-data/projects/README.md "$root/design-data/projects/" 2>/dev/null || true
+    cp scripts/dev-server.mjs scripts/path-resolver.mjs "$root/scripts/"
     cp prompts/*.md "$root/prompts/" 2>/dev/null || true
-    mkdir -p "$root/agents"
-    cp agents/*.md "$root/agents/" 2>/dev/null || true
-    touch "$root/design-data/projects/.gitkeep" "$root/design-data/components/.gitkeep" \
-          "$root/design-data/tokens/.gitkeep" "$root/design-data/validation-history/.gitkeep"
+    cp agents/*.md "$root/agents/"
+    touch "$root/design-data/projects/.gitkeep"
+    sweep_legacy "$root"
     print_success "Bundle copied"
 }
 
 install_opencode() {
     local cfg="$HOME/.config/opencode"
     print_info "Installing for OpenCode at $cfg"
-    mkdir -p "$cfg/agents/product-design-partner/modules" "$cfg/plugins" \
-             "$cfg/command" "$cfg/prompts" "$cfg/scripts" "$cfg/design-data/references" \
-             "$cfg/design-data/projects" "$cfg/design-data/components" \
-             "$cfg/design-data/tokens" "$cfg/design-data/validation-history"
+    mkdir -p "$cfg/agents/product-design-partner/modules" "$cfg/command" \
+             "$cfg/prompts" "$cfg/scripts" "$cfg/design-data/references" \
+             "$cfg/design-data/templates" "$cfg/design-data/projects"
     cp agent/product-design-partner.md "$cfg/agents/"
     cp agent/modules/*.md "$cfg/agents/product-design-partner/modules/"
-    cp plugins/*.js plugins/*.mjs "$cfg/plugins/" 2>/dev/null || true
-    cp scripts/*.mjs "$cfg/scripts/" 2>/dev/null || true
+    cp scripts/dev-server.mjs scripts/path-resolver.mjs "$cfg/scripts/"
     cp opencode/command/*.md "$cfg/command/"
     cp prompts/*.md "$cfg/prompts/" 2>/dev/null || true
-    cp design-data/references/*.md design-data/references/*.json "$cfg/design-data/references/"
+    cp design-data/references/*.md "$cfg/design-data/references/"
+    cp design-data/templates/*.md "$cfg/design-data/templates/"
+    sweep_legacy "$cfg"
     print_success "OpenCode install complete"
 }
 
@@ -96,10 +110,30 @@ install_cursor() {
     copy_bundle "$BUNDLE_DIR"
     mkdir -p "$HOME/.cursor/commands" "$HOME/.cursor/rules" "$HOME/.cursor/agents"
     cp cursor/commands/*.md "$HOME/.cursor/commands/"
-    cp cursor/rules/*.mdc "$HOME/.cursor/rules/" 2>/dev/null || true
-    cp cursor/agents/*.md "$HOME/.cursor/agents/" 2>/dev/null || true
+    cp cursor/rules/*.mdc "$HOME/.cursor/rules/"
+    cp cursor/agents/*.md "$HOME/.cursor/agents/"
     print_success "Cursor install complete (global commands + agents)"
-    print_info "For per-project use, also copy cursor/rules/product-design-partner.mdc into the project's .cursor/rules/ (rules attach per-project)."
+    print_info "For per-project use, also copy cursor/rules/product-design-partner.mdc into the project's .cursor/rules/."
+}
+
+# Codex AGENTS.md: create, append the marked block, or replace it in place (idempotent).
+install_codex_agents_md() {
+    local target="$HOME/.codex/AGENTS.md"
+    if [ ! -f "$target" ]; then
+        cp codex/AGENTS.md "$target"
+        print_success "Installed ~/.codex/AGENTS.md"
+    elif grep -qF "$PDP_BEGIN" "$target"; then
+        # Replace the existing marked block in place.
+        awk -v begin="$PDP_BEGIN" -v end="$PDP_END" -v src="codex/AGENTS.md" '
+            index($0, begin) { while ((getline line < src) > 0) print line; close(src); skipping=1; next }
+            index($0, end)   { skipping=0; next }
+            !skipping { print }
+        ' "$target" > "$target.pdp-tmp" && mv "$target.pdp-tmp" "$target"
+        print_success "Updated the Product Design Partner block in ~/.codex/AGENTS.md"
+    else
+        { echo ""; cat codex/AGENTS.md; } >> "$target"
+        print_success "Appended the Product Design Partner block to ~/.codex/AGENTS.md"
+    fi
 }
 
 install_codex() {
@@ -107,14 +141,8 @@ install_codex() {
     copy_bundle "$BUNDLE_DIR"
     mkdir -p "$HOME/.codex/prompts"
     cp codex/prompts/*.md "$HOME/.codex/prompts/"
-    if [ -f "$HOME/.codex/AGENTS.md" ]; then
-        print_warning "~/.codex/AGENTS.md already exists — NOT overwriting."
-        print_info "Append codex/AGENTS.md to it manually:  cat codex/AGENTS.md >> ~/.codex/AGENTS.md"
-    else
-        cp codex/AGENTS.md "$HOME/.codex/AGENTS.md"
-        print_success "Installed ~/.codex/AGENTS.md"
-    fi
-    print_success "Codex install complete (custom prompts)"
+    install_codex_agents_md
+    print_success "Codex install complete (custom prompts + AGENTS.md block)"
 }
 
 install_custom() {
@@ -134,24 +162,30 @@ validate_installation() {
     case $TARGET in
         opencode)
             [ -f "$HOME/.config/opencode/agents/product-design-partner.md" ] || { print_error "Agent file missing"; ((errors++)); }
-            [ -d "$HOME/.config/opencode/design-data/references" ] || { print_error "Reference data missing"; ((errors++)); }
+            [ -f "$HOME/.config/opencode/agents/product-design-partner/modules/prototyping.md" ] || { print_error "Modules missing"; ((errors++)); }
+            [ -f "$HOME/.config/opencode/design-data/templates/handoff-template.md" ] || { print_error "Templates missing"; ((errors++)); }
+            [ -f "$HOME/.config/opencode/command/design.md" ] || { print_error "Commands missing"; ((errors++)); }
             ;;
         claude)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
-            [ -f "$HOME/.claude/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
-            [ -f "$HOME/.claude/agents/interface-design.md" ] || { print_error "Subagents missing"; ((errors++)); }
+            [ -f "$BUNDLE_DIR/design-data/templates/handoff-template.md" ] || { print_error "Templates missing"; ((errors++)); }
+            [ -f "$HOME/.claude/commands/design.md" ] || { print_error "Commands missing"; ((errors++)); }
+            [ -f "$HOME/.claude/agents/design.md" ] || { print_error "Subagents missing"; ((errors++)); }
             ;;
         cursor)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
-            [ -f "$HOME/.cursor/commands/interface.md" ] || { print_error "Commands missing"; ((errors++)); }
-            [ -f "$HOME/.cursor/agents/interface-design.md" ] || { print_error "Subagents missing"; ((errors++)); }
+            [ -f "$HOME/.cursor/commands/design.md" ] || { print_error "Commands missing"; ((errors++)); }
+            [ -f "$HOME/.cursor/agents/design.md" ] || { print_error "Subagents missing"; ((errors++)); }
             ;;
         codex)
             [ -f "$BUNDLE_DIR/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
-            [ -f "$HOME/.codex/prompts/interface.md" ] || { print_error "Prompts missing"; ((errors++)); }
+            [ -f "$HOME/.codex/prompts/design.md" ] || { print_error "Prompts missing"; ((errors++)); }
+            grep -qF "$PDP_BEGIN" "$HOME/.codex/AGENTS.md" || { print_error "AGENTS.md block missing"; ((errors++)); }
             ;;
         custom)
             [ -f "$CUSTOM_PATH/agent/product-design-partner.md" ] || { print_error "Bundle agent missing"; ((errors++)); }
+            [ -f "$CUSTOM_PATH/agent/modules/prototyping.md" ] || { print_error "Modules missing"; ((errors++)); }
+            [ -f "$CUSTOM_PATH/design-data/templates/handoff-template.md" ] || { print_error "Templates missing"; ((errors++)); }
             ;;
     esac
     if [ $errors -eq 0 ]; then
@@ -168,42 +202,35 @@ print_usage_instructions() {
     echo -e "${GREEN}  Installation Complete!${NC}"
     echo -e "${GREEN}================================================${NC}"
     echo ""
+    local cmds="/design · /prototype · /brainstorm · /critique · /design-system · /handoff · /deck · /research · /flows · /figma-export"
     case $TARGET in
         opencode)
             echo "OpenCode:  @product-design-partner Help me design a dashboard"
-            echo "Commands:  /interface, /prototype, /brainstorm, /diagram, /annotate, …"
-            echo "Plugins enforce the 5 gates and track variance automatically."
+            echo "Commands:  $cmds"
             ;;
         claude)
-            echo "Claude Code:  /interface, /prototype, /brainstorm, /diagram, /annotate, …"
-            echo "Subagent:     'Use the product-design-partner agent to …'"
-            echo "Bundle:       $BUNDLE_DIR (modules + reference data)"
+            echo "Claude Code:  $cmds"
+            echo "Subagents:    product-design-partner · design · prototype-variants · figma-export"
+            echo "Bundle:       $BUNDLE_DIR"
             ;;
         cursor)
-            echo "Cursor:   /interface, /prototype, /brainstorm, /diagram, /annotate, …"
+            echo "Cursor:   $cmds"
             echo "Rule:     ~/.cursor/rules/product-design-partner.mdc (copy into a project's .cursor/rules/ to attach it)"
-            echo "Bundle:   $BUNDLE_DIR (modules + reference data)"
+            echo "Bundle:   $BUNDLE_DIR"
             ;;
         codex)
-            echo "Codex:    /interface, /prototype, /brainstorm, /diagram, /annotate, …"
-            echo "Global:   ~/.codex/AGENTS.md defines the agent for every session"
-            echo "Bundle:   $BUNDLE_DIR (modules + reference data)"
+            echo "Codex:    $cmds"
+            echo "Global:   ~/.codex/AGENTS.md (Product Design Partner block)"
+            echo "Bundle:   $BUNDLE_DIR"
             ;;
         custom)
             echo "Bundle installed at: $CUSTOM_PATH"
             echo "Load agent/product-design-partner.md as the system prompt; keep design-data/ readable."
-            echo "Validate outputs:  node $CUSTOM_PATH/plugins/design-validator.mjs output.md"
             ;;
     esac
     echo ""
-    echo ""
-    case $TARGET in
-        claude)   echo "macOS guide: docs/installation-claude-code-macos.md" ;;
-        cursor)   echo "macOS guide: docs/installation-cursor-macos.md" ;;
-        codex)    echo "macOS guide: docs/installation-codex-macos.md" ;;
-        opencode) echo "macOS guide: docs/installation-opencode-macos.md" ;;
-    esac
-    echo "Docs hub: docs/installation.md · macOS hub: docs/installation-macos.md · Examples: examples/"
+    echo "Docs: docs/install.md (install/uninstall/troubleshooting) · docs/architecture.md · examples/"
+    echo "Uninstall: ./uninstall.sh --target $TARGET"
     echo ""
 }
 
@@ -227,8 +254,6 @@ main() {
                 echo "  --path <path>                                   Custom installation path (with --target custom)"
                 echo "  --yes, -y                                       Skip confirmation prompt"
                 echo "  --help, -h                                      Show this help message"
-                echo ""
-                echo "macOS: see docs/installation-macos.md (Homebrew Node, Cursor/Claude/Codex paths)"
                 exit 0
                 ;;
             *) print_error "Unknown option: $1"; exit 1 ;;

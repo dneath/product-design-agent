@@ -9,17 +9,6 @@ design-data/projects/*
 !design-data/projects/.gitkeep
 !design-data/projects/README.md
 
-design-data/components/*
-!design-data/components/.gitkeep
-
-design-data/tokens/*
-!design-data/tokens/.gitkeep
-
-design-data/validation-history/*
-!design-data/validation-history/.gitkeep
-
-design-data/variance-history.json
-
 # --- Local install / test artifacts inside the repo ---
 .config/
 .pdp-test/
