@@ -205,7 +205,7 @@ uninstall_codex_agents_md() {
         if ! grep -q '[^[:space:]]' "$user_agents"; then rm_path "$user_agents"; fi
         print_success "stripped the Product Design Partner block from $user_agents"
     else
-        print_warning "~/.codex/AGENTS.md has no Product Design Partner marker block and differs from the shipped version — NOT touching it."
+        print_warning "$user_agents has no Product Design Partner marker block and differs from the shipped version — NOT touching it."
         print_info "Remove any old Product Design Partner section by hand if present."
     fi
 }
