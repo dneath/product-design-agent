@@ -2,7 +2,34 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.0.0] - 2026-07-06
+
+Full teardown and rebuild. See [MIGRATION.md](MIGRATION.md) for the complete deleted/kept/renamed record.
+
+### Added
+- **Thinking Protocol** — a mandatory 5-box checklist (restate the problem; what's NOT asked; riskiest assumptions; 2–3 approaches with tradeoffs; rationale on every decision) run before any pixels or code, in `agent/product-design-partner.md`
+- **10 single-concern modules** with routing summaries: entry file + product-thinking, design-process, design-systems, prototyping, handoff, presentation, frontend-quality, environment, context-management
+- **Presentation capability** (`/deck`): HTML/React slide decks with a mandatory structure (context → problem → constraints → explorations incl. rejected → recommendation → evidence → next steps) + `design-data/templates/deck-template.md`
+- **Reusable handoff template** `design-data/templates/handoff-template.md` (flow, per-screen spec, state matrix, interaction table, a11y, data contract, rationale, open questions)
+- **State matrix requirement**: every screen covers empty/loading/error/partial/overflow/first-run/success explicitly
+- Cross-model rules (evidence-on-disk verification, steps-in-order, checklists-over-prose, no sub-agent nesting, harness-gated features) baked into the entry file for Sonnet-class/Opus/OpenCode/Codex portability
+- Codex install now appends/replaces a marker-delimited block in `~/.codex/AGENTS.md` idempotently; uninstall strips only that block
+- Uninstall sweeps legacy v1.x artifacts (old command names, OpenCode enforcement plugin) and detects Claude Code plugin-route installs
+
+### Changed
+- Commands consolidated 16 → 10: `/design` `/prototype` `/brainstorm` `/critique` `/design-system` `/handoff` `/deck` `/research` `/flows` `/figma-export`
+- Subagent `interface-design` → `design`; all four subagents rebuilt against the new modules
+- References consolidated 16 files + 3 datasets → 5 files: styling, heuristics, flow-patterns, research-methods, brainstorm-techniques
+- Docs consolidated to `docs/install.md` + `docs/architecture.md`; `README.md` rewritten
+- Sync generators moved `plugins/` → `scripts/`, now remove stale generated files and assert the "Read for method" convention
+- `prompts/goal-mode.md` rewritten around the Thinking Protocol (≤4000 bytes, enforced by tests)
+
+### Removed
+- The 5-gate system, `plugins/design-validator.mjs`, and the OpenCode enforcement plugin `plugins/product-design.js` — replaced by the Thinking Protocol + per-module checklists
+- `designprompts-*.json` style datasets (~350KB), variance tracking, vibe/layout archetypes
+- One-time scripts (`design-migrator.js`, `csv-converter.mjs`), `plans/`, 13 docs, `examples/dashboard-design.md`
+
+## [Unreleased-1.x]
 
 ### Added
 - Per-platform macOS install guides: `installation-claude-code-macos.md`, `installation-cursor-macos.md`, `installation-codex-macos.md`, `installation-opencode-macos.md`

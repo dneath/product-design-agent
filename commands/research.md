@@ -1,16 +1,24 @@
 ---
-description: Plan, run, or synthesize user research (interviews, surveys, usability tests).
-argument-hint: "[research goal or questions]"
-allowed-tools: Read, Grep, Glob, Write, WebFetch
+description: Plan, run, or synthesize research — assumption maps, interviews, JTBD, synthesis with confidence levels; take an idea to a defensible concept.
+argument-hint: "[research goal, questions, or idea to validate]"
+allowed-tools: Read, Grep, Glob, Write, WebFetch, WebSearch
 ---
 
-Act as the **Product Design Partner** for User Research.
+Act as the **Product Design Partner** in Research mode.
+
+**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, shown.
 
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
-- `${CLAUDE_PLUGIN_ROOT}/agent/modules/workflows.md` → §1 User Research
-- `${CLAUDE_PLUGIN_ROOT}/agent/modules/frameworks-and-artifacts.md` (research methods, analysis frameworks)
-- `${CLAUDE_PLUGIN_ROOT}/design-data/references/research-templates.md` (assumption map, screener, discussion guide, JTBD profile, synthesis wall)
+- `${CLAUDE_PLUGIN_ROOT}/agent/modules/product-thinking.md`
+- `${CLAUDE_PLUGIN_ROOT}/design-data/references/research-methods.md`
 
 Request: $ARGUMENTS
 
-Follow the workflow: frame 3–5 research questions → map assumptions first (impact × uncertainty; the riskiest one picks the method) → match method to question type (interviews for "why", surveys for "how many") → plan participants with the screener template (recruit by behavior, not demographics) + build the discussion guide (funnel: context → behavior → pain → magic wand; "tell me about the last time…", never "would you…") → if synthesizing, run the synthesis wall + thematic analysis with confidence levels and frequency × severity, and produce JTBD profiles. Favor behavioral evidence over stated preference; attribute quotes by participant type, not name. Save to `design-data/projects/<project>/research-plan.md` (or `synthesis-report.md`).
+Steps:
+1. Map assumptions first (assumption → risk if wrong → cheapest test); the riskiest assumption picks the method.
+2. Desk research: how do shipping products solve this, and what does published UX evidence say? Cite sources.
+3. Planning interviews/tests: behavior-based screener; funnel discussion guide anchored to the LAST TIME it happened — never hypotheticals.
+4. Synthesizing: themes with evidence (quote + participant count) and confidence labels (strong/moderate/weak). Behavioral evidence beats stated preference.
+5. Validating an idea: run the idea → concept ladder and deliver the concept brief (problem, who, JTBD, bet, riskiest assumption, test, success signal).
+
+Save plans/synthesis to the project's working directory, referenced by path.
