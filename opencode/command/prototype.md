@@ -16,13 +16,14 @@ Read for method (paths relative to your OpenCode config dir, `~/.config/opencode
 - `agents/product-design-partner/modules/environment.md`
 - `agents/product-design-partner/modules/frontend-quality.md`
 - `design-data/references/styling.md`
+- `design-data/references/motion.md`
 
 Brief: $ARGUMENTS
 
 Steps:
 1. Resolve styling (styling.md Part A). Inside a React/Vite/Next repo: build there, reuse its setup and tokens.
 2. Define 2–4 variants BEFORE building (prototyping.md §2) — each with a one-line bet label, differing in layout/IA/interaction model. Run the reskin check.
-3. Scaffold one React app with a `<VariantSwitcher>` tab group; build each variant against the checklist in prototyping.md §3 — one requirement at a time, skip nothing.
+3. Scaffold one React app with a `<VariantSwitcher>` tab group; build each variant against the checklist in prototyping.md §3 — one requirement at a time, skip nothing. Fixtures include the extremes from `design-data/references/hardening.md` §1; interactions follow motion.md (frequency gate, router, duration tables).
 4. Verify in the browser (prototyping.md §4):
    - Start the dev server: `node ~/.config/opencode/scripts/dev-server.mjs start --dir <app>` (project-scoped detection; **never assume a port**). If `${CLAUDE_PLUGIN_ROOT}` is unset, use the repo's `scripts/dev-server.mjs` or `~/.product-design-partner/scripts/dev-server.mjs`.
    - If a browser tool is available: open the printed URL, click every tab and state toggle, exercise real interactions, screenshot each variant to `<app>/screenshots/`.

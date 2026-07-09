@@ -17,7 +17,10 @@ Run the Thinking Protocol (entry file) first. **New UI is never presented as a s
   **Reskin check:** remove color and font — if you can't tell them apart, rebuild.
 - **Every variant gets a one-line bet label**, e.g. `V2 — inline editing, no modal`.
 - **Realistic data only.** Plausible domain names, awkwardly long values, edge-case counts.
-  **NEVER** lorem ipsum, **NEVER** `Item 1/2/3`. Keep fixtures in a small `data.js`.
+  **NEVER** lorem ipsum, **NEVER** `Item 1/2/3`, **NEVER** placeholder-person names, invented
+  generic company names, fake-precise vanity numbers (99.99%, perfectly round counts), or filler
+  marketing verbs. Fixtures include the extremes from `design-data/references/hardening.md` §1
+  (0 / 1 / typical / 1,000+ items; 100+ chars; emoji/RTL). Keep fixtures in a small `data.js`.
 - **Dependency-light.** Inside a repo: use its stack and tokens. Standalone: smallest viable
   Vite + React. **NEVER** add UI libraries for a prototype.
 
@@ -54,6 +57,8 @@ Build checklist — one requirement at a time, skip nothing:
 - [ ] Each variant is genuinely interactive — working state, validating inputs, transitions
 - [ ] Every data state reachable via an in-app toggle: default always; loading/error/empty switchable
 - [ ] Styling resolved per `design-data/references/styling.md` (repo → Figma → user → fallback)
+- [ ] Interactions animate per `design-data/references/motion.md` — frequency gate, router,
+      duration tables
 - [ ] Realistic data everywhere, including the awkwardly long ones
 
 ## 4. Verify — MANDATORY before presenting

@@ -34,12 +34,21 @@
 - **MUST test the awkward middle widths (~700–900px)**, not just phone and desktop — that's where
   sidebars crush content and grids break.
 - Long content, small screens, zoomed text (200%) all get checked before "done".
+- Viewport units: `dvh`, never `vh`/`h-screen` (mobile browser chrome). Fixed/sticky elements
+  respect `env(safe-area-inset-*)`.
+- Truncation inside flex needs `min-width: 0` on the child — flex refuses to shrink below
+  content size without it.
 
 ## 5. Performance sanity
 
 - [ ] Animate **transform/opacity only**; NEVER animate layout properties (width/height/top/margin)
 - [ ] **NEVER `transition: all`** — name exact properties
 - [ ] No layout thrash — batch DOM reads and writes; no measure-mutate loops
+- [ ] **NEVER scroll-event-driven animation** — IntersectionObserver (unobserve after firing)
+      or CSS scroll timelines
+- [ ] `will-change` only while animating, only transform/opacity/filter; blur animation ≤8px,
+      one-shot, never on large surfaces
+- [ ] Hover styles gated behind `@media (hover: hover) and (pointer: fine)`
 - [ ] Lazy-load heavy assets below the fold; explicit dimensions on media (no CLS)
 - [ ] Lists beyond ~100 rows: virtualize or paginate
 

@@ -39,7 +39,8 @@ commit to a rationale for every decision.
 ```
 agent/product-design-partner.md   entry file: identity + Thinking Protocol + routing table
 agent/modules/                    9 single-concern modules (~50–150 lines each)
-design-data/references/           styling, heuristics, flow patterns, research methods, brainstorm techniques
+design-data/references/           styling, motion, hardening, microcopy, heuristics, flow patterns,
+                                  research methods, brainstorm techniques
 design-data/templates/            handoff template · deck template
 design-data/projects/             your workspace (gitignored)
 commands/ + agents/ + hooks/      Claude Code interface (canonical)

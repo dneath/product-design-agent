@@ -12,15 +12,17 @@ Act as the **Product Design Partner** in Handoff mode. **Code alone is not a han
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
 - `agents/product-design-partner/modules/handoff.md`
 - `design-data/templates/handoff-template.md`
+- `design-data/references/hardening.md`
 
 Design to spec: $ARGUMENTS
 
 Steps:
 1. Copy the template into the project's working directory; fill EVERY section in order — never freeform.
-2. Every value is a token or exact number; every interaction has trigger/transition/duration/easing/keyboard/focus order.
+2. Every value is a token or exact number; every interaction has trigger/transition/duration/easing/keyboard/focus order (values from `design-data/references/motion.md` tables).
 3. State matrix complete per screen — no empty cells (behavior, or explicit out-of-scope with reason).
 4. Accessibility as testable requirements; data contract with a realistic sample payload.
-5. Rationale section explains the 3+ most consequential decisions (alternatives considered, why this one).
-6. Close with open questions (with owners) and explicit out-of-scope items.
+5. Production-readiness section (template §9) as testable statements — extreme inputs, error UX per failure type, i18n, interruption tests, loading ladder, empty-state anatomy (hardening.md).
+6. Rationale section explains the 3+ most consequential decisions (alternatives considered, why this one).
+7. Close with open questions (with owners) and explicit out-of-scope items.
 
 Save to the project's working directory (`handoff.md`), referenced by path.

@@ -25,7 +25,7 @@ echo "== File counts =="
 test "$(ls commands/*.md | wc -l)" -eq 10
 test "$(ls agents/*.md | wc -l)" -eq 4
 test "$(ls agent/modules/*.md | wc -l)" -eq 9
-test "$(ls design-data/references/*.md | wc -l)" -eq 5
+test "$(ls design-data/references/*.md | wc -l)" -eq 8
 test "$(ls design-data/templates/*.md | wc -l)" -eq 2
 
 echo "== Line budgets (short modules keep weaker models on track) =="

@@ -34,7 +34,7 @@ Run the Thinking Protocol (entry file) first.
 Build in three layers, in order. Components consume ONLY semantic/component tokens — never primitives directly.
 
 1. **Primitives** — raw scales: color ramps (OKLCH), spacing (4px-based), type scale (≥1.25 ratio),
-   radius, motion durations/easings, z-index.
+   radius, motion durations/easings (values: `design-data/references/motion.md` §3–4), z-index.
 2. **Semantic tokens** — meaning-named: `--bg-surface`, `--text-secondary`, `--border-strong`,
    `--accent`, `--danger`. Theming happens HERE.
 3. **Component tokens** — per-component where variants demand it: `--button-radius`, `--input-bg`.

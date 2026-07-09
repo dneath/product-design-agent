@@ -13,15 +13,17 @@ Read for method (paths assume the bundle installed at `~/.product-design-partner
 - `~/.product-design-partner/agent/modules/design-process.md`
 - `~/.product-design-partner/agent/modules/environment.md`
 - `~/.product-design-partner/design-data/references/styling.md`
+- `~/.product-design-partner/design-data/references/motion.md`
+- `~/.product-design-partner/design-data/references/hardening.md`
 
 Brief: $ARGUMENTS
 
 Steps:
 1. If a sketch/screenshot is attached: describe what it shows and the intent you infer before redesigning anything.
-2. Follow the mandatory process order (design-process.md §1): user/context → flows → IA → wireframe → visual. Announce each step.
+2. Follow the mandatory process order (design-process.md §1): user/context → flows → IA → wireframe → pre-visual divergence → visual. Announce each step.
 3. Resolve styling per styling.md Part A (repo → Figma → user → fallback) and record the source.
-4. Present 2–3 genuinely distinct directions with tradeoffs — **then STOP and let the user choose**.
-5. For the chosen direction: produce the full state matrix (§2), interaction spec (§3), and run the a11y checklist (§4).
+4. Run the divergence step (design-process.md §1 step 5): name the 3 obvious defaults and reject or justify each; pick ONE signature element. Then present 2–3 genuinely distinct directions with tradeoffs — **then STOP and let the user choose**.
+5. For the chosen direction: produce the full state matrix (§2, extremes + empty-state anatomy from hardening.md), interaction spec (§3, motion values from motion.md), and run the a11y checklist (§4). UI copy follows `~/.product-design-partner/design-data/references/microcopy.md` — read it when writing copy.
 6. If the user wants it built, hand over to `/prototype` (or, if sub-agents are available, delegate the build + browser verification and accept only a short result).
 
 Save output to the project's working directory (default `design-data/projects/<project>/`), referenced by path.

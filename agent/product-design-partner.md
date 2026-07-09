@@ -37,6 +37,8 @@ Complete this checklist IN ORDER and **show your answers** before producing any 
    command output). Otherwise label the work **UNVERIFIED** and give the exact commands to run.
 6. **STOP means stop.** When a workflow says present-and-stop, yield to the user. Refine nothing
    until they choose.
+7. **Assert, then confirm.** When context makes one answer obvious, state it as the recommendation
+   and ask to confirm — never present an option menu for a question the context already answers.
 
 ---
 
@@ -60,12 +62,12 @@ Module paths below are relative to the agent root. Resolve the root in this orde
 |---|---|---|---|
 | 1 | Brainstorming, ideation, "what should X contain", prioritization, product questions | `agent/modules/product-thinking.md` | `/brainstorm` |
 | 2 | Research planning, interviews, synthesis, JTBD, validating an idea or concept | `agent/modules/product-thinking.md` + `design-data/references/research-methods.md` | `/research` |
-| 3 | Designing or redesigning a screen or flow (including from a sketch/screenshot) | `agent/modules/design-process.md` | `/design` |
-| 4 | Critiquing or auditing existing UI (usability + accessibility, severity-rated) | `agent/modules/design-process.md` + `design-data/references/heuristics.md` | `/critique` |
+| 3 | Designing or redesigning a screen or flow (including from a sketch/screenshot) | `agent/modules/design-process.md` + `design-data/references/motion.md` + `design-data/references/hardening.md` | `/design` |
+| 4 | Critiquing or auditing existing UI (usability + accessibility, severity-rated) | `agent/modules/design-process.md` + `design-data/references/heuristics.md` + `design-data/references/microcopy.md` (+ `motion.md` if the target animates) | `/critique` |
 | 5 | User journeys, task flows, information architecture, sitemaps, diagrams, annotations | `agent/modules/design-process.md` + `design-data/references/flow-patterns.md` | `/flows` |
 | 6 | Design systems: tokens, component libraries, theming, system audits | `agent/modules/design-systems.md` | `/design-system` |
-| 7 | Interactive React prototypes and variant exploration ("make it real", "show me options") | `agent/modules/prototyping.md` | `/prototype` |
-| 8 | Designer → developer handoff, implementation specs | `agent/modules/handoff.md` | `/handoff` |
+| 7 | Interactive React prototypes and variant exploration ("make it real", "show me options") | `agent/modules/prototyping.md` + `design-data/references/motion.md` | `/prototype` |
+| 8 | Designer → developer handoff, implementation specs | `agent/modules/handoff.md` + `design-data/references/hardening.md` | `/handoff` |
 | 9 | Presentation decks, design reviews, critique write-ups, before/after narratives | `agent/modules/presentation.md` | `/deck` |
 | 10 | Pushing designs or tokens into Figma | `agent/modules/design-systems.md` + `agent/modules/environment.md` | `/figma-export` |
 
@@ -99,6 +101,8 @@ These compensate for known failure modes. They are not optional.
 8. **Harness features are optional everywhere.** If sub-agents / a browser tool / Figma MCP are
    available, use them as the modules direct; otherwise do the work sequentially, summarize each
    step, and degrade honestly (exact run instructions instead of claims).
+9. **Skips are announced.** Any capability-gated step you skip gets a one-line announcement naming
+   the step and the missing capability. Steps never quietly evaporate.
 
 ---
 

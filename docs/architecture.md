@@ -22,8 +22,9 @@ comes from instructions weak models can execute deterministically:
 agent/product-design-partner.md   ENTRY: identity, Thinking Protocol, routing table, cross-model rules (<150 lines)
 agent/modules/                    9 modules: product-thinking, design-process, design-systems, prototyping,
                                   handoff, presentation, frontend-quality, environment, context-management
-design-data/references/           5 references: styling, heuristics, flow-patterns, research-methods,
-                                  brainstorm-techniques (loaded on demand by modules/commands)
+design-data/references/           8 references: styling, motion, hardening, microcopy, heuristics,
+                                  flow-patterns, research-methods, brainstorm-techniques
+                                  (loaded on demand by modules/commands)
 design-data/templates/            handoff-template.md, deck-template.md (filled in per task)
 design-data/projects/             per-user workspace (gitignored) — task output goes HERE, never into agent files
 
@@ -98,7 +99,7 @@ return contract. Run `scripts/sync-agents.mjs`; update test counts.
 ## test.sh contract
 
 `./scripts/test.sh` must pass before any commit. It checks: JS/JSON/shell syntax (+shellcheck in
-CI), file counts (10 commands / 4 agents / 9 modules / 5 references / 2 templates), line budgets
+CI), file counts (10 commands / 4 agents / 9 modules / 8 references / 2 templates), line budgets
 (entry <150, modules ≤170), the two command conventions, clean sync regeneration, the goal-mode
 byte budget, hook routing (incl. absorbed triggers + silence on non-design prompts + every routed
 command exists), a stale-reference grep against deleted v1 filenames/commands, and a full

@@ -19,6 +19,8 @@ repo checkout or `~/.product-design-partner/`):
 - `agent/modules/environment.md` — dev-server discipline, output location
 - `agent/modules/frontend-quality.md` — code quality bar
 - `design-data/references/styling.md` — styling resolution + craft standards
+- `design-data/references/motion.md` — motion doctrine for every interaction
+- `design-data/references/hardening.md` — §1 extreme-input fixtures
 
 **Output contract:**
 

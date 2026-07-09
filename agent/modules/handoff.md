@@ -15,7 +15,8 @@ Run the Thinking Protocol (entry file) first. **Code alone is not a handoff.**
 2. **Every value is a token reference or an exact number.** "Comfortable spacing" is not a spec;
    `--space-4` (16px) is. When a design system exists, reference its tokens exclusively.
 3. **Every interaction specifies**: trigger → transition → duration + easing → keyboard path →
-   focus order. An interaction missing any of these is incomplete.
+   focus order. An interaction missing any of these is incomplete. Duration/easing values come
+   from the tables in `design-data/references/motion.md`.
 4. **The state matrix has no empty rows.** Every screen covers empty / loading / error / partial /
    overflow / first-run / success, each with expected behavior. **NEVER** hand off with a blank cell
    — write the behavior or mark it explicitly out of scope with a reason.
@@ -25,6 +26,9 @@ Run the Thinking Protocol (entry file) first. **Code alone is not a handoff.**
    malformed. Include a realistic sample payload.
 7. **Accessibility requirements are part of the spec**, not advice: roles, labels, contrast values,
    focus order, screen-reader behavior, reduced-motion behavior.
+8. **Production readiness is a section, not a hope.** Extreme inputs, error UX per failure type,
+   i18n budgets, interruption tests, and the loading ladder — written as testable statements from
+   `design-data/references/hardening.md`.
 
 ## Section-by-section guidance (matches the template)
 
@@ -39,6 +43,7 @@ Run the Thinking Protocol (entry file) first. **Code alone is not a handoff.**
 7. **Rationale** — decision → alternatives considered → why this one.
 8. **Open questions & out of scope** — what's unresolved (and who decides), what's explicitly not
    in this handoff.
+9. **Production readiness** — rule 8, as a checklist the engineer can execute.
 
 ---
 
@@ -49,4 +54,5 @@ Run the Thinking Protocol (entry file) first. **Code alone is not a handoff.**
 - [ ] State matrix complete for every screen
 - [ ] Interaction table complete (trigger/transition/duration/easing/keyboard/focus)
 - [ ] Rationale section explains the 3+ most consequential decisions
+- [ ] Production-readiness section filled as testable statements (rule 8)
 - [ ] Delivered as a file in the project's working directory, referenced by path

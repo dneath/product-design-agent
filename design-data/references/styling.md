@@ -2,7 +2,7 @@
 
 > Load whenever visual design happens: `/design`, `/prototype`, `/design-system`, `/deck`.
 > Part A: where styling comes from. Part B: the craft bar that applies on top of ANY source.
-> Part C: banned patterns.
+> Part C: banned patterns. Part D: the generic-design failure test.
 
 **There is no fixed brand or house style — ever.** Styling is resolved from context every time.
 
@@ -123,34 +123,40 @@ in the mono face with `tabular-nums`; headings `text-wrap: balance`, prose `text
 - Body ≥16px, 65–75ch line length. All-caps labels get `letter-spacing: 0.05–0.12em`.
 - **`tabular-nums` on any number that updates or aligns** — counters, prices, timers, table columns.
 - One family in multiple weights beats two typefaces; never pair similar-but-different fonts.
+- Opacity ladder is a valid alternative to a gray ramp: primary 100% / secondary 70% /
+  tertiary 40% / disabled-placeholder 25% of the text color.
+- Micro-details: real ellipsis `…` (never `...`), curly quotes, non-breaking space between value
+  and unit ("10 MB"); `-webkit-font-smoothing: antialiased` on the root.
 
 ### Space, surfaces, depth
 - 4px-based spacing; symmetrical padding unless content demands otherwise; tight within groups
   (8–12px), generous between sections (48–96px). Uniform padding everywhere is monotony.
 - **Pick ONE depth strategy and commit**: borders-only (dense/technical) · one subtle shadow ·
-  layered shadows · surface-lightness shifts. **NEVER mix strategies.**
-- Elevation is whisper-quiet: each level a few percent lightness apart, same hue. You feel the
-  hierarchy more than see it — run the **squint test** (blurred, hierarchy reads; nothing jumps out).
+  layered shadows · surface-lightness shifts. **NEVER mix strategies.** Layered-shadow recipe:
+  `0 0 0 1px rgba(0,0,0,.06), 0 1px 2px -1px rgba(0,0,0,.06), 0 2px 4px 0 rgba(0,0,0,.04)` light
+  (hover: each alpha +0.02) · `0 0 0 1px rgba(255,255,255,.08)` ring dark. Shadows are never dividers.
+- Elevation is whisper-quiet: each level a few percent lightness apart, same hue (dark mode:
+  each level 7–12% lighter than the one beneath). You feel the hierarchy more than see it —
+  run the **squint test** (blurred, hierarchy reads; nothing jumps out).
 - Borders are low-opacity (0.05–0.12 alpha), in a progression (soft/default/strong). If borders are
   the first thing you see, they're too strong.
 - **Concentric radii: outer = inner + padding.** Mismatched nested corners are the #1 "feels off".
+  Escape hatch: padding >24px — treat the layers independently instead of forcing the math.
 - Sidebars share the canvas background + a border, never a different color. Dropdowns sit one
   elevation level above their parent. Inputs slightly darker than surroundings (inset = "type here").
 - Images get a 1px inset outline — pure `rgba(0,0,0,0.1)` light / `rgba(255,255,255,0.1)` dark,
   never a tinted neutral (reads as dirt).
 
-### Motion
-- Duration by size of change: **100–150ms** instant feedback (press, toggle) · **150–250ms** most
-  product transitions (hover, menus, tooltips) · **300–500ms** layout changes (modal, drawer,
-  accordion). Never >500ms for feedback.
-- **Exits ≈ 75% of enter duration**, ease-in, small fixed distance (~12px) — softer and faster than enters.
-- **NEVER plain `ease`, NEVER bounce/spring/elastic in product UI.** Defaults:
-  `cubic-bezier(0.25, 1, 0.5, 1)` (ease-out-quart) or `cubic-bezier(0.22, 1, 0.36, 1)` (ease-out-quint).
-- Enter = `opacity 0→1` + `translateY 12px→0` (+ optional `blur 4px→0`); stagger semantic chunks
-  ~100ms apart, total ≤500ms; skip enter animations on initial page load.
-- Press = `scale(0.96)` (never below 0.95), ~150ms ease-out; hover lift 1.02–1.05.
-- **Animate transform/opacity/filter only; NEVER layout properties; NEVER `transition: all`** —
-  name exact properties. `prefers-reduced-motion` support is mandatory.
+### Motion (floor — full doctrine in `design-data/references/motion.md`)
+- **Hard cap 300ms for UI**; most transitions 150–250ms; feedback 100–160ms. **Exits ≈ 75% of
+  enter duration.** If it feels slow, shorten the duration before touching the curve.
+- **Ease-out for enters AND exits — NEVER ease-in on UI.** Decorative bounce/elastic banned;
+  springs (stiffness 500, damping 30) are for gesture-driven motion only.
+- Enter = `opacity 0→1` + small translate — never from `scale(0)`, start ≥0.95. Press =
+  `scale(0.97)` (range 0.95–0.98), 100–160ms ease-out; hover lift 1.02–1.05.
+- Stagger 30–80ms per item, never blocking interaction; skip enter animations on initial page load.
+- **Animate transform/opacity only; NEVER layout properties; NEVER `transition: all`** —
+  name exact properties. `prefers-reduced-motion` = gentler, not zero.
 
 ### Detail
 - All **8 interaction states** on every interactive element; loading/empty/error on every data view.
@@ -163,14 +169,9 @@ in the mono face with `tabular-nums`; headings `text-wrap: balance`, prose `text
 - Icons clarify, never decorate — if removing it loses nothing, remove it. One icon set per product.
 - Everything traces to a token — no orphan hex values.
 
-### The bar
-If another agent given the same prompt would produce substantially the same screen, it's generic —
-return to the domain and intent. If the palette is guessable from the product category alone
-("observability ⇒ dark blue"), rework it. Every choice answers "why this, not the common alternative?"
-
 ---
 
-## Part C — Banned patterns (match and refuse; propose the alternative)
+## Part C — Banned patterns (match and refuse; propose the alternative — every ban names its override)
 
 1. **Side-stripe borders** — colored `border-left` >1px as an accent on cards/alerts. Use surface
    tint or a leading icon instead.
@@ -181,6 +182,37 @@ return to the domain and intent. If the palette is guessable from the product ca
 5. **Identical card grids** — rows of same-size icon-title-text cards. Vary by content importance.
 6. **Modal as first thought** — prefer inline expansion, drawers, or dedicated pages; modals only
    for true interruptions.
+7. **Purple/multicolor gradients + glow affordances** — the loudest generic tell. Override: the
+   brand demonstrably uses them.
+8. **Warm-cream + high-contrast-serif + terracotta** (and its beige/brass/espresso cousins) — a
+   default costume, not a decision. Override: an explicit brief asking for it.
+9. **Uppercase tracked eyebrow labels over every section** — ration to ≤1 per 3 sections
+   (mechanically countable). Override: the labels encode a true taxonomy.
+10. **01/02/03 numbered section scaffolding** — decoration unless order carries information.
+    Override: the content is a genuine sequence.
+
+---
+
+## Part D — The generic-design failure test
+
+**If another agent given the same prompt would produce substantially the same screen, the design
+has failed** — difference must come from this product, not from decoration.
+
+- **Mine the domain**: pull color, type voice, and one signature element from the product's actual
+  world (its materials, vocabulary, artifacts). If the palette is guessable from the product
+  category alone ("observability ⇒ dark blue"), rework it.
+- **Spend boldness in one place**: ONE signature element, quiet disciplined surroundings.
+  Boldness everywhere is noise; boldness nowhere is a template.
+- Every choice answers "why this, not the common alternative?"
+
+Four self-tests — run before presenting:
+
+| Test | Pass condition |
+|---|---|
+| Squint | Blurred, the hierarchy still reads; one focal point wins |
+| Swap | Replace your typeface/layout with a stock default — if the swap costs nothing, you defaulted |
+| Signature | You can point to the one element only THIS product would have |
+| Token-name | CSS variable names read aloud belong to this product's world, not to any project |
 
 ---
 
@@ -190,5 +222,6 @@ return to the domain and intent. If the palette is guessable from the product ca
 - [ ] Repo: tokens read and matched — no parallel system. Figma: variables mapped 1:1
 - [ ] Fallback: monochrome OKLCH, 4px spacing, Inter + Fragment Mono, ≤1 domain-justified accent
 - [ ] No `#000`/`#fff`; four text levels; border progression; whisper-quiet elevation
-- [ ] ONE depth strategy; concentric radii; motion within the tables above
-- [ ] No banned patterns
+- [ ] ONE depth strategy; concentric radii; motion within the floor above (doctrine: motion.md)
+- [ ] No banned patterns (all 10)
+- [ ] Part D passes: squint / swap / signature / token-name; boldness spent in one place

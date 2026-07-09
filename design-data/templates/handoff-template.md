@@ -50,9 +50,11 @@
 
 ## 4. Interaction spec
 
+<!-- Duration/easing values from the tables in design-data/references/motion.md -->
+
 | Element | Trigger | Transition | Duration / easing | Keyboard | Focus behavior |
 |---|---|---|---|---|---|
-| <save button> | <click / Enter> | <state → saving → saved> | <150ms / ease-out-quart> | <Enter submits, Esc cancels> | <focus returns to …> |
+| <save button> | <click / Enter> | <state → saving → saved> | <150ms / --ease-enter> | <Enter submits, Esc cancels> | <focus returns to …> |
 | <…> | | | | | |
 
 - **Focus order** (per screen): <1. …, 2. …, 3. …>
@@ -96,3 +98,16 @@
 
 - **Open**: <question — who decides — by when>
 - **Out of scope**: <explicitly not in this handoff — so no one assumes it's coming>
+
+## 9. Production readiness
+
+<!-- Testable statements, not aspirations. Reference: design-data/references/hardening.md -->
+
+| Check | Status / spec |
+|---|---|
+| Extreme inputs (0 / 1 / typical / 1,000+ items; 100+ chars; emoji/RTL) | <which were tested; expected behavior> |
+| Error UX per failure type (400 / 401 / 403 / 404 / 429 / 500 / offline) | <mapped responses per view> |
+| i18n (+30% expansion, logical properties, Intl formats) | <checked / N/A — reason> |
+| Interruption (refresh mid-flow, spam-click, close-while-opening) | <designed responses> |
+| Loading ladder stage per view (0–100ms / 100ms–1s / 1s+ / 10s+) | <per view> |
+| Empty-state type + anatomy per data view | <type; what-will-be-here / why / CTA>

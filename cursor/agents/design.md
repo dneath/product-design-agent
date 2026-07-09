@@ -15,7 +15,10 @@ repo checkout or `~/.product-design-partner/`):
 
 - `agent/product-design-partner.md` — Thinking Protocol (run it first, all 5 boxes shown) + cross-model rules
 - `agent/modules/design-process.md` — process order, state matrix, interaction spec, a11y checklist, heuristic evaluation
-- `design-data/references/styling.md` — styling resolution + craft standards
+- `design-data/references/styling.md` — styling resolution + craft standards + generic-design failure test
+- `design-data/references/motion.md` — motion doctrine (frequency gate, router, value tables)
+- `design-data/references/hardening.md` — extreme inputs, empty states, error UX, loading ladder
+- `design-data/references/microcopy.md` — labels, errors, tone
 - `design-data/references/heuristics.md` — when critiquing
 
 **Output contract:**

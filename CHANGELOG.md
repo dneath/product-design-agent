@@ -2,6 +2,27 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-07-08
+
+Absorbed design-engineering doctrine — deeper motion, hardening, and copy standards distilled from a broad research pass, written as house rules.
+
+### Added
+- **`design-data/references/motion.md`** — full motion doctrine: frequency gate (100+×/day or keyboard-initiated = never animate), the one-question router (user→spring / system→easing / time→linear / high-frequency→none), duration tables with a 300ms hard cap, custom easing tokens, origin-aware physicality (never from `scale(0)`; popovers scale from trigger, modals exempt), interruptibility, compositor-only performance rules, gentler-not-zero reduced motion, and a review protocol (default-to-flagging, remedial order, Before/After/Why output)
+- **`design-data/references/hardening.md`** — extreme-input matrix (0/1/typical/1,000+; 100+ chars; emoji/RTL/CJK), error UX per failure type (400/401/403/404/429/500/offline), i18n budgets (+30% expansion, logical properties, Intl APIs), empty-state anatomy + taxonomy, interruption/concurrency tests, the loading ladder, and an action-based verify list
+- **`design-data/references/microcopy.md`** — verb+object button labels, the error formula (what + why + how-to-fix + example), tone-by-moment, one-term-per-concept glossaries, placeholder≠label, prefer-undo-over-confirmation
+- **Pre-visual divergence step** in the design process: name the 3 obvious defaults and reject or justify each; pick ONE signature element; mine the domain
+- **styling.md Part D — the generic-design failure test** with four self-tests (squint / swap / signature / token-name) and "spend boldness in one place"
+- **Critique rigor** in heuristics.md: cognitive-load numeric limits with named violations, five test lenses selected by interface type, severity calibration + support-ticket tie-breaker, Before/After/Why craft table
+- **Handoff production-readiness section** (template §9) — hardening categories as testable statements
+- Entry file: operating principle 7 (**assert, then confirm**) and cross-model rule 9 (**skips are announced**)
+
+### Changed
+- Motion doctrine corrected to researched consensus: exits use **ease-out** (was ease-in); **300ms hard cap** (was 500ms); springs now required for gesture-driven motion (decorative bounce still banned); stagger 30–80ms/item (was ~100ms); press scale 0.97 at 100–160ms (was 0.96 at ~150ms)
+- styling.md banned patterns 6 → 10 (purple gradients/glows, cream+serif+terracotta default trio, eyebrow-label rationing, numbered section scaffolding) — every ban now names its override condition
+- Prototype fixtures must include hardening extremes; fake-precise vanity numbers and placeholder-person/company names banned
+- frontend-quality: `dvh` over `vh`, safe-area insets, `min-width: 0` truncation fix, no scroll-event-driven animation, gated hover, `will-change` discipline
+- References 5 → 8; routing table and `/design` `/prototype` `/critique` `/handoff` commands load the new references
+
 ## [2.0.0] - 2026-07-06
 
 Full teardown and rebuild. See [MIGRATION.md](MIGRATION.md) for the complete deleted/kept/renamed record.

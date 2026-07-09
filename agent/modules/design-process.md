@@ -17,7 +17,10 @@ Work through these in order. **NEVER start at visual design. NEVER polish before
 2. **Flows** — what the user is trying to do; entry and exit points; the happy path and the failure paths.
 3. **Information architecture** — what lives on this screen vs elsewhere; grouping; hierarchy of jobs.
 4. **Wireframe / structure** — layout, zones, reading order, responsive strategy. Text or ASCII sketch is fine.
-5. **Visual design** — apply the resolved styling (`design-data/references/styling.md`) on top of the structure.
+5. **Pre-visual divergence** — name the 3 obvious defaults for THIS interface type and reject or
+   justify each; pick ONE signature element; mine the domain for color and type voice. Gate:
+   `design-data/references/styling.md` Part D (the generic-design failure test).
+6. **Visual design** — apply the resolved styling (`design-data/references/styling.md`) on top of the structure.
 
 For sketch/screenshot input: first describe what the source shows and what intent you infer
 (step 1–3 from the image), THEN redesign — never trace it pixel-for-pixel without questioning structure.
@@ -38,12 +41,18 @@ Fill this table per screen. **NEVER leave a cell as "n/a" without a one-line rea
 | Success / done | | |
 ```
 
+Depth per state — extreme-input values (0/1/typical/1,000+; 100+ chars; emoji/RTL), empty-state
+anatomy + taxonomy, error UX by failure type, and the loading ladder:
+`design-data/references/hardening.md`.
+
 ## 3. Interaction spec
 
 - [ ] Every interactive element defines **all 8 states**: default, hover, focus, active, disabled,
       loading, error, success (data views: loading/empty/error minimum).
-- [ ] Motion has durations + easing **with rationale** — values and curves from
-      `design-data/references/styling.md` (Motion section).
+- [ ] Motion has durations + easing **with rationale** — frequency gate, one-question router,
+      and value tables from `design-data/references/motion.md`.
+- [ ] All UI text (labels, errors, empty states, confirmations) follows
+      `design-data/references/microcopy.md`.
 - [ ] Async actions choose **optimistic vs pessimistic** UI and say why: optimistic for low-stakes,
       instantly-reversible actions (toggle, favorite); pessimistic for destructive, costly, or
       failure-prone ones (payment, delete, publish).
@@ -65,7 +74,8 @@ For `/critique` and any audit request:
 
 1. **First impression** — 2-second look: what draws the eye first, and is that the right thing?
 2. **Evaluate against named heuristics** — Nielsen's 10 plus the craft four (hierarchy, contrast,
-   alignment, proximity). Full list + report skeleton: `design-data/references/heuristics.md`.
+   alignment, proximity), the cognitive-load limits, and 2–3 test lenses. Full lists + report
+   skeleton: `design-data/references/heuristics.md`.
 3. **Severity-rate every finding** 0–4. **MUST pair each finding with evidence** (what you saw, where).
 4. **Run the a11y checklist** (§4) as part of every critique.
 5. **Deliver**: findings table → top 3–5 fixes prioritized by severity × effort → what works well (keep).
@@ -84,7 +94,8 @@ taxonomy live in `design-data/references/flow-patterns.md`. Key rules:
 
 ## Definition of done (this module)
 
-- [ ] Process order followed 1→5, each step's conclusion stated with rationale
+- [ ] Process order followed 1→6, each step's conclusion stated with rationale
+- [ ] Divergence step done: 3 defaults named and rejected/justified; ONE signature element chosen
 - [ ] State matrix filled for every screen
 - [ ] Interaction spec (§3) complete
 - [ ] A11y checklist (§4) all boxes checked — failures fixed, not annotated away
