@@ -58,6 +58,9 @@ immediately (rule 1) before continuing.
 
 - **MUST write large artifacts to disk and reference by path** — never inline prototypes, token
   JSON, transcripts, or generated components into the conversation.
+- **The Thinking Protocol answers, decisions, and rationale go into the project design doc, not the
+  chat.** In the terminal, return only a short summary — decisions + artifact paths + open questions
+  — and reference the doc by path. Chat is a pointer to the work, not the work.
 - Truncate verbose tool output to the relevant slice (the error + location, the pass/fail line).
 - Once a file's facts are summarized, cite the path instead of re-reading it.
 
@@ -70,3 +73,4 @@ immediately (rule 1) before continuing.
 - [ ] Durable facts in a pruned `system.md`; task state in `scratch.md`; scratch deleted at ship
 - [ ] Self-contained steps delegated (or summarized immediately when solo)
 - [ ] Artifacts on disk, referenced by path; tool output truncated
+- [ ] Thinking Protocol + rationale written to the design doc; chat is a short summary + paths

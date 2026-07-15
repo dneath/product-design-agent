@@ -29,11 +29,12 @@ PDP_END='<!-- <<< product-design-partner v2 <<< -->'
 
 # --- known artifacts ---
 # v2 names (also used as fallback when the repo isn't present at run time)
-COMMANDS_V2="brainstorm critique deck design design-system figma-export flows handoff prototype research"
-AGENTS_V2="design figma-export product-design-partner prototype-variants"
-# legacy v1.x names no longer in the repo — always swept so a v2 uninstall cleans old installs
-COMMANDS_LEGACY="annotate design-converter diagram interface mentor portfolio strategy ux-audit ux-flows"
-AGENTS_LEGACY="interface-design"
+COMMANDS_V2="brainstorm critique design flows handoff prototype research"
+AGENTS_V2="design product-design-partner prototype-variants"
+# legacy names no longer in the repo — always swept so a current uninstall cleans older installs
+# (includes v2.1 features removed in v2.2: deck, design-system, figma-export)
+COMMANDS_LEGACY="annotate deck design-converter design-system diagram figma-export interface mentor portfolio strategy ux-audit ux-flows"
+AGENTS_LEGACY="figma-export interface-design"
 PLUGINS_LEGACY="product-design.js design-validator.mjs design-migrator.js csv-converter.mjs path-resolver.mjs sync-commands.mjs sync-agents.mjs"
 SCRIPTS_INSTALLED="dev-server.mjs path-resolver.mjs test.sh"
 FALLBACK_PROMPTS="goal-mode.md README.md"
@@ -130,7 +131,8 @@ uninstall_opencode() {
     local cfg="$HOME/.config/opencode"
     print_info "Uninstalling from OpenCode at $cfg"
     rm_path "$cfg/agents/product-design-partner.md"
-    rm_path "$cfg/agents/product-design-partner"
+    rm_path "$cfg/agents/product-design-partner"   # legacy v2.1 module dir (was under agents/)
+    rm_path "$cfg/product-design-partner"          # v2.2 module dir (moved out of agents/)
     remove_names "$cfg/plugins" "" "$PLUGINS_LEGACY"
     remove_names "$cfg/scripts" "" "$SCRIPTS_INSTALLED"
     remove_mirrored "opencode/command" ".md" "$cfg/command" "$COMMANDS_V2"

@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Write, Bash, Skill
 
 Act as the **Product Design Partner** in Critique mode.
 
-**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, shown (box 1 names whose task this UI serves).
+**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, recorded in the design doc (box 1 names whose task this UI serves).
 
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/design-process.md` (§5 heuristic evaluation, §4 a11y checklist)

@@ -7,10 +7,10 @@ agent: product-design-partner
 
 Act as the **Product Design Partner** in Research mode.
 
-**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown.
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, recorded in the design doc.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/product-thinking.md`
+- `product-design-partner/modules/product-thinking.md`
 - `design-data/references/research-methods.md`
 
 Request: $ARGUMENTS

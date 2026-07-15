@@ -7,13 +7,13 @@ the repo root when you add this repository as a plugin (`/plugin`).
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| Commands | `../commands/*.md` | 10 slash commands (design, prototype, brainstorm, critique, design-system, handoff, deck, research, flows, figma-export) |
-| Agents | `../agents/*.md` | 4 subagents — router + 3 heavy-workflow specialists |
+| Commands | `../commands/*.md` | 7 slash commands (design, prototype, brainstorm, critique, handoff, research, flows) |
+| Agents | `../agents/*.md` | 3 subagents — router + 2 heavy-workflow specialists |
 | Hooks | `../hooks/hooks.json` | UserPromptSubmit intent nudge |
 | Hook script | `../hooks/inject-design-context.mjs` | Routes design prompts to slash commands + the Thinking Protocol |
 | Entry file | `../agent/product-design-partner.md` | Identity, Thinking Protocol, routing table |
-| Modules | `../agent/modules/` | 9 single-concern method modules |
-| References & templates | `../design-data/` | Styling, heuristics, methods, handoff/deck templates |
+| Modules | `../agent/modules/` | 7 single-concern method modules |
+| References & templates | `../design-data/` | Styling, heuristics, methods, handoff template |
 
 ### Subagents
 
@@ -22,7 +22,6 @@ the repo root when you add this repository as a plugin (`/plugin`).
 | `product-design-partner` | Routing, light workflows, ambiguous scope |
 | `design` | Screen/flow design, deep critique |
 | `prototype-variants` | 2–4 interactive React variants in one app, browser-verified |
-| `figma-export` | Push a design or tokens into Figma |
 
 Rules live in the entry file and modules — subagents read those files; they do not duplicate them.
 

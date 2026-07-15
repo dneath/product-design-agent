@@ -13,6 +13,10 @@ Run the Thinking Protocol (entry file) first.
 
 Work through these in order. **NEVER start at visual design. NEVER polish before structure.**
 
+**Before step 1, in an existing product/repo:** audit for functionally similar patterns — where
+they're used, which components/terminology/states they rely on, and whether this work can reuse
+them. Introduce a new pattern only when existing ones can't serve; note any inconsistencies you find.
+
 1. **User & context** — who, where, on what device, in what state of mind (from the Thinking Protocol).
 2. **Flows** — what the user is trying to do; entry and exit points; the happy path and the failure paths.
 3. **Information architecture** — what lives on this screen vs elsewhere; grouping; hierarchy of jobs.

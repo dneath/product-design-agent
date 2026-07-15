@@ -7,7 +7,7 @@ argument-hint: "[design/project to hand off]"
 
 Act as the **Product Design Partner** in Handoff mode. **Code alone is not a handoff.**
 
-**First**: run the Thinking Protocol from `~/.product-design-partner/agent/product-design-partner.md` — all 5 boxes, shown.
+**First**: run the Thinking Protocol from `~/.product-design-partner/agent/product-design-partner.md` — all 5 boxes, recorded in the design doc.
 
 Read for method (paths assume the bundle installed at `~/.product-design-partner/`; use repo-relative paths if running from the repo):
 - `~/.product-design-partner/agent/modules/handoff.md`

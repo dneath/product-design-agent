@@ -25,7 +25,7 @@ everything inside `~/.config/opencode/`.
 ```bash
 ./install.sh --target claude --yes
 ```
-Copies: 10 commands → `~/.claude/commands/`, 4 subagents → `~/.claude/agents/`, bundle →
+Copies: 7 commands → `~/.claude/commands/`, 3 subagents → `~/.claude/agents/`, bundle →
 `~/.product-design-partner/`. (The hook only runs under the plugin route.)
 
 **Verify:** type `/design` — it should autocomplete; ask "design a dashboard" — the subagents
@@ -38,8 +38,8 @@ appear in the agent picker (plugin route also shows the hook nudge).
 ```bash
 ./install.sh --target cursor --yes
 ```
-Copies: 10 commands → `~/.cursor/commands/`, rule → `~/.cursor/rules/product-design-partner.mdc`,
-4 agents → `~/.cursor/agents/`, bundle → `~/.product-design-partner/`.
+Copies: 7 commands → `~/.cursor/commands/`, rule → `~/.cursor/rules/product-design-partner.mdc`,
+3 agents → `~/.cursor/agents/`, bundle → `~/.product-design-partner/`.
 
 For per-project attachment, also copy the rule into that project:
 `cp cursor/rules/product-design-partner.mdc <project>/.cursor/rules/`
@@ -54,7 +54,7 @@ for that (no `$ARGUMENTS`).
 ```bash
 ./install.sh --target codex --yes
 ```
-Copies: 10 prompts → `~/.codex/prompts/`, bundle → `~/.product-design-partner/`, and manages a
+Copies: 7 prompts → `~/.codex/prompts/`, bundle → `~/.product-design-partner/`, and manages a
 marker-delimited block in `~/.codex/AGENTS.md`:
 
 - No file → creates it.
@@ -74,17 +74,17 @@ url = "https://mcp.figma.com/mcp"
 ./install.sh --target opencode --yes
 ```
 Copies into `~/.config/opencode/`: agent entry → `agents/product-design-partner.md`, modules →
-`agents/product-design-partner/modules/`, 10 commands → `command/`, references/templates →
-`design-data/`, helpers → `scripts/`. Also **removes** any legacy v1.x enforcement plugin files
-from `plugins/` (the v2 agent uses no plugins).
+`product-design-partner/modules/` (kept **out** of `agents/` so OpenCode doesn't list each module
+as a phantom subagent), 7 commands → `command/`, references/templates → `design-data/`, helpers →
+`scripts/`. Also **removes** any legacy v1.x enforcement plugin files from `plugins/` (the v2 agent
+uses no plugins).
 
 Use it as `@product-design-partner …` or via the slash commands.
 
-## Any other LLM (ChatGPT, Gemini, local models…)
+## Any other LLM (local models, file-access setups…)
 
-Paste `prompts/goal-mode.md` (≤4000 bytes, self-contained) into the system-prompt / custom
-instructions field. For file-access setups, `./install.sh --target custom --path <dir>` copies the
-full bundle anywhere.
+`./install.sh --target custom --path <dir>` copies the full bundle anywhere. Load
+`agent/product-design-partner.md` as the system prompt and keep `design-data/` readable.
 
 ---
 
@@ -122,8 +122,7 @@ any Figma MCP registration you added (remove via the same UI/CLI you used to add
 | Symptom | Fix |
 |---|---|
 | `/design` doesn't autocomplete | Command files missing — re-run `./install.sh --target <t> --yes`; on Claude Code plugin route check `/plugin` shows the plugin enabled |
-| Agent ignores its method / freelances | Make sure the entry file is loaded: commands read `agent/product-design-partner.md` first. On generic LLMs paste `prompts/goal-mode.md` |
+| Agent ignores its method / freelances | Make sure the entry file is loaded: commands read `agent/product-design-partner.md` first. On generic LLMs, install the bundle with `--target custom` and load `agent/product-design-partner.md` as the system prompt |
 | `node: command not found` during `/prototype` | Install Node 18+ (`brew install node` / `apt install nodejs`); the agent will otherwise deliver UNVERIFIED with run instructions |
 | Dev server "busy by another project" | Correct behavior — another project owns that port. The script matches by project path; just re-run, it picks a free port |
-| Figma export says MCP not connected | Add the Figma MCP for your platform (sections above) or accept the fallback bundle (token JSON + build spec) |
 | Old v1.x commands still showing | Run `./uninstall.sh --target all` from the v2 repo — it sweeps legacy names — then reinstall |

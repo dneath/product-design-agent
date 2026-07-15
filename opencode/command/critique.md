@@ -7,10 +7,10 @@ agent: product-design-partner
 
 Act as the **Product Design Partner** in Critique mode.
 
-**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown (box 1 names whose task this UI serves).
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, recorded in the design doc (box 1 names whose task this UI serves).
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/design-process.md` (§5 heuristic evaluation, §4 a11y checklist)
+- `product-design-partner/modules/design-process.md` (§5 heuristic evaluation, §4 a11y checklist)
 - `design-data/references/heuristics.md`
 - `design-data/references/microcopy.md`
 

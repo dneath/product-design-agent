@@ -22,11 +22,11 @@ else
 fi
 
 echo "== File counts =="
-test "$(ls commands/*.md | wc -l)" -eq 10
-test "$(ls agents/*.md | wc -l)" -eq 4
-test "$(ls agent/modules/*.md | wc -l)" -eq 9
+test "$(ls commands/*.md | wc -l)" -eq 7
+test "$(ls agents/*.md | wc -l)" -eq 3
+test "$(ls agent/modules/*.md | wc -l)" -eq 7
 test "$(ls design-data/references/*.md | wc -l)" -eq 8
-test "$(ls design-data/templates/*.md | wc -l)" -eq 2
+test "$(ls design-data/templates/*.md | wc -l)" -eq 1
 
 echo "== Line budgets (short modules keep weaker models on track) =="
 test "$(wc -l < agent/product-design-partner.md)" -lt 150
@@ -47,10 +47,10 @@ done
 echo "== Command + agent sync =="
 node scripts/sync-commands.mjs
 node scripts/sync-agents.mjs
-test "$(ls opencode/command/*.md | wc -l)" -eq 10
-test "$(ls cursor/commands/*.md | wc -l)" -eq 10
-test "$(ls codex/prompts/*.md | wc -l)" -eq 10
-test "$(ls cursor/agents/*.md | wc -l)" -eq 4
+test "$(ls opencode/command/*.md | wc -l)" -eq 7
+test "$(ls cursor/commands/*.md | wc -l)" -eq 7
+test "$(ls codex/prompts/*.md | wc -l)" -eq 7
+test "$(ls cursor/agents/*.md | wc -l)" -eq 3
 
 echo "== Generated files committed and in sync =="
 if ! git diff --quiet opencode/command cursor/commands cursor/agents codex/prompts; then
@@ -59,14 +59,9 @@ if ! git diff --quiet opencode/command cursor/commands cursor/agents codex/promp
   exit 1
 fi
 
-echo "== Goal-mode prompt budget =="
-test "$(wc -c < prompts/goal-mode.md)" -le 4000
-
 echo "== Hook routing =="
 out=$(echo '{"prompt":"prototype the settings page"}' | node hooks/inject-design-context.mjs)
 echo "$out" | grep -q '/prototype' || { echo "ERROR: hook missed /prototype"; exit 1; }
-out=$(echo '{"prompt":"build me a deck for leadership"}' | node hooks/inject-design-context.mjs)
-echo "$out" | grep -q '/deck' || { echo "ERROR: hook missed /deck"; exit 1; }
 out=$(echo '{"prompt":"journey map for onboarding"}' | node hooks/inject-design-context.mjs)
 echo "$out" | grep -q '/flows' || { echo "ERROR: hook missed /flows (absorbed trigger)"; exit 1; }
 out=$(echo '{"prompt":"heuristic evaluation of this form"}' | node hooks/inject-design-context.mjs)
@@ -83,6 +78,13 @@ echo "== No references to deleted v1 files =="
 if git grep -nE 'quality-gates\.md|workflows\.md|design-validator|designprompts|frameworks-and-artifacts|platform-adaptation\.md|standards-and-anti-patterns|styling-resolution\.md|prototype-variants-guide|brainstorming-playbook|ux-heuristics\.md|ux-flow-patterns|diagram-guide|annotation-guide|research-templates\.md|design-research-sources|mentorship-frameworks|portfolio-frameworks|premium-patterns|ban-list\.md|product-design-process\.md|/interface\b|/ux-audit|/mentor\b|/strategy\b|/annotate\b|/portfolio\b|/design-converter|/ux-flows|/diagram\b' \
     -- '*.md' '*.mjs' '*.sh' '*.mdc' '*.json' ':!CHANGELOG.md' ':!MIGRATION.md' ':!install.sh' ':!uninstall.sh' ':!scripts/test.sh'; then
   echo "ERROR: stale references to deleted v1 files/commands found (above)"
+  exit 1
+fi
+
+echo "== No references to removed v2.1 features (deck / design-system / figma-export / goal-mode) =="
+if git grep -nE '/deck\b|/design-system\b|/figma-export\b|design-systems\.md|presentation\.md|deck-template|goal-mode' \
+    -- '*.md' '*.mjs' '*.sh' '*.mdc' '*.json' ':!CHANGELOG.md' ':!MIGRATION.md' ':!install.sh' ':!uninstall.sh' ':!scripts/test.sh'; then
+  echo "ERROR: references to removed features found (above) — these were cut in v2.2"
   exit 1
 fi
 

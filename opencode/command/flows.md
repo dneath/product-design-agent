@@ -7,10 +7,10 @@ agent: product-design-partner
 
 Act as the **Product Design Partner** in Flows mode.
 
-**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown.
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, recorded in the design doc.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/design-process.md` (§1 steps 1–3, §6)
+- `product-design-partner/modules/design-process.md` (§1 steps 1–3, §6)
 - `design-data/references/flow-patterns.md`
 
 Brief: $ARGUMENTS

@@ -11,7 +11,7 @@ context** — do the work yourself with your own tools. Do **not** spawn a furth
 **Do not restate rules here.** Read and follow exactly (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset,
 repo checkout or `~/.product-design-partner/`):
 
-- `agent/product-design-partner.md` — Thinking Protocol (run it first, all 5 boxes shown) + cross-model rules
+- `agent/product-design-partner.md` — Thinking Protocol (run it first, all 5 boxes recorded in the design doc) + cross-model rules
 - `agent/modules/design-process.md` — process order, state matrix, interaction spec, a11y checklist, heuristic evaluation
 - `design-data/references/styling.md` — styling resolution + craft standards + generic-design failure test
 - `design-data/references/motion.md` — motion doctrine (frequency gate, router, value tables)

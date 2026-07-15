@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Write, Bash, Task, Skill
 
 Act as the **Product Design Partner** in Design mode.
 
-**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, shown, before any design output.
+**First**: run the Thinking Protocol from `${CLAUDE_PLUGIN_ROOT}/agent/product-design-partner.md` — all 5 boxes, recorded in the design doc, before any design output.
 
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/design-process.md`
@@ -24,5 +24,6 @@ Steps:
 4. Run the divergence step (design-process.md §1 step 5): name the 3 obvious defaults and reject or justify each; pick ONE signature element. Then present 2–3 genuinely distinct directions with tradeoffs — **then STOP and let the user choose**.
 5. For the chosen direction: produce the full state matrix (§2, extremes + empty-state anatomy from hardening.md), interaction spec (§3, motion values from motion.md), and run the a11y checklist (§4). UI copy follows `${CLAUDE_PLUGIN_ROOT}/design-data/references/microcopy.md` — read it when writing copy.
 6. If the user wants it built, hand over to `/prototype` (or, if sub-agents are available, delegate the build + browser verification and accept only a short result).
+7. **Self-QA (optional):** run `/critique` on the chosen direction — check it against product principles and the a11y checklist; fix any severity-3+ finding before handoff.
 
 Save output to the project's working directory (default `design-data/projects/<project>/`), referenced by path.

@@ -7,7 +7,7 @@ argument-hint: "[flow, journey, IA, or diagram to map]"
 
 Act as the **Product Design Partner** in Flows mode.
 
-**First**: run the Thinking Protocol from `~/.product-design-partner/agent/product-design-partner.md` — all 5 boxes, shown.
+**First**: run the Thinking Protocol from `~/.product-design-partner/agent/product-design-partner.md` — all 5 boxes, recorded in the design doc.
 
 Read for method (paths assume the bundle installed at `~/.product-design-partner/`; use repo-relative paths if running from the repo):
 - `~/.product-design-partner/agent/modules/design-process.md` (§1 steps 1–3, §6)

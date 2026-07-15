@@ -64,14 +64,13 @@ copy_bundle() {
     print_info "Copying bundle to $root ..."
     mkdir -p "$root/agent/modules" "$root/design-data/references" \
              "$root/design-data/templates" "$root/design-data/projects" \
-             "$root/prompts" "$root/scripts" "$root/agents"
+             "$root/scripts" "$root/agents"
     cp agent/product-design-partner.md "$root/agent/"
     cp agent/modules/*.md "$root/agent/modules/"
     cp design-data/references/*.md "$root/design-data/references/"
     cp design-data/templates/*.md "$root/design-data/templates/"
     cp design-data/projects/README.md "$root/design-data/projects/" 2>/dev/null || true
     cp scripts/dev-server.mjs scripts/path-resolver.mjs "$root/scripts/"
-    cp prompts/*.md "$root/prompts/" 2>/dev/null || true
     cp agents/*.md "$root/agents/"
     touch "$root/design-data/projects/.gitkeep"
     sweep_legacy "$root"
@@ -81,14 +80,14 @@ copy_bundle() {
 install_opencode() {
     local cfg="$HOME/.config/opencode"
     print_info "Installing for OpenCode at $cfg"
-    mkdir -p "$cfg/agents/product-design-partner/modules" "$cfg/command" \
-             "$cfg/prompts" "$cfg/scripts" "$cfg/design-data/references" \
+    # Modules live OUTSIDE agents/ so OpenCode doesn't register each one as a phantom subagent.
+    mkdir -p "$cfg/agents" "$cfg/product-design-partner/modules" "$cfg/command" \
+             "$cfg/scripts" "$cfg/design-data/references" \
              "$cfg/design-data/templates" "$cfg/design-data/projects"
     cp agent/product-design-partner.md "$cfg/agents/"
-    cp agent/modules/*.md "$cfg/agents/product-design-partner/modules/"
+    cp agent/modules/*.md "$cfg/product-design-partner/modules/"
     cp scripts/dev-server.mjs scripts/path-resolver.mjs "$cfg/scripts/"
     cp opencode/command/*.md "$cfg/command/"
-    cp prompts/*.md "$cfg/prompts/" 2>/dev/null || true
     cp design-data/references/*.md "$cfg/design-data/references/"
     cp design-data/templates/*.md "$cfg/design-data/templates/"
     sweep_legacy "$cfg"
@@ -162,7 +161,8 @@ validate_installation() {
     case $TARGET in
         opencode)
             [ -f "$HOME/.config/opencode/agents/product-design-partner.md" ] || { print_error "Agent file missing"; ((errors++)); }
-            [ -f "$HOME/.config/opencode/agents/product-design-partner/modules/prototyping.md" ] || { print_error "Modules missing"; ((errors++)); }
+            [ -f "$HOME/.config/opencode/product-design-partner/modules/prototyping.md" ] || { print_error "Modules missing"; ((errors++)); }
+            [ ! -d "$HOME/.config/opencode/agents/product-design-partner" ] || { print_error "Modules leaked into agents/ (would show as phantom subagents)"; ((errors++)); }
             [ -f "$HOME/.config/opencode/design-data/templates/handoff-template.md" ] || { print_error "Templates missing"; ((errors++)); }
             [ -f "$HOME/.config/opencode/command/design.md" ] || { print_error "Commands missing"; ((errors++)); }
             ;;
@@ -202,7 +202,7 @@ print_usage_instructions() {
     echo -e "${GREEN}  Installation Complete!${NC}"
     echo -e "${GREEN}================================================${NC}"
     echo ""
-    local cmds="/design · /prototype · /brainstorm · /critique · /design-system · /handoff · /deck · /research · /flows · /figma-export"
+    local cmds="/design · /prototype · /brainstorm · /critique · /handoff · /research · /flows"
     case $TARGET in
         opencode)
             echo "OpenCode:  @product-design-partner Help me design a dashboard"
@@ -210,7 +210,7 @@ print_usage_instructions() {
             ;;
         claude)
             echo "Claude Code:  $cmds"
-            echo "Subagents:    product-design-partner · design · prototype-variants · figma-export"
+            echo "Subagents:    product-design-partner · design · prototype-variants"
             echo "Bundle:       $BUNDLE_DIR"
             ;;
         cursor)

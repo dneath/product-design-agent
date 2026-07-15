@@ -7,10 +7,10 @@ agent: product-design-partner
 
 Act as the **Product Design Partner** in Brainstorm mode.
 
-**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown, before ideating.
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, recorded in the design doc, before ideating.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/product-thinking.md`
+- `product-design-partner/modules/product-thinking.md`
 - `design-data/references/brainstorm-techniques.md`
 
 Brief: $ARGUMENTS

@@ -2,6 +2,25 @@
 
 v2.0 is a full teardown and rebuild. This note records what was deleted, what was kept, and why.
 
+## v2.1 → v2.2 (feature trim + OpenCode fix)
+
+Three features were cut and the portable prompt removed, based on real usage:
+
+| Removed | Replacement / note |
+|---|---|
+| `/deck` + `presentation.md` + `deck-template.md` | No replacement — presentation decks are out of scope |
+| `/design-system` + `design-systems.md` | Per-screen token resolution and the reuse/no-raw-values discipline stay in `design-data/references/styling.md`; only the standalone "build/audit a whole system" workflow is gone |
+| `/figma-export` command **and** subagent | Figma as a *styling source* and `/flows` FigJam **diagram** export are unaffected |
+| `prompts/goal-mode.md` | Use `./install.sh --target custom --path <dir>` and load `agent/product-design-partner.md` as the system prompt |
+
+**OpenCode subagent fix:** modules moved from `~/.config/opencode/agents/product-design-partner/modules/`
+(which OpenCode scanned and listed as subagents) to `~/.config/opencode/product-design-partner/modules/`.
+Re-run `./install.sh --target opencode`; `./uninstall.sh` sweeps the old path.
+
+**Also added:** an audit-existing-patterns-first step before designing, competing-interpretation
+surfacing in the Thinking Protocol, token-erosion guardrails in `styling.md`, and a shift to
+recording the Thinking Protocol in the design doc (short chat summary instead of a full in-chat dump).
+
 ## Why v2.0
 
 v1.x enforced quality through machinery: a 5-gate system (Intent/Domain/Validation/Variance/Ban-list),

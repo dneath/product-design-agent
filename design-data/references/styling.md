@@ -1,6 +1,6 @@
 # Styling — Resolution, Fallback Tokens, Craft Standards
 
-> Load whenever visual design happens: `/design`, `/prototype`, `/design-system`, `/deck`.
+> Load whenever visual design happens: `/design`, `/prototype`, `/handoff`, `/critique`.
 > Part A: where styling comes from. Part B: the craft bar that applies on top of ANY source.
 > Part C: banned patterns. Part D: the generic-design failure test.
 
@@ -27,6 +27,15 @@ Stop at the first source that applies. Record which source won (and why) in the 
 | Existing components | Real spacing, radius, elevation, state patterns in practice |
 
 Match what exists exactly. **NEVER introduce a second system beside the one that exists** — extend it.
+
+**Token discipline (prevents design-system erosion, applies on top of any source):**
+- **NEVER** hardcode a raw color, spacing, radius, shadow, or font size when a token exists — use the token.
+- **Reuse an existing component before creating a new one.** A new component or variant must state,
+  in one line, why existing ones cannot serve the requirement.
+- Keep feature-specific styles out of shared components; report any needed token/component additions
+  separately from the feature work, not smuggled in.
+- If the project ships its own principles/patterns docs (e.g. `PRODUCT_PRINCIPLES.md`, `UX_PATTERNS.md`),
+  read and honor them rather than a generic default.
 
 ### 2. Figma source
 

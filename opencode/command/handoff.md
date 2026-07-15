@@ -7,10 +7,10 @@ agent: product-design-partner
 
 Act as the **Product Design Partner** in Handoff mode. **Code alone is not a handoff.**
 
-**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, shown.
+**First**: run the Thinking Protocol from `agents/product-design-partner.md` — all 5 boxes, recorded in the design doc.
 
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
-- `agents/product-design-partner/modules/handoff.md`
+- `product-design-partner/modules/handoff.md`
 - `design-data/templates/handoff-template.md`
 - `design-data/references/hardening.md`
 

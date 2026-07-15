@@ -52,16 +52,6 @@ stops and you choose.
 Expect: severity-rated findings (0–4), each with evidence, mapped to named heuristics; the top
 3–5 fixes ranked by severity × frequency; what already works.
 
-## /design-system
-
-```
-/design-system Audit our tokens and Button/Input/Table components; we suspect three different spacing scales crept in.
-```
-
-Expect: an audit against the actual repo tokens (never a parallel system), explicit gap flags, a
-token architecture (primitives → semantic → component), and per-component docs (anatomy, variants,
-states, do/don't, a11y).
-
 ## /handoff
 
 ```
@@ -71,16 +61,6 @@ states, do/don't, a11y).
 Expect: the full handoff template filled in — flow overview, per-screen spec in tokens and exact
 numbers, complete state matrix, interaction table (trigger/duration/easing/keyboard/focus), data
 contract with a realistic payload, and the rationale behind key decisions.
-
-## /deck
-
-```
-/deck Walk our exec team through the payout-reconciliation redesign — 10 minutes, outcome-focused.
-```
-
-Expect: an HTML/React slide deck — context, problem, constraints, the explorations **including the
-rejected ones and why**, recommendation, evidence, next steps — in business language, with craft
-detail kept for the appendix.
 
 ## /flows
 
@@ -92,21 +72,12 @@ Expect: the right artifact for the question (task flow vs journey map), happy AN
 IA no deeper than 3 levels in user vocabulary, Mermaid source (FigJam export if the Figma MCP is
 connected).
 
-## /figma-export
-
-```
-/figma-export Push the reconciliation design system tokens and the Table component into our Figma library.
-```
-
-Expect: tokens mapped 1:1 to Figma variables via the Figma MCP — or, without MCP, a clearly
-labeled fallback bundle (token JSON + frame-by-frame build spec) plus the connection steps.
-
 ---
 
 ## What you'll always see
 
-1. **The Thinking Protocol answers, shown** — problem restated, non-goals, risky assumptions,
-   approach options — before any output.
+1. **The Thinking Protocol answers, recorded in the design doc** — problem restated, non-goals,
+   risky assumptions, approach options — before any output; the chat gets a short summary.
 2. **Styling resolved from context** — your repo's tokens or Figma variables when they exist; the
    neutral fallback only when nothing else applies.
 3. **Evidence** — verification screenshots on disk, or an UNVERIFIED label with exact run commands.

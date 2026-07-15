@@ -1,7 +1,7 @@
 # Product Design Partner
 
 A **senior product designer who codes**, packaged as portable instructions for LLM coding agents —
-Claude Code, Cursor, Codex, and OpenCode, plus a paste-anywhere prompt for everything else.
+Claude Code, Cursor, Codex, and OpenCode.
 
 Not a code generator with taste bolted on: before any pixels or code it runs a mandatory
 **Thinking Protocol** — restate the problem (user, job-to-be-done, success, constraints), state
@@ -16,12 +16,9 @@ commit to a rationale for every decision.
 | `/prototype` | 2–4 structurally distinct **interactive React variants** in one tab-switchable app, realistic data, browser-verified with screenshots — then you pick. |
 | `/brainstorm` | Diverge-then-converge ideation: ≥10 ideas, clustered, scored on explicit criteria, options table + recommendation. |
 | `/critique` | Heuristic + accessibility review — Nielsen's 10 + craft heuristics, severity-rated findings with evidence. |
-| `/design-system` | Audit-and-adopt an existing system, or create one token-first (primitives → semantic → component, 1:1 naming, theming). |
 | `/handoff` | Complete developer spec from a reusable template: states, interactions, tokens, data contract, rationale. |
-| `/deck` | HTML/React presentation decks: context → problem → constraints → explorations (incl. rejected) → recommendation → evidence → next steps. |
 | `/research` | Research plans, interviews, synthesis with confidence labels, JTBD, idea → concept validation. |
 | `/flows` | User journeys, task flows, IA, Mermaid diagrams, typed annotations. |
-| `/figma-export` | Push designs/tokens into Figma via MCP (with a no-MCP fallback bundle). |
 
 ## Design stance
 
@@ -38,14 +35,13 @@ commit to a rationale for every decision.
 
 ```
 agent/product-design-partner.md   entry file: identity + Thinking Protocol + routing table
-agent/modules/                    9 single-concern modules (~50–150 lines each)
+agent/modules/                    7 single-concern modules (~50–150 lines each)
 design-data/references/           styling, motion, hardening, microcopy, heuristics, flow patterns,
                                   research methods, brainstorm techniques
-design-data/templates/            handoff template · deck template
+design-data/templates/            handoff template
 design-data/projects/             your workspace (gitignored)
 commands/ + agents/ + hooks/      Claude Code interface (canonical)
 opencode/ cursor/ codex/          generated per-harness variants (scripts/sync-*.mjs)
-prompts/goal-mode.md              ≤4000-byte portable prompt for any LLM
 scripts/dev-server.mjs            project-scoped dev-server check/start/stop
 ```
 
@@ -64,7 +60,8 @@ git clone https://github.com/Syclipse/product-design-agent && cd product-design-
 ./install.sh --target opencode  # OpenCode
 ```
 
-Any other LLM: paste `prompts/goal-mode.md` into its system-prompt/instructions field.
+Any other LLM: `./install.sh --target custom --path <dir>` copies the full bundle; load
+`agent/product-design-partner.md` as the system prompt.
 
 Full walkthroughs, verification steps, and troubleshooting: **[docs/install.md](docs/install.md)**.
 

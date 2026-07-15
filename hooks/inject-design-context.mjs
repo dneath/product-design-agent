@@ -22,12 +22,9 @@ process.stdin.on('end', () => {
 
   // Order matters: more specific intents first. Emit ONLY v2 command names.
   const ROUTES = [
-    { rx: /((export|push|send|sync|build|create)[^.]{0,40}(to|in|into) figma|figma export)/, msg: 'Figma Export → /figma-export (design-systems.md §6 — load the Figma skill first)' },
     { rx: /(user flow|user journey|journey map|task flow|sitemap|information architecture|product structure|diagram|flowchart|flow chart|sequence diagram|state machine|state diagram|erd\b|entity relationship|mermaid|figjam|annotat|redline|red-line|callout)/, msg: 'Flows / IA / diagrams / annotations → /flows (design-process.md + flow-patterns.md)' },
     { rx: /(ux audit|usability review|usability audit|heuristic|nielsen|critique|design review|feedback on this design|review this design|accessibility|wcag|a11y|contrast ratio|screen reader)/, msg: 'Critique / audit → /critique (design-process.md §4–5 + heuristics.md, severity-rated findings with evidence)' },
     { rx: /(prototype|proof of concept|make it real|show me (some )?options|2-3 (versions|variants|options)|couple of (versions|directions)|variants)/, msg: 'Prototype variants → /prototype (prototyping.md — 2–4 structurally distinct variants in one tab-switchable React app, browser-verified, user picks)' },
-    { rx: /(deck|slides|slide deck|presentation|stakeholder readout|design review deck|case study|portfolio|before.after)/, msg: 'Deck / narrative → /deck (presentation.md + deck-template.md — explorations incl. rejected ones)' },
-    { rx: /(design system|design token|component library|style guide)/, msg: 'Design system → /design-system (design-systems.md — audit-and-adopt before creating)' },
     { rx: /(user research|interview guide|usability test|survey|synthesize research|screener|discussion guide|idea to concept|what should i build|riskiest assumption|concept brief|is this a good idea)/, msg: 'Research / concept → /research (product-thinking.md + research-methods.md)' },
     { rx: /(handoff|developer spec|implementation spec|ready for engineering)/, msg: 'Handoff → /handoff (handoff.md + handoff-template.md — states, interactions, data contract, rationale)' },
     { rx: /(brainstorm|ideation|ideate|divergent thinking|how might we|product strategy|opportunity)/, msg: 'Brainstorm → /brainstorm (product-thinking.md — diverge ≥10 ideas before converging)' },

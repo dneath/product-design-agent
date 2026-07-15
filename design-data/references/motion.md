@@ -1,7 +1,6 @@
 # Motion — When, How Fast, and How to Review It
 
-> Load whenever UI moves: `/design`, `/prototype`, `/design-system` (motion primitives),
-> `/critique` when the target animates.
+> Load whenever UI moves: `/design`, `/prototype`, and `/critique` when the target animates.
 > Floor rules live in styling.md Part B; this file is the full doctrine.
 
 **Motion is a budget, not a garnish.** Every animation spends user attention — spend it only

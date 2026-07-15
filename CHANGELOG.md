@@ -2,6 +2,30 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-07-15
+
+Trimmed scope to the core design workflows, fixed the OpenCode subagent clutter, and folded in
+sharper pre-design discipline.
+
+### Removed
+- **`/deck`** (presentation decks) — command, `agent/modules/presentation.md`, and `design-data/templates/deck-template.md`
+- **`/design-system`** — command and `agent/modules/design-systems.md`. Per-screen token resolution/craft and the reuse/no-raw-values discipline are preserved in `design-data/references/styling.md`
+- **`/figma-export`** — command **and** the `figma-export` subagent. Figma as a *styling source* (resolution step 2) and Figma/FigJam **diagram** export in `/flows` are unaffected
+- **`prompts/goal-mode.md`** portable prompt. For non-plugin LLMs, `./install.sh --target custom` copies the full bundle to load as a system prompt
+
+### Fixed
+- **OpenCode phantom subagents** — the installer copied the 9 modules into `~/.config/opencode/agents/product-design-partner/modules/`, inside OpenCode's agent-scanned tree, so every module showed up as a subagent. Modules now install to `~/.config/opencode/product-design-partner/modules/`, outside `agents/`; only `product-design-partner` remains an agent
+
+### Added
+- **Audit before inventing** (operating principle 1): in an existing product/repo, search for and reuse existing patterns/components/tokens before adding new ones; a new pattern must justify itself
+- **Competing interpretations** in Thinking Protocol box 1: enumerate the ways an ambiguous term could be read instead of silently picking one
+- **Token-discipline guardrails** in `styling.md`: never hardcode a raw color/spacing/radius/shadow/font-size when a token exists; reuse a component before creating one; honor a project's own principles/patterns docs
+- Optional **`/critique` self-QA** step in `/design` and `/prototype`
+
+### Changed
+- **Chat stays short.** The Thinking Protocol answers, decisions, and rationale are recorded in the project design doc, not dumped into the terminal; chat returns a brief summary + artifact paths. When exploring flows/IA, Mermaid diagrams are embedded in that markdown doc
+- Counts: 10→7 commands, 4→3 subagents, 9→7 modules, 2→1 templates. `test.sh` gains a guard against re-introducing the removed features
+
 ## [2.1.0] - 2026-07-08
 
 Absorbed design-engineering doctrine — deeper motion, hardening, and copy standards distilled from a broad research pass, written as house rules.

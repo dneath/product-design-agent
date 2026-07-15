@@ -20,16 +20,16 @@ comes from instructions weak models can execute deterministically:
 
 ```
 agent/product-design-partner.md   ENTRY: identity, Thinking Protocol, routing table, cross-model rules (<150 lines)
-agent/modules/                    9 modules: product-thinking, design-process, design-systems, prototyping,
-                                  handoff, presentation, frontend-quality, environment, context-management
+agent/modules/                    7 modules: product-thinking, design-process, prototyping, handoff,
+                                  frontend-quality, environment, context-management
 design-data/references/           8 references: styling, motion, hardening, microcopy, heuristics,
                                   flow-patterns, research-methods, brainstorm-techniques
                                   (loaded on demand by modules/commands)
-design-data/templates/            handoff-template.md, deck-template.md (filled in per task)
+design-data/templates/            handoff-template.md (filled in per task)
 design-data/projects/             per-user workspace (gitignored) — task output goes HERE, never into agent files
 
-commands/*.md                     10 canonical slash commands (Claude Code format) — SOURCE OF TRUTH
-agents/*.md                       4 canonical subagents (product-design-partner, design, prototype-variants, figma-export)
+commands/*.md                     7 canonical slash commands (Claude Code format) — SOURCE OF TRUTH
+agents/*.md                       3 canonical subagents (product-design-partner, design, prototype-variants)
 hooks/                            Claude Code UserPromptSubmit hook (plugin route only)
 .claude-plugin/                   plugin manifest (discovery is by convention: commands/, agents/, hooks/hooks.json)
 
@@ -39,7 +39,6 @@ codex/prompts/                    GENERATED (bundle paths, keeps $ARGUMENTS)
 cursor/rules/*.mdc                hand-maintained Cursor rule
 codex/AGENTS.md                   hand-maintained Codex identity, wrapped in marker comments
 
-prompts/goal-mode.md              portable ≤4000-byte prompt (enforced by test.sh)
 scripts/dev-server.mjs            project-scoped dev server check/start/stop (lockfile + PID + cwd match)
 scripts/path-resolver.mjs         read-root (reference data) vs write-root (project output) resolution
 scripts/sync-commands.mjs         commands/ → opencode/cursor/codex generation
@@ -99,10 +98,10 @@ return contract. Run `scripts/sync-agents.mjs`; update test counts.
 ## test.sh contract
 
 `./scripts/test.sh` must pass before any commit. It checks: JS/JSON/shell syntax (+shellcheck in
-CI), file counts (10 commands / 4 agents / 9 modules / 8 references / 2 templates), line budgets
-(entry <150, modules ≤170), the two command conventions, clean sync regeneration, the goal-mode
-byte budget, hook routing (incl. absorbed triggers + silence on non-design prompts + every routed
-command exists), a stale-reference grep against deleted v1 filenames/commands, and a full
+CI), file counts (7 commands / 3 agents / 7 modules / 8 references / 1 template), line budgets
+(entry <150, modules ≤170), the two command conventions, clean sync regeneration, hook routing
+(incl. absorbed triggers + silence on non-design prompts + every routed command exists), stale-
+reference greps against deleted v1 filenames/commands and removed v2.1 features, and a full
 install → dry-run → purge roundtrip in a temp dir.
 
 ## Release checklist
