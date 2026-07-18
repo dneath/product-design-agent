@@ -38,10 +38,11 @@ first-run/success), and a completed accessibility checklist.
 /prototype The payout-reconciliation table from the settings design — one variant for scanning, one for line-by-line audit, one search-first.
 ```
 
-Expect: one runnable Vite + React app, tabs A/B/C each labeled with its bet, realistic data
-(including the awkwardly long vendor names), every state reachable via in-app toggles, browser
-verification with screenshots on disk — or an honest UNVERIFIED label with run commands. Then it
-stops and you choose.
+Expect: one runnable Next.js + Tailwind app started from the matching shell in
+`design-data/shells/` (your own repo's stack if you're in one), tabs A/B/C each labeled with its
+bet, realistic data (including the awkwardly long vendor names), every state reachable via in-app
+toggles, browser verification with screenshots on disk plus axe and react-doctor checks — or an
+honest UNVERIFIED label with run commands. Then it stops and you choose.
 
 ## /critique
 

@@ -1,7 +1,7 @@
 # Install & Uninstall
 
-One guide for all platforms. Prerequisites: `git`, and Node 18+ (`node --version`) — Node is used
-by the dev-server helper and the sync/test scripts, not by the agent instructions themselves.
+One guide for all platforms. Prerequisites: `git`, and Node 20+ (`node --version`) — Node is used
+by the dev-server helper, the sync/test scripts, and the prototype shells (Next.js).
 
 ```bash
 git clone https://github.com/Syclipse/product-design-agent
@@ -10,8 +10,8 @@ chmod +x install.sh uninstall.sh scripts/test.sh   # once, if needed
 ```
 
 The installer copies files (no symlinks, no settings edits). Claude Code / Cursor / Codex share a
-bundle at `~/.product-design-partner/` (modules + references + templates + scripts); OpenCode gets
-everything inside `~/.config/opencode/`.
+bundle at `~/.product-design-partner/` (modules + references + templates + prototype shells +
+scripts); OpenCode gets everything inside `~/.config/opencode/`.
 
 ---
 
@@ -123,6 +123,6 @@ any Figma MCP registration you added (remove via the same UI/CLI you used to add
 |---|---|
 | `/design` doesn't autocomplete | Command files missing — re-run `./install.sh --target <t> --yes`; on Claude Code plugin route check `/plugin` shows the plugin enabled |
 | Agent ignores its method / freelances | Make sure the entry file is loaded: commands read `agent/product-design-partner.md` first. On generic LLMs, install the bundle with `--target custom` and load `agent/product-design-partner.md` as the system prompt |
-| `node: command not found` during `/prototype` | Install Node 18+ (`brew install node` / `apt install nodejs`); the agent will otherwise deliver UNVERIFIED with run instructions |
+| `node: command not found` during `/prototype` | Install Node 20+ (`brew install node` / `apt install nodejs`); the agent will otherwise deliver UNVERIFIED with run instructions |
 | Dev server "busy by another project" | Correct behavior — another project owns that port. The script matches by project path; just re-run, it picks a free port |
 | Old v1.x commands still showing | Run `./uninstall.sh --target all` from the v2 repo — it sweeps legacy names — then reinstall |

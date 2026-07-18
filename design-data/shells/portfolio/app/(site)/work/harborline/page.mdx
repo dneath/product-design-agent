@@ -1,0 +1,55 @@
+<div className="docs-prose">
+
+# Harborline — exception triage that survives a container ship
+
+**Role**: sole product designer · **Team**: 4 engineers, 1 PM · **Year**: 2026
+
+Harborline's fulfilment teams worked exceptions in a 14-column table sorted
+by creation time. During the March carrier switch, a single delayed vessel
+created 340 exceptions in one morning — and the team triaged them oldest
+first, which meant the perishables at the bottom spoiled while someone
+re-labeled stationery at the top.
+
+## What I learned before designing
+
+Two days shadowing the Rotterdam team, five interviews across shifts:
+
+- Nobody read the table left to right. Everyone scanned for **customer names
+  they feared** — the accounts where one late delivery risks the contract.
+- The real triage question wasn't "what's oldest?" but **"what gets worse if
+  I ignore it for an hour?"**
+- The team kept a paper list of "carrier promises" the system had no field
+  for. The paper list was the actual source of truth.
+
+## The bet
+
+Severity-first, not time-first: a queue that leads with **what decays**
+(perishables, promised callbacks, contract accounts) and demotes everything
+that merely waits. Time in queue became a secondary signal, shown as decay
+bars instead of timestamps.
+
+## What shipped
+
+- A three-band queue — *acts now / today / can wait* — with band membership
+  explained on every card, because trust in an opaque ranking lasts one
+  wrong call.
+- Carrier promises became a first-class field with a countdown, replacing
+  the paper list.
+- Bulk actions only within a band, never across bands — cross-band bulk was
+  how the old table caused the stationery-before-perishables incident.
+
+## Results
+
+After eight weeks: median time-to-first-action fell **11 → 4 minutes**;
+missed carrier promises fell by roughly a third; the paper list retired
+itself. The ranking-explanation cards tested as the single most-trusted
+element — several operators read them aloud when justifying calls to
+supervisors.
+
+## What I'd do differently
+
+The decay bars read as progress bars for two of five test participants —
+"filling up" reads as *good* in most software. A labeled countdown chip
+would have been less elegant and more honest.
+
+</div>

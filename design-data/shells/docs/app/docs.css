@@ -1,0 +1,101 @@
+/* Token-driven prose styling for MDX content (scoped, no plugin). */
+
+.docs-prose {
+  max-width: 72ch;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.docs-prose h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+.docs-prose h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  scroll-margin-top: 5rem;
+}
+.docs-prose h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  scroll-margin-top: 5rem;
+}
+.docs-prose p {
+  margin-bottom: 1rem;
+  color: var(--secondary-foreground);
+}
+.docs-prose li {
+  color: var(--secondary-foreground);
+}
+.docs-prose ul,
+.docs-prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+.docs-prose ul {
+  list-style: disc;
+}
+.docs-prose ol {
+  list-style: decimal;
+}
+.docs-prose a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-strong);
+}
+.docs-prose a:hover {
+  text-decoration-color: var(--foreground);
+}
+.docs-prose code {
+  font-family: var(--font-mono-stack);
+  font-size: 0.85em;
+  background: var(--secondary);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.docs-prose pre {
+  background: var(--secondary);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.docs-prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.docs-prose table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.docs-prose th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+}
+.docs-prose td {
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+}
+.docs-prose blockquote {
+  border-left: 2px solid var(--border-strong);
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+  color: var(--muted-foreground);
+}

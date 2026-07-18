@@ -58,7 +58,17 @@ sweep_legacy() {
     fi
 }
 
-# Copy the full bundle (agent + modules + references + templates + scripts + prompts + agents)
+# Copy prototype shells, excluding anything a local test run may have left behind.
+copy_shells() {
+    local dest=$1
+    rm -rf "$dest/design-data/shells"
+    cp -r design-data/shells "$dest/design-data/"
+    rm -rf "$dest"/design-data/shells/*/node_modules "$dest"/design-data/shells/*/.next \
+           "$dest"/design-data/shells/*/package-lock.json "$dest"/design-data/shells/*/.dev-server.json \
+           "$dest"/design-data/shells/*/.dev-server.log 2>/dev/null || true
+}
+
+# Copy the full bundle (agent + modules + references + templates + shells + scripts + agents)
 copy_bundle() {
     local root=$1
     print_info "Copying bundle to $root ..."
@@ -69,6 +79,7 @@ copy_bundle() {
     cp agent/modules/*.md "$root/agent/modules/"
     cp design-data/references/*.md "$root/design-data/references/"
     cp design-data/templates/*.md "$root/design-data/templates/"
+    copy_shells "$root"
     cp design-data/projects/README.md "$root/design-data/projects/" 2>/dev/null || true
     cp scripts/dev-server.mjs scripts/path-resolver.mjs "$root/scripts/"
     cp agents/*.md "$root/agents/"
@@ -90,6 +101,7 @@ install_opencode() {
     cp opencode/command/*.md "$cfg/command/"
     cp design-data/references/*.md "$cfg/design-data/references/"
     cp design-data/templates/*.md "$cfg/design-data/templates/"
+    copy_shells "$cfg"
     sweep_legacy "$cfg"
     print_success "OpenCode install complete"
 }

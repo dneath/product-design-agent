@@ -27,6 +27,8 @@
   approach exactly. When your habit conflicts with the repo, **the repo wins**.
 - Run the repo's linter/formatter before presenting; fix what it flags. If there is no lint setup,
   match the formatting of neighboring files.
+- Registry-installed component code (`npx shadcn add …`) is third-party: review it on landing —
+  re-point hardcoded values at tokens, check states and focus rings (rule: `design-data/references/shells.md` §3).
 
 ## 4. Responsive
 

@@ -2,7 +2,8 @@
 
 > **When to use:** Interactive React prototypes and variant exploration — "prototype", "make it
 > real", "show me options", any new UI build. Command: `/prototype`.
-> Also load: `agent/modules/environment.md` (dev server, output), `agent/modules/frontend-quality.md`.
+> Also load: `agent/modules/environment.md` (dev server, output), `agent/modules/frontend-quality.md`,
+> `design-data/references/shells.md` (app shells, registries, tooling).
 
 Run the Thinking Protocol (entry file) first. **New UI is never presented as a single take.**
 
@@ -20,9 +21,17 @@ Run the Thinking Protocol (entry file) first. **New UI is never presented as a s
   **NEVER** lorem ipsum, **NEVER** `Item 1/2/3`, **NEVER** placeholder-person names, invented
   generic company names, fake-precise vanity numbers (99.99%, perfectly round counts), or filler
   marketing verbs. Fixtures include the extremes from `design-data/references/hardening.md` §1
-  (0 / 1 / typical / 1,000+ items; 100+ chars; emoji/RTL). Keep fixtures in a small `data.js`.
-- **Dependency-light.** Inside a repo: use its stack and tokens. Standalone: smallest viable
-  Vite + React. **NEVER** add UI libraries for a prototype.
+  (0 / 1 / typical / 1,000+ items; 100+ chars; emoji/RTL). Keep fixtures in the shell's
+  `lib/fixtures.ts` (or `data.js` in the fallback scaffold).
+- **Start from what exists — NEVER re-scaffold what a shell or registry provides:**
+  1. **Existing codebase → build there**, on its stack and tokens. Shells are never copied into a repo.
+  2. **No codebase → copy the matching app shell** from `design-data/shells/` (selection table,
+     copy commands, and the shell contract: `design-data/references/shells.md`).
+  3. **No archetype fit → the `blank/` shell.**
+  4. **Shells unusable → minimal from-scratch scaffold** (shells.md §5) — announce why.
+- **Missing components come from the shadcn registries** (`npx shadcn@latest add …` — registry
+  table in shells.md §3), reviewed on landing (tokens, states, focus). Hand-roll only what no
+  registry provides. Bulk UI-kit installs stay banned — add what the variants need, nothing more.
 
 ## 2. Define each variant BEFORE building
 
@@ -36,27 +45,21 @@ Run the Thinking Protocol (entry file) first. **New UI is never presented as a s
 
 ## 3. Build — one app, tab-switchable variants
 
-Scaffold (standalone case; inside a repo, follow its conventions):
-
-```
-<output dir>/prototype/
-├── index.html · package.json · vite.config.js
-└── src/
-    ├── main.jsx · App.jsx
-    ├── tokens.css        # resolved styling as CSS variables, domain-named (--sla-critical, not --red-500)
-    ├── data.js           # realistic fixtures incl. edge cases
-    ├── VariantSwitcher.jsx
-    └── VariantA.jsx · VariantB.jsx · VariantC.jsx
-```
+In a shell: rebrand `app/tokens.css` from the resolved styling source, swap `lib/fixtures.ts` to
+the prototype's domain (keep the extremes), replace the placeholder variants in `app/page.tsx`.
+Inside a repo: follow its conventions; port the `VariantSwitcher` pattern into its stack.
 
 Build checklist — one requirement at a time, skip nothing:
 
 - [ ] `<VariantSwitcher>` tab group (`role="tablist"`) renders each variant; selection persists via
-      URL hash (`#variant-b`) so refresh keeps the tab
+      URL hash (`#variant-b`) so refresh keeps the tab; `embedded` prop inside app chrome; a bet
+      that changes the chrome itself wraps at layout level instead
 - [ ] Each tab shows the variant's one-line bet label
 - [ ] Each variant is genuinely interactive — working state, validating inputs, transitions
-- [ ] Every data state reachable via an in-app toggle: default always; loading/error/empty switchable
-- [ ] Styling resolved per `design-data/references/styling.md` (repo → Figma → user → fallback)
+- [ ] Every data state reachable via the built-in state toggle (`useProtoState()`): default always;
+      loading/error/empty switchable
+- [ ] Styling resolved per `design-data/references/styling.md` (repo → Figma → user → fallback),
+      written into `app/tokens.css` ONLY — components stay on semantic utilities
 - [ ] Interactions animate per `design-data/references/motion.md` — frequency gate, router,
       duration tables
 - [ ] Realistic data everywhere, including the awkwardly long ones
@@ -69,13 +72,18 @@ Build checklist — one requirement at a time, skip nothing:
 2. **If a browser tool is available** (e.g. a Playwright skill): open the URL, click every tab,
    exercise inputs/validation/state toggles in each variant, screenshot each variant to
    `<prototype dir>/screenshots/`, note console errors. Fix failures, re-verify.
-3. Stop the server when done: `node <root>/scripts/dev-server.mjs stop --dir <prototype dir>`.
+3. **Run the built-in checks** (details: shells.md §4):
+   - axe on each variant, scoped to `[data-proto-root]` — report violations or "none".
+   - `npx react-doctor@latest --no-telemetry <dir>` — fix real bugs; baseline-kit
+     "unused" notes are expected.
+4. Stop the server when done: `node <root>/scripts/dev-server.mjs stop --dir <prototype dir>`.
 
 **Definition of Done — verification (check every box):**
 - [ ] dev-server reported `"running": true` with a URL (paste it)
 - [ ] every variant tab opened; interactions exercised
 - [ ] a screenshot file **exists on disk** per variant (confirm with a file listing)
 - [ ] console errors listed (or "none")
+- [ ] axe violations listed per variant (or "none"); react-doctor run (or skip reason named)
 
 **If any box is unchecked or no browser tool exists:** label the work **UNVERIFIED — built, not yet
 run**, quote the actual error/note text, and give both run paths:

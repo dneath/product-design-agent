@@ -25,8 +25,34 @@ echo "== File counts =="
 test "$(ls commands/*.md | wc -l)" -eq 7
 test "$(ls agents/*.md | wc -l)" -eq 3
 test "$(ls agent/modules/*.md | wc -l)" -eq 7
-test "$(ls design-data/references/*.md | wc -l)" -eq 8
+test "$(ls design-data/references/*.md | wc -l)" -eq 9
 test "$(ls design-data/templates/*.md | wc -l)" -eq 1
+
+echo "== Prototype shells =="
+SHELLS="blank dashboard marketing ai-chat saas docs portfolio"
+test "$(find design-data/shells -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 7
+for s in $SHELLS; do
+  d="design-data/shells/$s"
+  test -f "$d/package.json"    || { echo "ERROR: $d/package.json missing"; exit 1; }
+  test -f "$d/app/tokens.css"  || { echo "ERROR: $d/app/tokens.css missing"; exit 1; }
+  test -f "$d/README.md"       || { echo "ERROR: $d/README.md missing"; exit 1; }
+  test -f "$d/components/variant-switcher.tsx" || { echo "ERROR: $d variant-switcher missing"; exit 1; }
+  node -e "JSON.parse(require('fs').readFileSync('$d/package.json','utf8'))"
+  # Versions must be pinned exact — no ranges.
+  if grep -E '"[~^][0-9]' "$d/package.json" >/dev/null; then
+    echo "ERROR: $d/package.json has unpinned versions"; exit 1
+  fi
+  # Default tooling present in every shell.
+  for dep in react-scan mesurer agentation axe-core; do
+    grep -q "\"$dep\"" "$d/package.json" || { echo "ERROR: $d missing $dep"; exit 1; }
+  done
+  # Nothing generated may be committed.
+  for junk in node_modules .next package-lock.json .dev-server.json; do
+    test ! -e "$d/$junk" || { echo "ERROR: $d/$junk must not be committed"; exit 1; }
+  done
+done
+test -f design-data/shells/LICENSES.md
+test -f design-data/references/shells.md
 
 echo "== Line budgets (short modules keep weaker models on track) =="
 test "$(wc -l < agent/product-design-partner.md)" -lt 150
@@ -94,6 +120,10 @@ T=$(mktemp -d)
 test -f "$T/bundle/agent/product-design-partner.md"
 test -f "$T/bundle/agent/modules/prototyping.md"
 test -f "$T/bundle/design-data/templates/handoff-template.md"
+test -f "$T/bundle/design-data/references/shells.md"
+test -f "$T/bundle/design-data/shells/blank/app/tokens.css"
+test -f "$T/bundle/design-data/shells/dashboard/package.json"
+test ! -d "$T/bundle/design-data/shells/blank/node_modules"
 test -f "$T/bundle/scripts/dev-server.mjs"
 test ! -d "$T/bundle/plugins"
 ./uninstall.sh --target custom --path "$T/bundle" --dry-run --yes > /dev/null

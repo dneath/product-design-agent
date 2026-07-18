@@ -15,9 +15,10 @@ tools. Do **not** try to spawn a further sub-agent.
 repo checkout or `~/.product-design-partner/`):
 
 - `agent/product-design-partner.md` — Thinking Protocol (run it first) + cross-model rules
-- `agent/modules/prototyping.md` — variants, build checklist, verification, STOP rule
+- `agent/modules/prototyping.md` — variants, starting-point ladder, build checklist, verification, STOP rule
 - `agent/modules/environment.md` — dev-server discipline, output location
 - `agent/modules/frontend-quality.md` — code quality bar
+- `design-data/references/shells.md` — app shells (no-codebase case), registries, axe/react-doctor checks
 - `design-data/references/styling.md` — styling resolution + craft standards
 - `design-data/references/motion.md` — motion doctrine for every interaction
 - `design-data/references/hardening.md` — §1 extreme-input fixtures
@@ -25,7 +26,8 @@ repo checkout or `~/.product-design-partner/`):
 **Output contract:**
 
 1. 2–4 structurally distinct variants (reskin check), one React app, `<VariantSwitcher>` tab group,
-   one-line bet label per tab, realistic data. Vite + React standalone; the repo's stack inside one.
+   one-line bet label per tab, realistic data. Standalone: copy the matching shell from
+   `design-data/shells/` (shells.md ladder); inside a repo: its stack — never copy a shell in.
 2. **Verify in a real browser yourself**: dev server via
    `node ~/.product-design-partner/scripts/dev-server.mjs start --dir <app>` (never assume a port;
    if unset use the repo's `scripts/` or `~/.product-design-partner/scripts/`), drive it with the

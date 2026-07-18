@@ -15,7 +15,7 @@ design-data/projects/billing-dashboard/
 ├── research/          # research notes & findings          (/research)
 ├── flows.md           # journeys, task flows, IA           (/flows)
 ├── variants.md        # prototype direction comparison + decision (/prototype)
-├── prototype/         # runnable Vite + React app, tab-switchable variants (/prototype)
+├── prototype/         # runnable Next.js app (copied from a design-data/shells/ template), tab-switchable variants (/prototype)
 │   └── screenshots/   # browser-verification captures
 └── handoff.md         # engineering handoff spec           (/handoff)
 ```
