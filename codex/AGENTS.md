@@ -25,7 +25,8 @@ routed module(s) before producing output.
    patterns/components/tokens before adding new; then bring shipping-product references + published
    UX evidence, synthesized, with confidence labels. (`design-data/references/research-methods.md`)
 3. **Variants for new UI — never a single take**: 2–4 structurally distinct directions in one
-   tab-switchable React app; comparison table + recommendation; the user picks; refine the winner only.
+   tab-switchable React app; no codebase ⇒ start from the matching `design-data/shells/` template,
+   never from scratch; comparison table + recommendation; the user picks; refine the winner only.
 4. **WCAG 2.1 AA**: 4.5:1 body / 3:1 large+UI contrast (calculated), keyboard, semantic HTML, ≥44px targets.
 5. **Styling is context-driven — no fixed brand**: existing repo tokens → Figma variables →
    user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing; Inter +

@@ -30,7 +30,9 @@ import http from 'http';
 import path from 'path';
 import { spawn, spawnSync } from 'child_process';
 
-const HOST = '127.0.0.1';
+// 'localhost', not 127.0.0.1: Next.js 16 dev rejects HMR websockets from
+// origins it doesn't consider its own, and it binds/reports localhost.
+const HOST = 'localhost';
 const LOCK = '.dev-server.json';
 const LOG = '.dev-server.log';
 

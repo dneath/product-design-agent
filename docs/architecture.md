@@ -22,9 +22,15 @@ comes from instructions weak models can execute deterministically:
 agent/product-design-partner.md   ENTRY: identity, Thinking Protocol, routing table, cross-model rules (<150 lines)
 agent/modules/                    7 modules: product-thinking, design-process, prototyping, handoff,
                                   frontend-quality, environment, context-management
-design-data/references/           8 references: styling, motion, hardening, microcopy, heuristics,
-                                  flow-patterns, research-methods, brainstorm-techniques
+design-data/references/           9 references: styling, motion, hardening, microcopy, heuristics,
+                                  flow-patterns, research-methods, brainstorm-techniques, shells
                                   (loaded on demand by modules/commands)
+design-data/shells/               7 runnable Next.js prototype shells (blank, dashboard, marketing,
+                                  ai-chat, saas, docs, portfolio): pinned deps, tokens.css theming
+                                  seam, VariantSwitcher, mocked data/auth, dev tooling preinstalled
+                                  (react-scan, mesurer, agentation, axe-core). Copied into the
+                                  project at prototype time when no codebase exists — never edited
+                                  in place, never used inside an existing repo
 design-data/templates/            handoff-template.md (filled in per task)
 design-data/projects/             per-user workspace (gitignored) — task output goes HERE, never into agent files
 
@@ -98,11 +104,13 @@ return contract. Run `scripts/sync-agents.mjs`; update test counts.
 ## test.sh contract
 
 `./scripts/test.sh` must pass before any commit. It checks: JS/JSON/shell syntax (+shellcheck in
-CI), file counts (7 commands / 3 agents / 7 modules / 8 references / 1 template), line budgets
-(entry <150, modules ≤170), the two command conventions, clean sync regeneration, hook routing
-(incl. absorbed triggers + silence on non-design prompts + every routed command exists), stale-
-reference greps against deleted v1 filenames/commands and removed v2.1 features, and a full
-install → dry-run → purge roundtrip in a temp dir.
+CI), file counts (7 commands / 3 agents / 7 modules / 9 references / 1 template / 7 shells), line
+budgets (entry <150, modules ≤170), shell integrity (package.json parses, versions pinned exact,
+tooling devDeps present, tokens.css + README per shell, no node_modules/.next/lockfiles
+committed), the two command conventions, clean sync regeneration, hook routing (incl. absorbed
+triggers + silence on non-design prompts + every routed command exists), stale-reference greps
+against deleted v1 filenames/commands and removed v2.1 features, and a full install → dry-run →
+purge roundtrip in a temp dir.
 
 ## Release checklist
 

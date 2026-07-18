@@ -21,6 +21,15 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
+# --- Next.js build/dev output (if a shell is ever run in place) ---
+.next/
+next-env.d.ts
+.dev-server.json
+.dev-server.log
+
+# --- Browser-automation session artifacts ---
+.playwright-cli/
+
 # --- Secrets & local env ---
 .env
 .env.*

@@ -1,0 +1,53 @@
+# Getting started
+
+Connect one warehouse feed and see your own exceptions within the hour. You
+need an admin seat and a way to export shipment events — CSV drop, SFTP poll,
+or webhook.
+
+## 1. Create the feed
+
+In **Settings → Feeds**, choose the transport your WMS can produce today.
+Don't wait for the "proper" integration — the CSV drop exists precisely for
+the legacy export nobody wants to touch.
+
+```bash
+curl -X POST https://api.meridian.app/v1/feeds \
+  -H "Authorization: Bearer $MERIDIAN_TOKEN" \
+  -d '{"name": "rotterdam-wms", "transport": "webhook"}'
+```
+
+The response includes a signing secret. Store it — webhook payloads are
+rejected without a valid signature.
+
+## 2. Send a test event
+
+```bash
+curl -X POST https://ingest.meridian.app/v1/events \
+  -H "X-Meridian-Signature: $SIGNATURE" \
+  -d '{"order": "ORD-88213", "type": "dispatch", "at": "2026-07-15T09:12:00Z"}'
+```
+
+A green check appears on the feed card when the first event lands. Historical
+backfill (up to 13 months) starts automatically once the live stream is
+stable for 24 hours.
+
+## 3. Invite the people who work exceptions
+
+Exceptions route to owners. Invite your fulfilment team in
+**Settings → Members** before the first real customs hold shows up — an
+exception with no owner is just a dashboard.
+
+### Roles
+
+| Role | Can do |
+| --- | --- |
+| Admin | Feeds, members, billing, everything below |
+| Member | Work exceptions, edit views, use the copilot |
+| Viewer | Read dashboards and status pages |
+
+## Troubleshooting
+
+- **Events accepted but no shipments appear** — the `order` field must match
+  the storefront order ID, not the WMS pick ID.
+- **Signature rejected** — check for a trailing newline in the stored secret;
+  most SFTP-era tooling adds one.

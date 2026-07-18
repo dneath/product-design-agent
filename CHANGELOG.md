@@ -2,6 +2,54 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] - 2026-07-17
+
+Prototypes stop rebuilding scaffolding: seven vendored app shells become the default starting
+point when there is no codebase to work in, with a standard dev-tooling suite preinstalled.
+**Inside an existing repo nothing changes — its stack and tokens always win; shells are never
+copied into a codebase.**
+
+### Added
+- **`design-data/shells/`** — 7 runnable Next.js App Router + Tailwind v4 + TypeScript +
+  shadcn/ui (`new-york`) prototype shells: `blank`, `dashboard` (sidebar/topbar, KPI cards,
+  Tremor-pattern charts on recharts, data table), `marketing` (hero/features/stats/testimonial/CTA
+  with doctrine-compliant `motion` primitives), `ai-chat` (thread sidebar, mock token streaming
+  with a working Stop, model picker), `saas` (mock login, settings, members with live
+  role-switching gates, billing pages — pure UI, no payment provider), `docs` (@next/mdx +
+  remark-gfm, client TOC), `portfolio` (work grid + MDX case studies). All fully mocked: zero env
+  vars, no database, no auth libraries. Versions pinned exact; no lockfiles; per-shell README
+  documents swap points; `LICENSES.md` covers adapted MIT registry code
+- **One theming seam per shell** — `app/tokens.css` maps the OKLCH fallback scale onto the
+  shadcn CSS-variable names (+ `@theme` bindings); rebrand = rewrite that file. Semantic tokens
+  meet the 4.5:1 floor as small text on light surfaces (muted-foreground 51% L; success 50%;
+  destructive 51%; warning 52%); `--faint-foreground` is documented disabled/decorative-only
+- **`components/variant-switcher.tsx` contract** — tablist with bet labels, URL-hash persistence,
+  arrow-key navigation, `useProtoState()` data-state toggle (default/loading/empty/error),
+  `embedded` mode for use inside app chrome (renders a non-banner bar there), `[data-proto-root]`
+  scope marker for verification
+- **Default prototype tooling in every shell** (dev-only `components/dev-tools.tsx`): react-scan
+  (re-render highlighting; toolbar off — it steals bottom-edge clicks), agentation (annotation →
+  agent-readable markdown), mesurer (opt-in on **M** — its toolbar covers top-left UI), axe-core
+  (run scoped to `[data-proto-root]` in verification), plus `npx react-doctor@latest
+  --no-telemetry` as a verification-step static scan
+- **`design-data/references/shells.md`** (references 8 → 9) — selection ladder (existing codebase
+  first, always), archetype table, shell contract, copy/run commands, theming-swap procedure,
+  shadcn registry list (`@shadcn`/`@tremor`/`@magicui`/`@aceternity`/`@originui`/Shadcn Studio)
+  with the add-via-CLI + review-what-lands rule, tooling suite, from-scratch emergency fallback
+- test.sh: shells section (structure, JSON validity, exact pins, tooling deps present, no
+  node_modules/.next/lockfiles committed) + bundle-roundtrip shell checks
+
+### Changed
+- **`/prototype` starting point** (prototyping.md, command, subagent, entry routing, hook nudge):
+  existing repo → matching shell → `blank/` → from-scratch as announced emergency fallback.
+  "NEVER add UI libraries" is replaced by the registry rule: missing components come from the
+  shadcn registries via CLI, reviewed on landing; bulk kit installs stay banned
+- Prototype verification DoD adds axe (scoped) + react-doctor checkboxes
+- `scripts/dev-server.mjs` serves `localhost` URLs (Next.js 16 rejects HMR websockets from
+  origins it doesn't consider its own)
+- install.sh/uninstall.sh copy and remove `design-data/shells/` (junk-file exclusion on copy);
+  .gitignore adds `.next/`, `next-env.d.ts`, dev-server artifacts, `.playwright-cli/`
+
 ## [2.2.0] - 2026-07-15
 
 Trimmed scope to the core design workflows, fixed the OpenCode subagent clutter, and folded in

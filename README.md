@@ -13,7 +13,7 @@ commit to a rationale for every decision.
 | Command | Capability |
 |---|---|
 | `/design` | Screen/flow design end-to-end: context → flows → IA → wireframe → visual, full state matrix, built-in WCAG AA. Converts sketches/screenshots too. |
-| `/prototype` | 2–4 structurally distinct **interactive React variants** in one tab-switchable app, realistic data, browser-verified with screenshots — then you pick. |
+| `/prototype` | 2–4 structurally distinct **interactive React variants** in one tab-switchable app. No codebase? Starts from a ready app shell (dashboard, marketing, AI chat, SaaS, docs, portfolio — Next.js + Tailwind + shadcn/ui, token-swappable branding, mocked data, dev tooling preinstalled) instead of scaffolding from scratch. Browser-verified with screenshots + axe + react-doctor — then you pick. |
 | `/brainstorm` | Diverge-then-converge ideation: ≥10 ideas, clustered, scored on explicit criteria, options table + recommendation. |
 | `/critique` | Heuristic + accessibility review — Nielsen's 10 + craft heuristics, severity-rated findings with evidence. |
 | `/handoff` | Complete developer spec from a reusable template: states, interactions, tokens, data contract, rationale. |
@@ -37,7 +37,9 @@ commit to a rationale for every decision.
 agent/product-design-partner.md   entry file: identity + Thinking Protocol + routing table
 agent/modules/                    7 single-concern modules (~50–150 lines each)
 design-data/references/           styling, motion, hardening, microcopy, heuristics, flow patterns,
-                                  research methods, brainstorm techniques
+                                  research methods, brainstorm techniques, app shells
+design-data/shells/               7 runnable Next.js prototype shells (blank, dashboard, marketing,
+                                  ai-chat, saas, docs, portfolio) — token-swappable, fully mocked
 design-data/templates/            handoff template
 design-data/projects/             your workspace (gitignored)
 commands/ + agents/ + hooks/      Claude Code interface (canonical)

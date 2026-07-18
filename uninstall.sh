@@ -119,6 +119,7 @@ remove_bundle() {
         rm_path "$root/agents"
         rm_path "$root/design-data/references"
         rm_path "$root/design-data/templates"
+        rm_path "$root/design-data/shells"
         rm_path "$root/commands"       # custom-target copy
         rmdir_if_empty "$root/design-data"
         rmdir_if_empty "$root"
@@ -140,6 +141,7 @@ uninstall_opencode() {
     remove_mirrored "prompts" ".md" "$cfg/prompts" "$FALLBACK_PROMPTS"
     rm_path "$cfg/design-data/references"
     rm_path "$cfg/design-data/templates"
+    rm_path "$cfg/design-data/shells"
     if [ "$PURGE" = true ]; then
         rm_path "$cfg/design-data/projects"; rm_path "$cfg/design-data/components"
         rm_path "$cfg/design-data/tokens"; rm_path "$cfg/design-data/validation-history"

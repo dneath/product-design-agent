@@ -1,0 +1,54 @@
+# Exceptions API
+
+Read and resolve exceptions programmatically. All endpoints are under
+`https://api.meridian.app/v1` and authenticate with a bearer token scoped to
+one workspace.
+
+## List exceptions
+
+```
+GET /v1/exceptions?status=open&severity=critical,high
+```
+
+Returns exceptions ordered by age, oldest first. Pagination is cursor-based;
+pass `after` from the previous response.
+
+```json
+{
+  "data": [
+    {
+      "id": "EX-4117",
+      "order": "ORD-88213",
+      "severity": "critical",
+      "issue": "customs_hold",
+      "opened_at": "2026-07-15T09:40:00Z",
+      "owner": null
+    }
+  ],
+  "after": "Y3Vyc29yOkVYLTQxMTc"
+}
+```
+
+## Resolve an exception
+
+```
+POST /v1/exceptions/EX-4117/resolve
+```
+
+Include a `resolution` code and optional note. Resolving an exception with
+open customer notifications sends the final status update automatically.
+
+## Error shapes
+
+| Status | Meaning | What to do |
+| --- | --- | --- |
+| `401` | Token missing or expired | Re-issue in Settings → API tokens |
+| `403` | Token scope too narrow | Exceptions write needs a member-scoped token |
+| `404` | Unknown exception ID | IDs are workspace-local; check the workspace |
+| `429` | Rate limited | Honor `Retry-After`; batch reads with `ids=` |
+
+## Webhooks
+
+Subscribe to `exception.opened` and `exception.resolved` in
+**Settings → Feeds → Outbound**. Payloads are signed with the same secret
+scheme as inbound feeds.

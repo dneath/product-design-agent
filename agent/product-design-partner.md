@@ -71,7 +71,7 @@ Module paths below are relative to the agent root. Resolve the root in this orde
 | 3 | Designing or redesigning a screen or flow (including from a sketch/screenshot) | `agent/modules/design-process.md` + `design-data/references/motion.md` + `design-data/references/hardening.md` | `/design` |
 | 4 | Critiquing or auditing existing UI (usability + accessibility, severity-rated) | `agent/modules/design-process.md` + `design-data/references/heuristics.md` + `design-data/references/microcopy.md` (+ `motion.md` if the target animates) | `/critique` |
 | 5 | User journeys, task flows, information architecture, sitemaps, diagrams, annotations | `agent/modules/design-process.md` + `design-data/references/flow-patterns.md` | `/flows` |
-| 6 | Interactive React prototypes and variant exploration ("make it real", "show me options") | `agent/modules/prototyping.md` + `design-data/references/motion.md` | `/prototype` |
+| 6 | Interactive React prototypes and variant exploration ("make it real", "show me options") | `agent/modules/prototyping.md` + `design-data/references/shells.md` + `design-data/references/motion.md` | `/prototype` |
 | 7 | Designer → developer handoff, implementation specs | `agent/modules/handoff.md` + `design-data/references/hardening.md` | `/handoff` |
 
 **Always-on modules** (load alongside the routed one):

@@ -1,0 +1,127 @@
+/*
+ * tokens.css — THE theming seam. Brand lives here and only here.
+ *
+ * To rebrand: rewrite the values in this file from the resolved styling source
+ * (repo tokens → Figma variables → user-specified → this fallback). Components
+ * never hardcode color/radius/font — they use the semantic utilities bound in
+ * globals.css, so swapping this file restyles the whole app.
+ *
+ * Defaults follow the agent styling doctrine: tinted OKLCH neutrals (never
+ * #000/#fff), four text levels, low-opacity border progression, monochrome
+ * with at most one accent. Dark mode is class-based (<html class="dark">) —
+ * the usage scene decides the theme, not a default.
+ */
+
+:root {
+  /* Brand knobs — the cheapest rebrand is changing these */
+  --hue: 250; /* pick from the product's domain; 250 cool / 60 warm */
+  --font-ui: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono-stack: var(--font-fragment-mono), ui-monospace, monospace;
+
+  /* Surfaces — whisper-quiet elevation: lightness shifts only, same hue */
+  --background: oklch(98.5% 0.004 var(--hue));
+  --foreground: oklch(22% 0.01 var(--hue)); /* text-1 */
+  --card: oklch(97% 0.004 var(--hue)); /* surface-1 */
+  --card-foreground: oklch(22% 0.01 var(--hue));
+  --popover: oklch(97% 0.004 var(--hue));
+  --popover-foreground: oklch(22% 0.01 var(--hue));
+  --surface-3: oklch(91% 0.006 var(--hue)); /* pressed/selected wells */
+
+  /* Action color — monochrome by default. If the domain earns ONE accent,
+     point --primary/--ring at it, e.g. oklch(55% 0.15 var(--hue)). */
+  --primary: oklch(25% 0.012 var(--hue));
+  --primary-foreground: oklch(98.5% 0.004 var(--hue));
+
+  /* Secondary surfaces + text levels 2–4.
+     muted-foreground stays ≥4.5:1 on card/secondary surfaces (calculated);
+     faint-foreground is for disabled/decorative ONLY — it fails as text. */
+  --secondary: oklch(94.5% 0.005 var(--hue)); /* surface-2 */
+  --secondary-foreground: oklch(40% 0.01 var(--hue)); /* text-2 */
+  --muted: oklch(94.5% 0.005 var(--hue));
+  --muted-foreground: oklch(51% 0.008 var(--hue)); /* text-3 */
+  --faint-foreground: oklch(68% 0.006 var(--hue)); /* text-4: disabled/decorative */
+  --accent: oklch(94.5% 0.005 var(--hue)); /* hover surface, NOT brand */
+  --accent-foreground: oklch(22% 0.01 var(--hue));
+
+  /* Semantic — dark enough to pass 4.5:1 as small text on light surfaces */
+  --destructive: oklch(51% 0.19 25);
+  --success: oklch(50% 0.13 150);
+  --warning: oklch(52% 0.13 75);
+
+  /* Borders — low-opacity progression, never solid hex */
+  --border-soft: oklch(22% 0.01 var(--hue) / 6%);
+  --border: oklch(22% 0.01 var(--hue) / 10%);
+  --border-strong: oklch(22% 0.01 var(--hue) / 16%);
+  --input: oklch(22% 0.01 var(--hue) / 10%);
+  --ring: oklch(55% 0.1 var(--hue));
+
+  /* Charts — gray builds structure; recolor per domain when data demands */
+  --chart-1: oklch(45% 0.01 var(--hue));
+  --chart-2: oklch(60% 0.008 var(--hue));
+  --chart-3: oklch(72% 0.006 var(--hue));
+  --chart-4: oklch(82% 0.005 var(--hue));
+  --chart-5: oklch(30% 0.012 var(--hue));
+
+  /* Sidebar shares the canvas background + a border, never its own color */
+  --sidebar: oklch(98.5% 0.004 var(--hue));
+  --sidebar-foreground: oklch(22% 0.01 var(--hue));
+  --sidebar-primary: oklch(25% 0.012 var(--hue));
+  --sidebar-primary-foreground: oklch(98.5% 0.004 var(--hue));
+  --sidebar-accent: oklch(94.5% 0.005 var(--hue));
+  --sidebar-accent-foreground: oklch(22% 0.01 var(--hue));
+  --sidebar-border: oklch(22% 0.01 var(--hue) / 10%);
+  --sidebar-ring: oklch(55% 0.1 var(--hue));
+
+  /* Radius — concentric scale: outer = inner + padding */
+  --radius-sm: 6px; /* inputs, buttons */
+  --radius-md: 10px; /* cards */
+  --radius-lg: 16px; /* modals, large surfaces */
+  --radius-xl: 20px;
+}
+
+.dark {
+  --background: oklch(17% 0.006 var(--hue));
+  --foreground: oklch(96% 0.006 var(--hue));
+  --card: oklch(20% 0.007 var(--hue)); /* higher = lighter in dark */
+  --card-foreground: oklch(96% 0.006 var(--hue));
+  --popover: oklch(20% 0.007 var(--hue));
+  --popover-foreground: oklch(96% 0.006 var(--hue));
+  --surface-3: oklch(26% 0.009 var(--hue));
+
+  --primary: oklch(92% 0.006 var(--hue));
+  --primary-foreground: oklch(20% 0.007 var(--hue));
+
+  --secondary: oklch(23% 0.008 var(--hue));
+  --secondary-foreground: oklch(80% 0.008 var(--hue));
+  --muted: oklch(23% 0.008 var(--hue));
+  --muted-foreground: oklch(66% 0.008 var(--hue));
+  --faint-foreground: oklch(52% 0.006 var(--hue));
+  --accent: oklch(23% 0.008 var(--hue));
+  --accent-foreground: oklch(96% 0.006 var(--hue));
+
+  /* Semantic colors slightly desaturated in dark */
+  --destructive: oklch(62% 0.17 25);
+  --success: oklch(64% 0.13 150);
+  --warning: oklch(74% 0.13 75);
+
+  --border-soft: oklch(96% 0.006 var(--hue) / 7%);
+  --border: oklch(96% 0.006 var(--hue) / 12%);
+  --border-strong: oklch(96% 0.006 var(--hue) / 20%);
+  --input: oklch(96% 0.006 var(--hue) / 15%);
+  --ring: oklch(60% 0.1 var(--hue));
+
+  --chart-1: oklch(75% 0.008 var(--hue));
+  --chart-2: oklch(60% 0.008 var(--hue));
+  --chart-3: oklch(48% 0.008 var(--hue));
+  --chart-4: oklch(38% 0.008 var(--hue));
+  --chart-5: oklch(85% 0.006 var(--hue));
+
+  --sidebar: oklch(17% 0.006 var(--hue));
+  --sidebar-foreground: oklch(96% 0.006 var(--hue));
+  --sidebar-primary: oklch(92% 0.006 var(--hue));
+  --sidebar-primary-foreground: oklch(20% 0.007 var(--hue));
+  --sidebar-accent: oklch(23% 0.008 var(--hue));
+  --sidebar-accent-foreground: oklch(96% 0.006 var(--hue));
+  --sidebar-border: oklch(96% 0.006 var(--hue) / 12%);
+  --sidebar-ring: oklch(60% 0.1 var(--hue));
+}

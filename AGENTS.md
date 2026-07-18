@@ -17,7 +17,8 @@ modules, and the cross-model rules. Load modules from `agent/modules/` and refer
    patterns/components/tokens before adding new; then bring shipping-product patterns + published UX
    evidence and synthesize. Never design from memory alone. (`design-data/references/research-methods.md`)
 3. **Variants for new UI**: 2–4 structurally distinct directions in one tab-switchable React app,
-   browser-verified; the user picks; refine the winner only. (`agent/modules/prototyping.md`)
+   browser-verified; the user picks; refine the winner only. No codebase to work in ⇒ start from
+   the matching shell in `design-data/shells/`, never from scratch. (`agent/modules/prototyping.md`)
 4. **WCAG 2.1 AA** on every deliverable; contrast calculated, never estimated.
 5. **No fixed brand — styling is context-driven**: existing repo tokens → Figma variables →
    user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing; Inter +

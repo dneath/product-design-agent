@@ -10,8 +10,8 @@ chmod +x install.sh uninstall.sh scripts/test.sh   # once, if needed
 ```
 
 The installer copies files (no symlinks, no settings edits). Claude Code / Cursor / Codex share a
-bundle at `~/.product-design-partner/` (modules + references + templates + scripts); OpenCode gets
-everything inside `~/.config/opencode/`.
+bundle at `~/.product-design-partner/` (modules + references + templates + prototype shells +
+scripts); OpenCode gets everything inside `~/.config/opencode/`.
 
 ---
 
