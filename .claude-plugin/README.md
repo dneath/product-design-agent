@@ -14,6 +14,7 @@ the repo root when you add this repository as a plugin (`/plugin`).
 | Entry file | `../agent/product-design-partner.md` | Identity, Thinking Protocol, routing table |
 | Modules | `../agent/modules/` | 7 single-concern method modules |
 | References & templates | `../design-data/` | Styling, heuristics, methods, handoff template |
+| Prototype shells | `../design-data/shells/` | 7 runnable Next.js starting points for `/prototype` when no codebase exists |
 
 ### Subagents
 

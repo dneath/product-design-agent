@@ -70,8 +70,8 @@ product's domain (250 cool / 60 warm are starting points).
   /* Text — four levels, never two */
   --text-1: oklch(22% 0.01 var(--hue));   /* primary */
   --text-2: oklch(40% 0.01 var(--hue));   /* secondary */
-  --text-3: oklch(55% 0.008 var(--hue));  /* tertiary / metadata */
-  --text-4: oklch(68% 0.006 var(--hue));  /* muted / placeholder */
+  --text-3: oklch(51% 0.008 var(--hue));  /* tertiary / metadata / placeholders — ≥4.5:1 on bg AND surfaces */
+  --text-4: oklch(68% 0.006 var(--hue));  /* disabled / decorative ONLY — fails the floor as text */
   /* Borders — low-opacity progression, never solid hex */
   --border-soft:   oklch(22% 0.01 var(--hue) / 0.06);
   --border:        oklch(22% 0.01 var(--hue) / 0.10);
@@ -111,6 +111,11 @@ product's domain (250 cool / 60 warm are starting points).
 Type scale (works with any typeface): steps ≥1.25 apart; body 16px capped at 65–75ch; data/labels
 in the mono face with `tabular-nums`; headings `text-wrap: balance`, prose `text-wrap: pretty`.
 
+**In the prototype shells** these primitives ship pre-mapped onto the shadcn/ui variable names in
+each shell's `app/tokens.css` (`--background`, `--muted-foreground`, `--primary`, …) — rebrand by
+rewriting that one file; keep any resolved source's values within the same contrast floors.
+Mapping details: `design-data/references/shells.md` §2.
+
 ---
 
 ## Part B — Craft standards (apply on top of WHATEVER source won)
@@ -133,7 +138,8 @@ in the mono face with `tabular-nums`; headings `text-wrap: balance`, prose `text
 - **`tabular-nums` on any number that updates or aligns** — counters, prices, timers, table columns.
 - One family in multiple weights beats two typefaces; never pair similar-but-different fonts.
 - Opacity ladder is a valid alternative to a gray ramp: primary 100% / secondary 70% /
-  tertiary 40% / disabled-placeholder 25% of the text color.
+  tertiary 40% / disabled 25% of the text color (25% is disabled/decorative only —
+  placeholders must still meet 4.5:1).
 - Micro-details: real ellipsis `…` (never `...`), curly quotes, non-breaking space between value
   and unit ("10 MB"); `-webkit-font-smoothing: antialiased` on the root.
 

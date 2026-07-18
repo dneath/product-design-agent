@@ -50,6 +50,13 @@ copied into a codebase.**
 - install.sh/uninstall.sh copy and remove `design-data/shells/` (junk-file exclusion on copy);
   .gitignore adds `.next/`, `next-env.d.ts`, dev-server artifacts, `.playwright-cli/`
 
+### Fixed (audit pass)
+- `styling.md` fallback tokens now obey their own contrast floor (text-3 55%→51%; text-4 and the
+  25% opacity rung documented disabled/decorative-only — placeholders stay ≥4.5:1), with a note
+  mapping the primitives onto the shells' shadcn variable names
+- Stale prerequisites and docs: Node 18+→20+ (`docs/install.md`), projects-README prototype tree
+  Vite→shell-based Next.js, plugin README component map gains the shells row
+
 ## [2.2.0] - 2026-07-15
 
 Trimmed scope to the core design workflows, fixed the OpenCode subagent clutter, and folded in
