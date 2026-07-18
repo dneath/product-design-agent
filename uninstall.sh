@@ -39,12 +39,38 @@ PLUGINS_LEGACY="product-design.js design-validator.mjs design-migrator.js csv-co
 SCRIPTS_INSTALLED="dev-server.mjs path-resolver.mjs test.sh"
 FALLBACK_PROMPTS="goal-mode.md README.md"
 
-detect_target() {
-    if   [ -d "$HOME/.config/opencode" ]; then echo "opencode"
-    elif [ -d "$HOME/.claude" ];          then echo "claude"
-    elif [ -d "$HOME/.cursor" ];          then echo "cursor"
-    elif [ -d "$HOME/.codex" ];           then echo "codex"
-    else echo "unknown"; fi
+# No silent default: with no --target, ask the user what to uninstall.
+# Sets TARGET. Detected harness dirs are marked, but nothing is preselected.
+choose_target() {
+    echo "What should be uninstalled?"
+    local -a opts=(claude cursor codex opencode custom all)
+    local -a hints=(
+        "claude    Claude Code files"
+        "cursor    Cursor files"
+        "codex     Codex files (strips only the marked AGENTS.md block)"
+        "opencode  OpenCode files"
+        "custom    A bundle you installed with --target custom"
+        "all       Every detected harness + the shared bundle"
+    )
+    local -a dirs=("$HOME/.claude" "$HOME/.cursor" "$HOME/.codex" "$HOME/.config/opencode" "" "")
+    local i mark
+    for i in "${!opts[@]}"; do
+        mark=""
+        [ -n "${dirs[$i]}" ] && [ -d "${dirs[$i]}" ] && mark="  (detected)"
+        printf '  %s) %s%s\n' "$((i + 1))" "${hints[$i]}" "$mark"
+    done
+    local choice
+    while true; do
+        if ! read -r -p "Choose 1-${#opts[@]}: " choice; then
+            echo ""
+            print_error "No selection made"
+            exit 1
+        fi
+        case $choice in
+            [1-6]) TARGET="${opts[$((choice - 1))]}"; break ;;
+            *) print_warning "Enter a number between 1 and ${#opts[@]}" ;;
+        esac
+    done
 }
 
 # rm_path <path>
@@ -255,8 +281,10 @@ main() {
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
+                echo "With no --target, an interactive menu asks what to uninstall."
+                echo ""
                 echo "Options:"
-                echo "  --target <opencode|claude|cursor|codex|custom|all>  What to uninstall"
+                echo "  --target <claude|cursor|codex|opencode|custom|all>  What to uninstall"
                 echo "  --path <path>      Custom install path (with --target custom)"
                 echo "  --purge            Also delete generated design output + the whole bundle"
                 echo "  --dry-run          Print what would be removed, remove nothing"
@@ -272,14 +300,21 @@ main() {
     done
 
     if [ -z "$TARGET" ]; then
-        print_info "No target specified, detecting environment..."
-        TARGET=$(detect_target)
-        if [ "$TARGET" = "unknown" ]; then
-            print_warning "Could not detect environment"
-            echo "Specify a target: --target <opencode|claude|cursor|codex|custom|all>"
+        if [ -t 0 ]; then
+            choose_target
+        else
+            print_error "No --target given and no terminal to ask on."
+            echo "Usage: $0 --target <claude|cursor|codex|opencode|custom|all> [--purge] [--dry-run] [--yes]"
             exit 1
         fi
-        print_info "Detected target: $TARGET"
+    fi
+
+    if [ "$TARGET" = "custom" ] && [ -z "$CUSTOM_PATH" ] && [ -t 0 ]; then
+        read -r -p "Path of the custom bundle to remove: " CUSTOM_PATH || true
+        if [ -z "$CUSTOM_PATH" ]; then
+            print_error "A path is required for --target custom"
+            exit 1
+        fi
     fi
 
     case $TARGET in

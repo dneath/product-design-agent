@@ -13,6 +13,10 @@ The installer copies files (no symlinks, no settings edits). Claude Code / Curso
 bundle at `~/.product-design-partner/` (modules + references + templates + prototype shells +
 scripts); OpenCode gets everything inside `~/.config/opencode/`.
 
+Run either script **with no flags to pick the target from a menu** (detected harnesses are
+marked; nothing is preselected). Non-interactive runs must pass `--target` explicitly — there is
+no silent default.
+
 ---
 
 ## Claude Code

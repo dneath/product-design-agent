@@ -132,5 +132,13 @@ test -d "$T/bundle"   # dry-run must not delete
 test ! -d "$T/bundle"
 rm -rf "$T"
 
+echo "== No-target behavior: menu on a TTY, hard failure otherwise (never a silent default) =="
+if ./install.sh --yes < /dev/null > /dev/null 2>&1; then
+  echo "ERROR: install.sh without --target must not proceed non-interactively"; exit 1
+fi
+if ./uninstall.sh --yes --dry-run < /dev/null > /dev/null 2>&1; then
+  echo "ERROR: uninstall.sh without --target must not proceed non-interactively"; exit 1
+fi
+
 echo ""
 echo "All tests passed."

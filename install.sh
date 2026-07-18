@@ -30,18 +30,37 @@ BUNDLE_DIR="$HOME/.product-design-partner"
 PDP_BEGIN='<!-- >>> product-design-partner v2 >>> -->'
 PDP_END='<!-- <<< product-design-partner v2 <<< -->'
 
-detect_target() {
-    if [ -d "$HOME/.config/opencode" ]; then
-        echo "opencode"
-    elif [ -d "$HOME/.claude" ]; then
-        echo "claude"
-    elif [ -d "$HOME/.cursor" ]; then
-        echo "cursor"
-    elif [ -d "$HOME/.codex" ]; then
-        echo "codex"
-    else
-        echo "unknown"
-    fi
+# No silent default: with no --target, ask the user where to install.
+# Sets TARGET. Detected harness dirs are marked, but nothing is preselected.
+choose_target() {
+    echo "Where should the Product Design Partner be installed?"
+    local -a opts=(claude cursor codex opencode custom)
+    local -a hints=(
+        "claude    Claude Code — commands + subagents + shared bundle"
+        "cursor    Cursor — commands + rule + agents + shared bundle"
+        "codex     Codex — prompts + AGENTS.md block + shared bundle"
+        "opencode  OpenCode — agent + commands in ~/.config/opencode"
+        "custom    Any other LLM — copy the full bundle to a directory you choose"
+    )
+    local -a dirs=("$HOME/.claude" "$HOME/.cursor" "$HOME/.codex" "$HOME/.config/opencode" "")
+    local i mark
+    for i in "${!opts[@]}"; do
+        mark=""
+        [ -n "${dirs[$i]}" ] && [ -d "${dirs[$i]}" ] && mark="  (detected)"
+        printf '  %s) %s%s\n' "$((i + 1))" "${hints[$i]}" "$mark"
+    done
+    local choice
+    while true; do
+        if ! read -r -p "Choose 1-${#opts[@]}: " choice; then
+            echo ""
+            print_error "No selection made"
+            exit 1
+        fi
+        case $choice in
+            [1-5]) TARGET="${opts[$((choice - 1))]}"; break ;;
+            *) print_warning "Enter a number between 1 and ${#opts[@]}" ;;
+        esac
+    done
 }
 
 # Remove v1.x artifacts (enforcement plugins, validators) left by older installs.
@@ -261,8 +280,10 @@ main() {
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
+                echo "With no --target, an interactive menu asks where to install."
+                echo ""
                 echo "Options:"
-                echo "  --target <opencode|claude|cursor|codex|custom>  Installation target"
+                echo "  --target <claude|cursor|codex|opencode|custom>  Installation target"
                 echo "  --path <path>                                   Custom installation path (with --target custom)"
                 echo "  --yes, -y                                       Skip confirmation prompt"
                 echo "  --help, -h                                      Show this help message"
@@ -272,15 +293,16 @@ main() {
         esac
     done
 
+    CHOSE_INTERACTIVELY=false
     if [ -z "$TARGET" ]; then
-        print_info "No target specified, detecting environment..."
-        TARGET=$(detect_target)
-        if [ "$TARGET" == "unknown" ]; then
-            print_warning "Could not detect environment"
-            echo "Please specify target with --target <opencode|claude|cursor|codex|custom>"
+        if [ -t 0 ]; then
+            choose_target
+            CHOSE_INTERACTIVELY=true
+        else
+            print_error "No --target given and no terminal to ask on."
+            echo "Usage: $0 --target <claude|cursor|codex|opencode|custom> [--path <dir>] [--yes]"
             exit 1
         fi
-        print_info "Detected target: $TARGET"
     fi
 
     case $TARGET in
@@ -288,7 +310,16 @@ main() {
         *) print_error "Unknown target: $TARGET"; exit 1 ;;
     esac
 
-    if [[ "$ASSUME_YES" != true ]]; then
+    if [ "$TARGET" = "custom" ] && [ -z "$CUSTOM_PATH" ] && [ -t 0 ]; then
+        read -r -p "Install path for the bundle: " CUSTOM_PATH || true
+        if [ -z "$CUSTOM_PATH" ]; then
+            print_error "A path is required for --target custom"
+            exit 1
+        fi
+    fi
+
+    # Picking from the menu IS the decision — only flag-provided targets get the y/n.
+    if [[ "$ASSUME_YES" != true && "$CHOSE_INTERACTIVELY" != true ]]; then
         read -p "Install for '$TARGET'? (y/n) " -n 1 -r
         echo ""
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -296,7 +327,7 @@ main() {
             exit 0
         fi
     else
-        print_info "Installing for '$TARGET' (--yes)"
+        print_info "Installing for '$TARGET'"
     fi
 
     case $TARGET in

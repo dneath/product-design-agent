@@ -56,6 +56,10 @@ copied into a codebase.**
   mapping the primitives onto the shells' shadcn variable names
 - Stale prerequisites and docs: Node 18+→20+ (`docs/install.md`), projects-README prototype tree
   Vite→shell-based Next.js, plugin README component map gains the shells row
+- **install.sh/uninstall.sh no longer silently target the first detected harness** (OpenCode won
+  whenever `~/.config/opencode` existed). With no `--target` they now show an interactive menu —
+  detected harnesses marked, nothing preselected, custom path prompted — and non-interactive runs
+  without a target fail with usage instead of defaulting (test-enforced)
 
 ## [2.2.0] - 2026-07-15
 

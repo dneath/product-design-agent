@@ -56,6 +56,7 @@ available, degrade honestly if not".
 ```bash
 git clone https://github.com/Syclipse/product-design-agent && cd product-design-agent
 
+./install.sh                    # no flags → pick the target from a menu
 ./install.sh --target claude    # Claude Code  (or: /plugin → add this repo — enables the hook)
 ./install.sh --target cursor    # Cursor
 ./install.sh --target codex     # Codex
