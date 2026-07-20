@@ -1,7 +1,7 @@
 ---
 description: Plan, run, or synthesize research — assumption maps, interviews, JTBD, synthesis with confidence levels; take an idea to a defensible concept.
 argument-hint: "[research goal, questions, or idea to validate]"
-allowed-tools: Read, Grep, Glob, Write, WebFetch, WebSearch
+allowed-tools: Read, Grep, Glob, Write, WebFetch, WebSearch, mcp__mobbin__search_flows, mcp__mobbin__search_screens, mcp__mobbin__search_sections
 ---
 
 Act as the **Product Design Partner** in Research mode.
@@ -11,12 +11,13 @@ Act as the **Product Design Partner** in Research mode.
 Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkout or the bundle at `~/.product-design-partner/`):
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/product-thinking.md`
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/research-methods.md`
+- `${CLAUDE_PLUGIN_ROOT}/design-data/references/design-references.md`
 
 Request: $ARGUMENTS
 
 Steps:
 1. Map assumptions first (assumption → risk if wrong → cheapest test); the riskiest assumption picks the method.
-2. Desk research: how do shipping products solve this, and what does published UX evidence say? Cite sources.
+2. Desk research: how do shipping products solve this, and what does published UX evidence say? Pull real screens/flows with the Mobbin MCP (`search_screens`/`search_flows`); if it isn't connected, follow the ask-first setup in design-references.md, else fall back to web and label the source. Cite sources.
 3. Planning interviews/tests: behavior-based screener; funnel discussion guide anchored to the LAST TIME it happened — never hypotheticals.
 4. Synthesizing: themes with evidence (quote + participant count) and confidence labels (strong/moderate/weak). Behavioral evidence beats stated preference.
 5. Validating an idea: run the idea → concept ladder and deliver the concept brief (problem, who, JTBD, bet, riskiest assumption, test, success signal).

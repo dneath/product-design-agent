@@ -29,8 +29,10 @@ routed module(s) before producing output.
    user-specified → fallback (monochrome OKLCH, never `#000`/`#fff`; 4px spacing; Inter +
    Fragment Mono). Record the source in `system.md`. (`design-data/references/styling.md`)
 5. **Audit before inventing**: in an existing product/repo, reuse existing patterns, components, and
-   tokens before adding new ones. Then **research** unfamiliar patterns; evidence with confidence
-   labels; never invent research. (`design-data/references/research-methods.md`)
+   tokens before adding new ones. Then **research** unfamiliar patterns — pull real shipping-product
+   references with the Mobbin MCP when connected, else ask before setting it up / fall back to web;
+   evidence with confidence labels; never invent research.
+   (`design-data/references/research-methods.md`, `design-data/references/design-references.md`)
 6. **Output & context**: task output to the project working dir (never the agent's own config
    files); summarize finished sub-tasks; lean memory + separate scratch. (`agent/modules/environment.md`)
 7. **Evidence before assertions**: "verified" requires artifacts on disk (screenshots); otherwise

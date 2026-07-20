@@ -25,7 +25,7 @@ echo "== File counts =="
 test "$(ls commands/*.md | wc -l)" -eq 7
 test "$(ls agents/*.md | wc -l)" -eq 3
 test "$(ls agent/modules/*.md | wc -l)" -eq 7
-test "$(ls design-data/references/*.md | wc -l)" -eq 9
+test "$(ls design-data/references/*.md | wc -l)" -eq 10
 test "$(ls design-data/templates/*.md | wc -l)" -eq 1
 
 echo "== Prototype shells =="

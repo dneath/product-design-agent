@@ -12,12 +12,13 @@ Act as the **Product Design Partner** in Research mode.
 Read for method (paths relative to your OpenCode config dir, `~/.config/opencode/`):
 - `product-design-partner/modules/product-thinking.md`
 - `design-data/references/research-methods.md`
+- `design-data/references/design-references.md`
 
 Request: $ARGUMENTS
 
 Steps:
 1. Map assumptions first (assumption → risk if wrong → cheapest test); the riskiest assumption picks the method.
-2. Desk research: how do shipping products solve this, and what does published UX evidence say? Cite sources.
+2. Desk research: how do shipping products solve this, and what does published UX evidence say? Pull real screens/flows with the Mobbin MCP (`search_screens`/`search_flows`); if it isn't connected, follow the ask-first setup in design-references.md, else fall back to web and label the source. Cite sources.
 3. Planning interviews/tests: behavior-based screener; funnel discussion guide anchored to the LAST TIME it happened — never hypotheticals.
 4. Synthesizing: themes with evidence (quote + participant count) and confidence labels (strong/moderate/weak). Behavioral evidence beats stated preference.
 5. Validating an idea: run the idea → concept ladder and deliver the concept brief (problem, who, JTBD, bet, riskiest assumption, test, success signal).

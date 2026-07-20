@@ -12,12 +12,13 @@ Read for method (paths assume the bundle installed at `~/.product-design-partner
 - `~/.product-design-partner/design-data/references/styling.md`
 - `~/.product-design-partner/design-data/references/motion.md`
 - `~/.product-design-partner/design-data/references/hardening.md`
+- `~/.product-design-partner/design-data/references/design-references.md`
 
 Brief: the text the user typed after the command (below).
 
 Steps:
 1. If a sketch/screenshot is attached: describe what it shows and the intent you infer before redesigning anything.
-2. Follow the mandatory process order (design-process.md §1): user/context → flows → IA → wireframe → pre-visual divergence → visual. Announce each step.
+2. Follow the mandatory process order (design-process.md §1): user/context → flows → IA → wireframe → pre-visual divergence → visual. Announce each step. Before diverging, run the pattern audit — how shipping products solve this — via the Mobbin MCP (design-references.md; ask-first setup if it isn't connected, else web fallback with the source labeled).
 3. Resolve styling per styling.md Part A (repo → Figma → user → fallback) and record the source.
 4. Run the divergence step (design-process.md §1 step 5): name the 3 obvious defaults and reject or justify each; pick ONE signature element. Then present 2–3 genuinely distinct directions with tradeoffs — **then STOP and let the user choose**.
 5. For the chosen direction: produce the full state matrix (§2, extremes + empty-state anatomy from hardening.md), interaction spec (§3, motion values from motion.md), and run the a11y checklist (§4). UI copy follows `~/.product-design-partner/design-data/references/microcopy.md` — read it when writing copy.

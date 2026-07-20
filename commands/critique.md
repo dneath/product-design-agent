@@ -1,7 +1,7 @@
 ---
 description: Heuristic + accessibility review of existing UI — Nielsen's 10 plus craft heuristics, severity-rated findings with evidence, top fixes.
 argument-hint: "[what to critique — file path, URL, or screenshot] + design stage"
-allowed-tools: Read, Grep, Glob, Write, Bash, Skill
+allowed-tools: Read, Grep, Glob, Write, Bash, Skill, WebFetch, WebSearch, mcp__mobbin__search_flows, mcp__mobbin__search_screens, mcp__mobbin__search_sections
 ---
 
 Act as the **Product Design Partner** in Critique mode.
@@ -12,6 +12,7 @@ Read for method (use `${CLAUDE_PLUGIN_ROOT}/...`; if unset, use the repo checkou
 - `${CLAUDE_PLUGIN_ROOT}/agent/modules/design-process.md` (§5 heuristic evaluation, §4 a11y checklist)
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/heuristics.md`
 - `${CLAUDE_PLUGIN_ROOT}/design-data/references/microcopy.md`
+- `${CLAUDE_PLUGIN_ROOT}/design-data/references/design-references.md`
 
 Target (+ stage): $ARGUMENTS
 
@@ -20,7 +21,7 @@ Steps:
 2. Evaluate against Nielsen's 10 + the craft four (hierarchy, contrast, alignment, proximity), the cognitive-load limits (count, don't estimate), and 2–3 test lenses picked by interface type (heuristics.md). Announce each as you check it.
 3. Run the a11y checklist — contrast **calculated**, never estimated. Review UI copy against microcopy.md.
 4. If the target animates: read `${CLAUDE_PLUGIN_ROOT}/design-data/references/motion.md` §10 and apply the motion review (default to flagging; remedial order; Before/After/Why rows).
-5. Severity-rate every finding 0–4; every finding pairs with evidence (what you saw, where, measured value). Tie-breaker: would a user contact support? Then it's ≥3. Be specific ("CTA competes with nav", not "confusing"); keep feedback stage-appropriate.
+5. Severity-rate every finding 0–4; every finding pairs with evidence (what you saw, where, measured value). When a finding hinges on shipping-product convention, check it against real references via the Mobbin MCP (design-references.md; ask-first setup if it isn't connected, else web fallback with the source labeled). Tie-breaker: would a user contact support? Then it's ≥3. Be specific ("CTA competes with nav", not "confusing"); keep feedback stage-appropriate.
 6. Deliver the report skeleton from heuristics.md: findings table → top 3–5 fixes (severity × frequency) → Before/After/Why craft table → what works well.
 
 Save the report to the project's working directory, referenced by path.

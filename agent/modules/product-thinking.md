@@ -32,7 +32,8 @@ Never answer with a generic list. Reason through, in order:
 2. **Information architecture** — group by task frequency and relatedness; depth ≤3 levels;
    the most frequent job reachable in one step.
 3. **Precedent** — how do 2–3 well-designed shipping products structure this, and why does that
-   fit (or not fit) this product's context?
+   fit (or not fit) this product's context? Pull real references with the Mobbin MCP
+   (`design-data/references/design-references.md`) rather than working from memory.
 4. **Constraints** — platform conventions, existing nav patterns in the repo, technical limits.
 
 State each step's conclusion with its reason before proposing the answer.
@@ -42,7 +43,8 @@ State each step's conclusion with its reason before proposing the answer.
 **Research-first rule: MUST research before designing anything unfamiliar** — how shipping
 products solve it + published UX evidence — then synthesize, then design. NEVER design from
 memory or generic patterns alone. Sources, templates, and interview method:
-`design-data/references/research-methods.md`.
+`design-data/references/research-methods.md`. Pull the "how shipping products solve it" evidence
+with the Mobbin MCP (`design-data/references/design-references.md`) when it's connected.
 
 - Plan: assumption map → pick the cheapest method that tests the riskiest assumption.
 - Interviews: behavior-based screeners; anchor questions to the LAST TIME it happened, never hypotheticals.

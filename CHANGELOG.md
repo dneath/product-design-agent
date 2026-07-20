@@ -2,6 +2,36 @@
 
 All notable changes to the Product Design Partner agent. Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [2.4.0] - 2026-07-19
+
+The agent can now pull **real, shipping-product references** during its work instead of designing
+from memory — via the optional **Mobbin MCP**. This automates the "how do shipping products solve
+it" step the Research-First Rule already mandated. When the MCP isn't connected, the agent **asks
+before setting it up**, then either runs the one-line install (where it has a shell) or prints it,
+and otherwise falls back to web search with the source labeled — no reference is ever fabricated.
+
+### Added
+- **`design-data/references/design-references.md`** (references 9 → 10) — the Mobbin MCP integration
+  doc: the three tools (`search_flows` / `search_screens` / `search_sections`) and when to reach for
+  each, when to pull references per command, the ask-first setup + honest-degrade flow, and how to
+  cite/synthesize results (evidence outranks inspiration; 3–5 references, never one)
+- **Reference-gathering wired into all 7 commands** — each command's `Read for method` list points
+  at `design-references.md`, gains the `mcp__mobbin__*` tools (+ `WebSearch`/`WebFetch` for the
+  fallback) in `allowed-tools`, and carries a tailored one-line usage clause (research desk-research,
+  brainstorm precedent, design pre-diverge pattern audit, prototype interaction models, flows
+  `search_flows`, critique convention checks, handoff edge-case patterns)
+- **Method modules updated** — `product-thinking.md` (§2 precedent, §3 research), `design-process.md`
+  (§1 pattern audit), `prototyping.md` (§2 variant definition) now pull references via the Mobbin MCP
+- **Entry-file cross-model rule 10** — "offer references, ask before installing"; rule 8 now names
+  the Mobbin MCP alongside Figma as an optional, degrade-honestly harness feature
+- **`docs/install.md`** — Mobbin MCP (optional) setup for Claude Code / Cursor / Codex, plus the
+  uninstall leftover note (`claude mcp remove mobbin -s user`)
+
+### Changed
+- `research-methods.md` §2 "Where to Research" now points at the Mobbin MCP for the shipping-UI-patterns row
+- `docs/architecture.md`, `README.md`, `cursor/rules/*.mdc`, `codex/AGENTS.md` note the Mobbin MCP
+- test.sh reference count 9 → 10
+
 ## [2.3.0] - 2026-07-17
 
 Prototypes stop rebuilding scaffolding: seven vendored app shells become the default starting

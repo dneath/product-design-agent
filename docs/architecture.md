@@ -13,8 +13,8 @@ comes from instructions weak models can execute deterministically:
    checklists, MUST/NEVER language. Long mixed-topic files are what degrade Sonnet-class models.
 3. **Routing summaries**: every module starts with a 2–4 line "When to use" block matching the
    entry file's routing table, so a model can route without reading everything.
-4. **Harness-gated features**: sub-agents, browser tools, Figma MCP are always "if available, X;
-   otherwise Y". Nothing load-bearing is harness-specific.
+4. **Harness-gated features**: sub-agents, browser tools, the Figma MCP, the Mobbin MCP (real
+   design references) are always "if available, X; otherwise Y". Nothing load-bearing is harness-specific.
 
 ## File map
 
@@ -22,9 +22,9 @@ comes from instructions weak models can execute deterministically:
 agent/product-design-partner.md   ENTRY: identity, Thinking Protocol, routing table, cross-model rules (<150 lines)
 agent/modules/                    7 modules: product-thinking, design-process, prototyping, handoff,
                                   frontend-quality, environment, context-management
-design-data/references/           9 references: styling, motion, hardening, microcopy, heuristics,
-                                  flow-patterns, research-methods, brainstorm-techniques, shells
-                                  (loaded on demand by modules/commands)
+design-data/references/           10 references: styling, motion, hardening, microcopy, heuristics,
+                                  flow-patterns, research-methods, brainstorm-techniques, shells,
+                                  design-references (Mobbin MCP) (loaded on demand by modules/commands)
 design-data/shells/               7 runnable Next.js prototype shells (blank, dashboard, marketing,
                                   ai-chat, saas, docs, portfolio): pinned deps, tokens.css theming
                                   seam, VariantSwitcher, mocked data/auth, dev tooling preinstalled
@@ -104,7 +104,7 @@ return contract. Run `scripts/sync-agents.mjs`; update test counts.
 ## test.sh contract
 
 `./scripts/test.sh` must pass before any commit. It checks: JS/JSON/shell syntax (+shellcheck in
-CI), file counts (7 commands / 3 agents / 7 modules / 9 references / 1 template / 7 shells), line
+CI), file counts (7 commands / 3 agents / 7 modules / 10 references / 1 template / 7 shells), line
 budgets (entry <150, modules ≤170), shell integrity (package.json parses, versions pinned exact,
 tooling devDeps present, tokens.css + README per shell, no node_modules/.next/lockfiles
 committed), the two command conventions, clean sync regeneration, hook routing (incl. absorbed

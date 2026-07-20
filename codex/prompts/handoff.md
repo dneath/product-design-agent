@@ -13,6 +13,7 @@ Read for method (paths assume the bundle installed at `~/.product-design-partner
 - `~/.product-design-partner/agent/modules/handoff.md`
 - `~/.product-design-partner/design-data/templates/handoff-template.md`
 - `~/.product-design-partner/design-data/references/hardening.md`
+- `~/.product-design-partner/design-data/references/design-references.md`
 
 Design to spec: $ARGUMENTS
 
@@ -21,7 +22,7 @@ Steps:
 2. Every value is a token or exact number; every interaction has trigger/transition/duration/easing/keyboard/focus order (values from `~/.product-design-partner/design-data/references/motion.md` tables).
 3. State matrix complete per screen — no empty cells (behavior, or explicit out-of-scope with reason).
 4. Accessibility as testable requirements; data contract with a realistic sample payload.
-5. Production-readiness section (template §9) as testable statements — extreme inputs, error UX per failure type, i18n, interruption tests, loading ladder, empty-state anatomy (hardening.md).
+5. Production-readiness section (template §9) as testable statements — extreme inputs, error UX per failure type, i18n, interruption tests, loading ladder, empty-state anatomy (hardening.md). If an edge-case pattern needs a real reference, pull one via the Mobbin MCP (design-references.md).
 6. Rationale section explains the 3+ most consequential decisions (alternatives considered, why this one).
 7. Close with open questions (with owners) and explicit out-of-scope items.
 

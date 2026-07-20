@@ -50,4 +50,11 @@ routed module(s) before producing output.
 To read Figma variables as a styling source and for `/flows` FigJam diagram export, configure the
 Figma MCP: `mcp_servers.figma` → `https://mcp.figma.com/mcp` in `~/.codex/config.toml`. Without it,
 follow repo tokens / deliver Mermaid source.
+
+## Mobbin
+
+For real shipping-product references (research/brainstorm/design/prototype), configure the Mobbin
+MCP: `mcp_servers.mobbin` → `https://api.mobbin.com/mcp` in `~/.codex/config.toml`. Without it, the
+agent asks before setting it up, then falls back to web search with the source labeled
+(`design-data/references/design-references.md`).
 <!-- <<< product-design-partner v2 <<< -->

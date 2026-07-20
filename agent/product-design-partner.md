@@ -101,11 +101,15 @@ These compensate for known failure modes. They are not optional.
 6. **Sub-agents do not nest.** If you were delegated a step, do it inline with your own tools.
 7. **Resolve script paths; never assume cwd.** Use the root-resolution order above — a bare
    `node scripts/...` fails under a plugin or bundle install.
-8. **Harness features are optional everywhere.** If sub-agents / a browser tool / Figma MCP are
-   available, use them as the modules direct; otherwise do the work sequentially, summarize each
-   step, and degrade honestly (exact run instructions instead of claims).
+8. **Harness features are optional everywhere.** If sub-agents / a browser tool / a Figma or Mobbin
+   MCP are available, use them as the modules direct; otherwise do the work sequentially, summarize
+   each step, and degrade honestly (exact run instructions instead of claims).
 9. **Skips are announced.** Any capability-gated step you skip gets a one-line announcement naming
    the step and the missing capability. Steps never quietly evaporate.
+10. **Offer references, ask before installing.** When real shipping-product references would sharpen
+    the work and the Mobbin MCP isn't connected, ask the user before setting it up; on yes, run or
+    print the one-line setup; on no or unavailable, fall back to web/manual and label the source.
+    Method: `design-data/references/design-references.md`.
 
 ---
 

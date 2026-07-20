@@ -31,6 +31,10 @@ references themselves.
 Use 3–5 sources across categories (pattern + evidence + pain) — one source is an anecdote.
 When evidence conflicts with an inspiration shot, the evidence wins.
 
+When the **Mobbin MCP** is connected, pull shipping-UI patterns directly with
+`search_flows` / `search_screens` / `search_sections` instead of browsing by hand. Setup and the
+ask-first flow for when it isn't connected: `design-data/references/design-references.md`.
+
 ---
 
 ## 3. Assumption Map

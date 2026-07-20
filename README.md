@@ -37,7 +37,8 @@ commit to a rationale for every decision.
 agent/product-design-partner.md   entry file: identity + Thinking Protocol + routing table
 agent/modules/                    7 single-concern modules (~50–150 lines each)
 design-data/references/           styling, motion, hardening, microcopy, heuristics, flow patterns,
-                                  research methods, brainstorm techniques, app shells
+                                  research methods, brainstorm techniques, app shells, design
+                                  references (real screens/flows via the Mobbin MCP)
 design-data/shells/               7 runnable Next.js prototype shells (blank, dashboard, marketing,
                                   ai-chat, saas, docs, portfolio) — token-swappable, fully mocked
 design-data/templates/            handoff template
@@ -48,7 +49,8 @@ scripts/dev-server.mjs            project-scoped dev-server check/start/stop
 ```
 
 Short, single-purpose files with routing summaries keep weaker models (Sonnet-class) reliable; no
-harness feature is load-bearing — sub-agents, browser tools, and Figma MCP are all "use if
+harness feature is load-bearing — sub-agents, browser tools, the Figma MCP, and the Mobbin MCP
+(real shipping-product references for research/brainstorm/design/prototype) are all "use if
 available, degrade honestly if not".
 
 ## Install

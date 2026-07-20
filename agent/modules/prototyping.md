@@ -35,6 +35,10 @@ Run the Thinking Protocol (entry file) first. **New UI is never presented as a s
 
 ## 2. Define each variant BEFORE building
 
+Ground each variant's interaction model in real flows — pull references with the Mobbin MCP
+(`design-data/references/design-references.md`) before committing to the split, rather than
+inventing interaction models from memory.
+
 ```markdown
 ### Variant B — "Control Tower"
 - **Bet**: <one line — what this variant wagers is true about the user>

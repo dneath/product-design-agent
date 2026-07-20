@@ -37,6 +37,10 @@ appear in the agent picker (plugin route also shows the hook nudge).
 
 **Figma MCP (optional):** `claude mcp add --transport http figma https://mcp.figma.com/mcp`
 
+**Mobbin MCP (optional):** real shipping-product references for research/brainstorm/design/prototype —
+`claude mcp add --transport http mobbin https://api.mobbin.com/mcp` (restart the session to connect).
+Without it, the agent asks before setting it up, then falls back to web search.
+
 ## Cursor
 
 ```bash
@@ -52,6 +56,8 @@ Note: Cursor appends your typed text after a command — the generated Cursor co
 for that (no `$ARGUMENTS`).
 
 **Figma MCP (optional):** Cursor Settings → MCP → add `https://mcp.figma.com/mcp`.
+
+**Mobbin MCP (optional):** Cursor Settings → MCP → add `https://api.mobbin.com/mcp`.
 
 ## Codex
 
@@ -70,6 +76,12 @@ marker-delimited block in `~/.codex/AGENTS.md`:
 ```toml
 [mcp_servers.figma]
 url = "https://mcp.figma.com/mcp"
+```
+
+**Mobbin MCP (optional):** add to `~/.codex/config.toml`:
+```toml
+[mcp_servers.mobbin]
+url = "https://api.mobbin.com/mcp"
 ```
 
 ## OpenCode
@@ -116,8 +128,9 @@ What it covers:
   are never deleted.
 - Your work in `design-data/projects/` is preserved unless `--purge`.
 
-Manual leftovers to check: project-level `.cursor/rules/product-design-partner.mdc` copies, and
-any Figma MCP registration you added (remove via the same UI/CLI you used to add it).
+Manual leftovers to check: project-level `.cursor/rules/product-design-partner.mdc` copies, and any
+Figma or Mobbin MCP registration you added (remove via the same UI/CLI you used to add it — for
+Claude Code, `claude mcp remove figma -s user` / `claude mcp remove mobbin -s user`).
 
 ---
 
